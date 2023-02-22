@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=io.github.linpl.mapstruct.MapstructAutoConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=io.github.linpeilie.mapstruct.MapstructAutoConfiguration

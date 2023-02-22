@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.linpeilie</groupId>
-    <artifactId>mapstruct-plus</artifactId>
+    <artifactId>mapstruct-plus-pom</artifactId>
     <packaging>pom</packaging>
     <version>${mapstruct-plus.version}</version>
     <modules>
-        <module>mapstruct-plus-core</module>
+        <module>mapstruct-plus</module>
         <module>mapstruct-plus-spring-boot-starter</module>
         <module>mapstruct-plus-processor</module>
     </modules>
@@ -25,7 +25,7 @@
         <dependencies>
             <dependency>
                 <groupId>io.github.linpeilie</groupId>
-                <artifactId>mapstruct-plus-core</artifactId>
+                <artifactId>mapstruct-plus</artifactId>
                 <version>${mapstruct-plus.version}</version>
             </dependency>
             <dependency>
