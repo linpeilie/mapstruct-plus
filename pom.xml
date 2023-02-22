@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.linpl</groupId>
+    <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus</artifactId>
     <packaging>pom</packaging>
     <version>${mapstruct-plus.version}</version>
@@ -24,12 +24,12 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>io.github.linpl</groupId>
+                <groupId>io.github.linpeilie</groupId>
                 <artifactId>mapstruct-plus-core</artifactId>
                 <version>${mapstruct-plus.version}</version>
             </dependency>
             <dependency>
-                <groupId>io.github.linpl</groupId>
+                <groupId>io.github.linpeilie</groupId>
                 <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
                 <version>${mapstruct-plus.version}</version>
             </dependency>

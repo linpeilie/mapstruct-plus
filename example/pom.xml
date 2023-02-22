@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.linpl</groupId>
+    <groupId>io.github.linpeilie</groupId>
     <artifactId>example</artifactId>
     <version>1.0.0</version>
 
@@ -28,7 +28,7 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.github.linpl</groupId>
+            <groupId>io.github.linpeilie</groupId>
             <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
             <version>${mapstruct-plus.version}</version>
         </dependency>
@@ -38,7 +38,7 @@
             <version>${mapstruct.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.github.linpl</groupId>
+            <groupId>io.github.linpeilie</groupId>
             <artifactId>mapstruct-plus-processor</artifactId>
             <version>${mapstruct-plus.version}</version>
         </dependency>
@@ -65,7 +65,7 @@
                             <version>${mapstruct.version}</version>
                         </path>
                         <path>
-                            <groupId>io.github.linpl</groupId>
+                            <groupId>io.github.linpeilie</groupId>
                             <artifactId>mapstruct-plus-processor</artifactId>
                             <version>${mapstruct-plus.version}</version>
                         </path>

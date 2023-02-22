@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>mapstruct-plus</artifactId>
-        <groupId>io.github.linpl</groupId>
+        <groupId>io.github.linpeilie</groupId>
         <version>${mapstruct-plus.version}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -33,7 +33,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.github.linpl</groupId>
+            <groupId>io.github.linpeilie</groupId>
             <artifactId>mapstruct-plus-core</artifactId>
         </dependency>
         <dependency>
