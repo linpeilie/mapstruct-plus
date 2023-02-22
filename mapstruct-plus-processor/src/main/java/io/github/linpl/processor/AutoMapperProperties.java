@@ -7,11 +7,11 @@ public class AutoMapperProperties {
 
     private static String mapperPackage = DEFAULT_MAPPER_PACKAGE;
 
-    private static String adapterPackage = mapperPackage;
+    private static String componentModel = DEFAULT_COMPONENT_MODEL;
 
-    private static String adapterClassName = DEFAULT_ADAPTER_CLASS_NAME;
+    private static final String adapterClassName = DEFAULT_ADAPTER_CLASS_NAME;
 
-    private static String configClassName = AUTO_MAPPER_CONFIG_CLASS_NAME;
+    private static final String configClassName = AUTO_MAPPER_CONFIG_CLASS_NAME;
 
     public static String getMapperPackage() {
         return mapperPackage;
@@ -29,7 +29,15 @@ public class AutoMapperProperties {
         return configClassName;
     }
 
+    public static String getComponentModel() {
+        return componentModel;
+    }
+
     public static void setMapperPackage(final String mapperPackage) {
         AutoMapperProperties.mapperPackage = mapperPackage;
+    }
+
+    public static void setComponentModel(final String componentModel) {
+        AutoMapperProperties.componentModel = componentModel;
     }
 }

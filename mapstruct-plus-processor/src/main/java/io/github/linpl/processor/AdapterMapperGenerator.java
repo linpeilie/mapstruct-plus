@@ -81,8 +81,6 @@ public class AdapterMapperGenerator {
     private ParameterSpec buildMapperSetterParameter(ClassName mapper) {
         return ParameterSpec.builder(mapper,
                 firstWordToLower(mapper.simpleName()))
-            .addAnnotation(
-                AnnotationSpec.builder(ClassName.get("org.springframework.context.annotation", "Lazy")).build())
             .build();
     }
 

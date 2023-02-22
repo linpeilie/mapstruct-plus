@@ -5,11 +5,9 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
-import io.github.linpl.annotations.AutoMapper;
 import java.io.IOException;
 import java.io.Writer;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Modifier;
 
 import static javax.tools.Diagnostic.Kind.ERROR;
@@ -42,7 +40,8 @@ public class MapperConfigGenerator {
             ClassName.get(AutoMapperProperties.getAdapterPackage(), AutoMapperProperties.getAdapterClassName()));
         CodeBlock usesCodeBlock = usesCodeBuilder.add("}").build();
         return AnnotationSpec.builder(ClassName.get("org.mapstruct", "MapperConfig"))
-            .addMember("componentModel", "\"spring\"")
+            .addMember("componentModel",
+                CodeBlock.builder().add("$S", AutoMapperProperties.getComponentModel()).build())
             .addMember("uses", usesCodeBlock)
             .build();
     }

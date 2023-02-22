@@ -3,6 +3,7 @@ package io.github.linpl.processor;
 import com.squareup.javapoet.ClassName;
 import io.github.linpl.annotations.AutoMapper;
 import io.github.linpl.annotations.AutoMapping;
+import io.github.linpl.annotations.ComponentModelConfig;
 import io.github.linpl.annotations.MapperConfig;
 import java.io.IOException;
 import java.io.Writer;
@@ -28,10 +29,11 @@ import javax.tools.Diagnostic;
 import org.apache.commons.lang3.StringUtils;
 
 import static io.github.linpl.processor.Constants.AUTO_MAPPER_ANNOTATION;
+import static io.github.linpl.processor.Constants.COMPONENT_MODEL_CONFIG_ANNOTATION;
 import static io.github.linpl.processor.Constants.MAPPER_CONFIG_ANNOTATION;
 import static javax.tools.Diagnostic.Kind.ERROR;
 
-@SupportedAnnotationTypes({AUTO_MAPPER_ANNOTATION, MAPPER_CONFIG_ANNOTATION})
+@SupportedAnnotationTypes({AUTO_MAPPER_ANNOTATION, MAPPER_CONFIG_ANNOTATION, COMPONENT_MODEL_CONFIG_ANNOTATION})
 public class AutoMapperProcessor extends AbstractProcessor {
 
     private final AutoMapperGenerator mapperGenerator;
@@ -58,6 +60,10 @@ public class AutoMapperProcessor extends AbstractProcessor {
         return MAPPER_CONFIG_ANNOTATION.contentEquals(annotation.getQualifiedName());
     }
 
+    private boolean isComponentModelConfigAnnotation(TypeElement annotation) {
+        return COMPONENT_MODEL_CONFIG_ANNOTATION.contentEquals(annotation.getQualifiedName());
+    }
+
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
         boolean hasAutoMapper = annotations.stream().anyMatch(this::isAutoMapperAnnotation);
@@ -82,10 +88,21 @@ public class AutoMapperProcessor extends AbstractProcessor {
             .flatMap(annotation -> roundEnv.getElementsAnnotatedWith(annotation).stream().findFirst())
             .ifPresent(element -> {
                 final MapperConfig mapperConfig = element.getAnnotation(MapperConfig.class);
-                String mapperPackage = StringUtils.isEmpty(mapperConfig.mapperPackage()) ? getPackageName(element)
-                                                                                         : mapperConfig.mapperPackage();
+                String mapperPackage = StringUtils.isEmpty(mapperConfig.mapperPackage()) ? getPackageName(
+                    element) : mapperConfig.mapperPackage();
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "mapper package " + mapperPackage);
                 AutoMapperProperties.setMapperPackage(mapperPackage);
+            });
+        annotations.stream()
+            .filter(this::isComponentModelConfigAnnotation)
+            .findFirst()
+            .flatMap(annotation -> roundEnv.getElementsAnnotatedWith(annotation).stream().findFirst())
+            .ifPresent(element -> {
+                final ComponentModelConfig componentModelConfig = element.getAnnotation(ComponentModelConfig.class);
+                String componentModel = StringUtils.isEmpty(
+                    componentModelConfig.componentModel()) ? "default" : componentModelConfig.componentModel();
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "component model " + componentModel);
+                AutoMapperProperties.setComponentModel(componentModel);
             });
     }
 
@@ -128,8 +145,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
         reverseMapperMetadata.setSourceClassName(autoMapperMetadata.getTargetClassName());
         reverseMapperMetadata.setTargetClassName(autoMapperMetadata.getSourceClassName());
         // 需要继承的属性
-        final List<AutoMappingMetadata> fieldMetadataList = autoMapperMetadata.getFieldMappingList().stream()
-            .map(fieldMapping -> {
+        final List<AutoMappingMetadata> fieldMetadataList =
+            autoMapperMetadata.getFieldMappingList().stream().map(fieldMapping -> {
                 final AutoMappingMetadata autoMappingMetadata = new AutoMappingMetadata();
                 autoMappingMetadata.setSource(fieldMapping.getTarget());
                 autoMappingMetadata.setTarget(fieldMapping.getSource());

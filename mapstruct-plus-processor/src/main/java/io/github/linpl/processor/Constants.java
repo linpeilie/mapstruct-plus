@@ -6,6 +6,8 @@ public class Constants {
 
     public static final String DEFAULT_MAPPER_PACKAGE = DEFAULT_BASE_PACKAGE + ".mappers";
 
+    public static final String DEFAULT_COMPONENT_MODEL = "default";
+
     public static final String DEFAULT_ADAPTER_CLASS_NAME = "ConvertMapperAdapter";
 
 
@@ -14,6 +16,8 @@ public class Constants {
     public static final String AUTO_MAPPER_ANNOTATION = "io.github.linpl.annotations.AutoMapper";
 
     public static final String MAPPER_CONFIG_ANNOTATION = "io.github.linpl.annotations.MapperConfig";
+
+    public static final String COMPONENT_MODEL_CONFIG_ANNOTATION = "io.github.linpl.annotations.ComponentModelConfig";
 
     public static final String BASE_MAPPER_PACKAGE = "io.github.linpl";
 
