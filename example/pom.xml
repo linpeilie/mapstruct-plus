@@ -60,11 +60,6 @@
                     <target>1.8</target>
                     <annotationProcessorPaths>
                         <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>${mapstruct.version}</version>
-                        </path>
-                        <path>
                             <groupId>io.github.linpeilie</groupId>
                             <artifactId>mapstruct-plus-processor</artifactId>
                             <version>${mapstruct-plus.version}</version>

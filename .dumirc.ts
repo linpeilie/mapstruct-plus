@@ -4,7 +4,7 @@ export default defineConfig({
   themeConfig: {
     name: 'mapstruct-plus',
     logo: false,
-    nav: [{ title: '指南', link: '/guide' }],
+    autoAlias: false,
     prefersColor: { default: 'auto' },
     github: 'https://github.com/linpeilie',
     footer: false

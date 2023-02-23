@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.regex.Matcher;
 import org.mapstruct.factory.Mappers;
 
 public class DefaultConverterFactory extends AbstractCachedConverterFactory {
@@ -61,7 +62,8 @@ public class DefaultConverterFactory extends AbstractCachedConverterFactory {
             }
             try {
                 String classPath = file.getPath();
-                String className = classPath.substring(root.length() + 1, classPath.length() - 6).replaceAll("/", ".");
+                String className = classPath.substring(root.length() + 1, classPath.length() - 6)
+                    .replaceAll(Matcher.quoteReplacement(File.separator), ".");
                 classes.add(classLoader.loadClass(className));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -83,7 +85,7 @@ public class DefaultConverterFactory extends AbstractCachedConverterFactory {
 
     private String getMapperPackage(Class<?> sourceType) {
         return basePackage != null && !basePackage.isEmpty() ? basePackage
-               : sourceType.getPackage().getName();
+                                                             : sourceType.getPackage().getName();
     }
 
     @Override

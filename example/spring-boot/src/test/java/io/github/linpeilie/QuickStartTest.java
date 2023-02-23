@@ -2,12 +2,18 @@ package io.github.linpeilie;
 
 import io.github.linpeilie.model.User;
 import io.github.linpeilie.model.UserDto;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-public class QuickStart {
+@SpringBootTest
+public class QuickStartTest {
 
-    private static Converter converter = new Converter();
+    @Autowired
+    private Converter converter;
 
-    public static void main(String[] args) {
+    @Test
+    public void test() {
         User user = new User();
         user.setUsername("jack");
         user.setAge(23);
