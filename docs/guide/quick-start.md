@@ -1,3 +1,8 @@
+---
+title: 快速开始
+order: 2
+---
+
 # 快速开始
 
 下面演示如何使用 MapStruct Plus 来映射两个对象。
@@ -28,7 +33,7 @@ public class User {
 }
 ```
 
-## 非 Spring 环境
+## 非 SpringBoot 环境
 
 ### 添加依赖
 
@@ -165,7 +170,7 @@ public class QuickStart {
 
 ### 指定对象映射关系
 
-同非 Spring 环境
+同非 SpringBoot 环境
 
 ### 测试
 

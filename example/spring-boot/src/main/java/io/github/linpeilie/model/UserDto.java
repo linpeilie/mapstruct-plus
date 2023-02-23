@@ -1,12 +1,19 @@
 package io.github.linpeilie.model;
 
+import io.github.linpeilie.StringToListStringConverter;
+import io.github.linpeilie.annotations.AutoMapper;
+import io.github.linpeilie.annotations.AutoMapping;
 import java.util.Objects;
 
+@AutoMapper(target = User.class, uses = StringToListStringConverter.class)
 public class UserDto {
 
     private String username;
     private int age;
     private boolean young;
+
+    @AutoMapping(target = "educationList")
+    private String educations;
 
     public String getUsername() {
         return username;
@@ -32,22 +39,12 @@ public class UserDto {
         this.young = young;
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final UserDto user = (UserDto) o;
-        return getAge() == user.getAge() && isYoung() == user.isYoung() &&
-               Objects.equals(getUsername(), user.getUsername());
+    public String getEducations() {
+        return educations;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getUsername(), getAge(), isYoung());
+    public void setEducations(final String educations) {
+        this.educations = educations;
     }
 
     @Override
@@ -56,7 +53,7 @@ public class UserDto {
                "username='" + username + '\'' +
                ", age=" + age +
                ", young=" + young +
+               ", educations='" + educations + '\'' +
                '}';
     }
-
 }

@@ -13,6 +13,4 @@ public @interface AutoMapper {
 
     Class<?>[] uses() default {};
 
-    Class<?>[] imports() default {};
-
 }

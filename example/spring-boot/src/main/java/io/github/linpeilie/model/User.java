@@ -1,6 +1,8 @@
 package io.github.linpeilie.model;
 
 import io.github.linpeilie.annotations.AutoMapper;
+import io.github.linpeilie.annotations.AutoMapping;
+import java.util.List;
 import java.util.Objects;
 
 @AutoMapper(target = UserDto.class)
@@ -9,6 +11,9 @@ public class User {
     private String username;
     private int age;
     private boolean young;
+
+    @AutoMapping(target = "educations", expression = "java(java.lang.String.join(\",\", source.getEducationList()))")
+    private List<String> educationList;
 
     public String getUsername() {
         return username;
@@ -34,22 +39,12 @@ public class User {
         this.young = young;
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final User user = (User) o;
-        return getAge() == user.getAge() && isYoung() == user.isYoung() &&
-               Objects.equals(getUsername(), user.getUsername());
+    public List<String> getEducationList() {
+        return educationList;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getUsername(), getAge(), isYoung());
+    public void setEducationList(final List<String> educationList) {
+        this.educationList = educationList;
     }
 
     @Override
@@ -58,6 +53,7 @@ public class User {
                "username='" + username + '\'' +
                ", age=" + age +
                ", young=" + young +
+               ", educationList=" + educationList +
                '}';
     }
 }

@@ -15,8 +15,6 @@ public @interface AutoMapping {
 
     String numberFormat() default "";
 
-    String constant() default "";
-
     String expression() default "";
 
     boolean ignore() default false;
