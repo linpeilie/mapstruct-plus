@@ -137,8 +137,8 @@ public class QuickStart {
 <dependencies>
     <dependency>
         <groupId>io.github.linpeilie</groupId>
-        <artifactId>mapstruct-plus</artifactId>
-        <version>{mapstruct-plus.version}</version>
+        <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
+        <version>${mapstruct-plus.version}</version>
     </dependency>
 </dependencies>
 <build>
