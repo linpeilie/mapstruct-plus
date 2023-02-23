@@ -9,6 +9,6 @@ export default defineConfig({
     github: 'https://github.com/linpeilie',
     footer: false
   },
-  base: '/mapstruct-plus',
-  publicPath: '/mapstruct-plus/'
+  base: '/',
+  publicPath: '/'
 });
