@@ -5,7 +5,7 @@ hero:
   description: 简单、强大的 Java Bean 转换工具
   actions:
     - text: 快速开始
-      link: /
+      link: /guide/quick-start
 features:
   - title: 快速开发
     emoji: 🚀
