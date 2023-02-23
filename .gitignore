@@ -38,3 +38,11 @@ build/
 .DS_Store
 
 .idea
+
+node_modules
+
+package-lock.json
+
+dist
+.dumi/tmp
+.dumi/tmp-production
