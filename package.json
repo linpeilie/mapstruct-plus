@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "dumi build",
-    "deploy": "gh-pages -d dist",
+    "deploy": "echo mapstruct.plus > ./build/CNAME && gh-pages -d dist",
     "dev": "dumi dev",
     "prepare": "husky install && dumi setup",
     "start": "npm run dev"
