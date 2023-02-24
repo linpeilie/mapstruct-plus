@@ -9,5 +9,6 @@ export default defineConfig({
     footer: false
   },
   base: '/',
-  publicPath: '/'
+  publicPath: '/',
+  sitemap: { hostname: 'https://d.umijs.org' }
 });
