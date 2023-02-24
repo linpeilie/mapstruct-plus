@@ -134,4 +134,6 @@ public class QuickStartTest {
 
 ## 联系我
 
-<img src="./assets/contact-me.jpeg" alt="联系我" width="546" height="745" />
+> vx : Clue8a796d01
+
+<img src="https://raw.githubusercontent.com/linpeilie/mapstruct-plus/main/assets/contact-me.jpeg" alt="联系我" width="546" height="745" />
