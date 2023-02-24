@@ -6,7 +6,7 @@
   "scripts": {
     "build": "dumi build",
     "predeploy": "cp CNAME ./dist",
-    "deploy": "&& gh-pages -d dist",
+    "deploy": "gh-pages -d dist",
     "dev": "dumi dev",
     "prepare": "husky install && dumi setup",
     "start": "npm run dev"
