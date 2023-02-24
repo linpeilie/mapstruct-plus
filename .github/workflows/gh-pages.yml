@@ -15,7 +15,7 @@ jobs:
       - run: npm run build
       - name: Publish github pages
         run: |
-          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/linpeilie/mapstruct-plus.git
-          npx gh-pages -d build -u "github-actions-bot <support+actions@github.com>"
+          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          npm run deploy -u "github-actions-bot <support+actions@github.com>"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
