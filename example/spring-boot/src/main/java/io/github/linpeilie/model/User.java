@@ -2,6 +2,7 @@ package io.github.linpeilie.model;
 
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMapping;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -9,11 +10,18 @@ import java.util.Objects;
 public class User {
 
     private String username;
+
     private int age;
     private boolean young;
 
     @AutoMapping(target = "educations", expression = "java(java.lang.String.join(\",\", source.getEducationList()))")
     private List<String> educationList;
+
+    @AutoMapping(target = "birthday", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date birthday;
+
+    @AutoMapping(target = "assets", numberFormat = "$0.00")
+    private double assets;
 
     public String getUsername() {
         return username;
@@ -47,6 +55,22 @@ public class User {
         this.educationList = educationList;
     }
 
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(final Date birthday) {
+        this.birthday = birthday;
+    }
+
+    public double getAssets() {
+        return assets;
+    }
+
+    public void setAssets(final double assets) {
+        this.assets = assets;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -54,6 +78,8 @@ public class User {
                ", age=" + age +
                ", young=" + young +
                ", educationList=" + educationList +
+               ", birthday=" + birthday +
+               ", assets=" + assets +
                '}';
     }
 }

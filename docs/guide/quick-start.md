@@ -206,3 +206,10 @@ public class QuickStartTest {
 
 }
 ```
+
+## 小结
+
+引入依赖后，使用 Mapstruct Plus 步骤非常简单。
+
+1. 给需要转换的类添加 `AutoMapper` 注解
+2. 获取 `Converter` 实例，调用 `convert` 方法即可

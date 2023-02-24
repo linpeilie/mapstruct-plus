@@ -3,6 +3,7 @@ package io.github.linpeilie.model;
 import io.github.linpeilie.StringToListStringConverter;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMapping;
+import java.util.List;
 import java.util.Objects;
 
 @AutoMapper(target = User.class, uses = StringToListStringConverter.class)
@@ -14,6 +15,10 @@ public class UserDto {
 
     @AutoMapping(target = "educationList")
     private String educations;
+
+    private String birthday;
+
+    private String assets;
 
     public String getUsername() {
         return username;
@@ -47,6 +52,22 @@ public class UserDto {
         this.educations = educations;
     }
 
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(final String birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getAssets() {
+        return assets;
+    }
+
+    public void setAssets(final String assets) {
+        this.assets = assets;
+    }
+
     @Override
     public String toString() {
         return "UserDto{" +
@@ -54,6 +75,8 @@ public class UserDto {
                ", age=" + age +
                ", young=" + young +
                ", educations='" + educations + '\'' +
+               ", birthday='" + birthday + '\'' +
+               ", assets='" + assets + '\'' +
                '}';
     }
 }

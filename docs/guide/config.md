@@ -16,17 +16,17 @@ order: 4
 
 ## ComponentModelConfig
 
-- **描述**：定义获取 Mapper 接口对象的注入方式，只有一个属性 `componentModel`
-- **使用位置**：与要转换对象同模块包下的任意类或者接口
+`ComponentModelConfig` **定义获取 Mapper 接口对象的注入方式**，只有一个属性 `componentModel`。
+可以在与要转换对象同模块包下的任意类或者接口上使用。
 
 目前 Mapstruct plus 中支持两种：`default` 和 `spring`。
 
-当使用非 Spring 模式时，必须定义该配置，`componentModel=default`。只建议在该种情况下，定义该值，其他情况下都不需要。
+当使用非 Spring 模式时，必须定义该配置，`componentModel=default`。
 
 ## MapperConfig
 
-- **描述**：定义 Mapper 接口生成的规则
-- **使用位置**：与要转换对象同模块包下的任意类或接口
+`MapperConfig` 注解定义 **Mapper 接口生成的规则**，目前只支持配置生成接口的包名
+可以在与要转换对象同模块包下的任意类或接口上使用。
 
 ### mapperPackage
 
