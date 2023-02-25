@@ -83,6 +83,10 @@ public class DefaultConverterFactory extends AbstractCachedConverterFactory {
         return source.getSimpleName() + "To" + target.getSimpleName() + "Mapper";
     }
 
+    private String getMapMapperClassName(Class<?> source) {
+        return "MapTo" + source.getSimpleName() + "Mapper";
+    }
+
     private String getMapperPackage(Class<?> sourceType) {
         return basePackage != null && !basePackage.isEmpty() ? basePackage
                                                              : sourceType.getPackage().getName();
@@ -100,4 +104,14 @@ public class DefaultConverterFactory extends AbstractCachedConverterFactory {
         }
     }
 
+    @Override
+    protected <S> BaseMapMapper findMapMapper(final Class<?> source) {
+        final String mapperClassName = getMapMapperClassName(source);
+        try {
+            final Class<?> mapperClass = Class.forName(getMapperPackage(source) + "." + mapperClassName);
+            return (BaseMapMapper) Mappers.getMapper(mapperClass);
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+    }
 }

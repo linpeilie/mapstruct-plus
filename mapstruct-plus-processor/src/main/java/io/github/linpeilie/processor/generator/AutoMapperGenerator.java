@@ -1,4 +1,4 @@
-package io.github.linpeilie.processor;
+package io.github.linpeilie.processor.generator;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
@@ -8,6 +8,9 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
+import io.github.linpeilie.processor.AutoMapperProperties;
+import io.github.linpeilie.processor.metadata.AutoMapperMetadata;
+import io.github.linpeilie.processor.metadata.AutoMappingMetadata;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
@@ -36,8 +39,7 @@ public class AutoMapperGenerator {
 
     private TypeSpec createTypeSpec(AutoMapperMetadata metadata) {
         ParameterizedTypeName converterName =
-            ParameterizedTypeName.get(ClassName.get(BASE_MAPPER_PACKAGE, BASE_MAPPER_CLASS_NAME),
-                metadata.getSourceClassName(), metadata.getTargetClassName());
+            ParameterizedTypeName.get(metadata.getSuperClass(), metadata.getSuperGenerics());
 
         TypeSpec.Builder builder = TypeSpec.interfaceBuilder(metadata.mapperName())
             .addSuperinterface(converterName)
@@ -91,8 +93,7 @@ public class AutoMapperGenerator {
 
         // config
         CodeBlock configCodeBlock = CodeBlock.builder()
-            .add("$T.class",
-                ClassName.get(AutoMapperProperties.getConfigPackage(), AutoMapperProperties.getConfigClassName()))
+            .add("$T.class", metadata.getMapstructConfigClass())
             .build();
 
         // uses

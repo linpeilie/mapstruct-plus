@@ -1,14 +1,25 @@
 package io.github.linpeilie.processor;
 
 import com.squareup.javapoet.ClassName;
+import io.github.linpeilie.annotations.AutoMapMapper;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMapping;
 import io.github.linpeilie.annotations.ComponentModelConfig;
 import io.github.linpeilie.annotations.MapperConfig;
-import java.awt.Component;
+import io.github.linpeilie.processor.generator.AutoMapperGenerator;
+import io.github.linpeilie.processor.generator.DefaultAdapterMapperGenerator;
+import io.github.linpeilie.processor.generator.MapperConfigGenerator;
+import io.github.linpeilie.processor.generator.SpringAdapterMapperGenerator;
+import io.github.linpeilie.processor.metadata.AbstractAdapterMethodMetadata;
+import io.github.linpeilie.processor.metadata.AdapterMapMethodMetadata;
+import io.github.linpeilie.processor.metadata.AdapterMethodMetadata;
+import io.github.linpeilie.processor.metadata.AutoMapMapperMetadata;
+import io.github.linpeilie.processor.metadata.AutoMapperMetadata;
+import io.github.linpeilie.processor.metadata.AutoMappingMetadata;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,11 +42,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.MappingConstants;
 
 import static io.github.linpeilie.processor.Constants.AUTO_MAPPER_ANNOTATION;
+import static io.github.linpeilie.processor.Constants.AUTO_MAP_MAPPER_ANNOTATION;
 import static io.github.linpeilie.processor.Constants.COMPONENT_MODEL_CONFIG_ANNOTATION;
 import static io.github.linpeilie.processor.Constants.MAPPER_CONFIG_ANNOTATION;
 import static javax.tools.Diagnostic.Kind.ERROR;
 
-@SupportedAnnotationTypes({AUTO_MAPPER_ANNOTATION, MAPPER_CONFIG_ANNOTATION, COMPONENT_MODEL_CONFIG_ANNOTATION})
+@SupportedAnnotationTypes({AUTO_MAPPER_ANNOTATION, AUTO_MAP_MAPPER_ANNOTATION, MAPPER_CONFIG_ANNOTATION,
+                           COMPONENT_MODEL_CONFIG_ANNOTATION})
 public class AutoMapperProcessor extends AbstractProcessor {
 
     private final AutoMapperGenerator mapperGenerator;
@@ -44,7 +57,9 @@ public class AutoMapperProcessor extends AbstractProcessor {
 
     private final MapperConfigGenerator mapperConfigGenerator;
 
-    private final Map<String, AdapterMethodMetadata> methodMap = new HashMap<>();
+    private final Map<String, AbstractAdapterMethodMetadata> methodMap = new HashMap<>();
+
+    private final Map<String, AbstractAdapterMethodMetadata> mapMethodMap = new HashMap<>();
 
     private final Set<String> mapperSet = new HashSet<>();
 
@@ -55,6 +70,10 @@ public class AutoMapperProcessor extends AbstractProcessor {
 
     private boolean isAutoMapperAnnotation(TypeElement annotation) {
         return AUTO_MAPPER_ANNOTATION.contentEquals(annotation.getQualifiedName());
+    }
+
+    private boolean isAutoMapMapperAnnotation(TypeElement annotation) {
+        return AUTO_MAP_MAPPER_ANNOTATION.contentEquals(annotation.getQualifiedName());
     }
 
     private boolean isMapperConfigAnnotation(TypeElement annotation) {
@@ -71,20 +90,60 @@ public class AutoMapperProcessor extends AbstractProcessor {
         if (!hasAutoMapper) {
             return false;
         }
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "start refresh properties");
+        // 刷新配置
         refreshProperties(annotations, roundEnv);
 
+        // 根据配置生成注解类
         this.adapterMapperGenerator = AutoMapperProperties.getComponentModel()
                                           .contentEquals(
                                               MappingConstants.ComponentModel.SPRING) ? new SpringAdapterMapperGenerator() : new DefaultAdapterMapperGenerator();
 
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "start write config class");
-        writeConfigClass();
-        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "start generate mapper class");
+        // 获取 MapMapper
+        annotations.stream()
+            .filter(this::isAutoMapMapperAnnotation)
+            .findFirst()
+            .ifPresent(annotation -> processAutoMapMapperAnnotation(roundEnv, annotation));
+
+        // 生成类
         annotations.stream()
             .filter(this::isAutoMapperAnnotation)
-            .forEach(annotation -> processAutoMapperAnnotation(roundEnv, annotation));
+            .findFirst()
+            .ifPresent(annotation -> processAutoMapperAnnotation(roundEnv, annotation));
         return false;
+    }
+
+    private void processAutoMapMapperAnnotation(final RoundEnvironment roundEnv, final TypeElement annotation) {
+        final List<AutoMapperMetadata> autoMapMapperMetadataList =
+            roundEnv.getElementsAnnotatedWith(annotation).stream().map(ele -> {
+                if (ele.getAnnotation(AutoMapMapper.class) == null) {
+                    return null;
+                }
+                ClassName source = ClassName.get("java.util", "Map");
+                ClassName target = ClassName.get((TypeElement) ele);
+                List<ClassName> uses = Arrays.asList(ClassName.get("io.github.linpeilie.map", "MapObjectConvert"));
+
+                final AutoMapperMetadata autoMapperMetadata = new AutoMapMapperMetadata();
+                autoMapperMetadata.setTargetClassName(target);
+                autoMapperMetadata.setSourceClassName(source);
+                autoMapperMetadata.setUsesClassNameList(uses);
+                autoMapperMetadata.setSuperClass(ClassName.get("io.github.linpeilie", "BaseMapMapper"));
+                autoMapperMetadata.setSuperGenerics(new ClassName[] {target});
+                autoMapperMetadata.setMapstructConfigClass(ClassName.get(AutoMapperProperties.getConfigPackage(),
+                    AutoMapperProperties.getMapConfigClassName()));
+                return autoMapperMetadata;
+            }).filter(Objects::nonNull).collect(Collectors.toList());
+        autoMapMapperMetadataList.forEach(metadata -> {
+            this.writeAutoMapperClassFile(metadata);
+            addAdapterMapMethod(metadata.getSourceClassName(), metadata.getTargetClassName(), metadata.mapperClass(),
+                false);
+            addAdapterMapMethod(ClassName.get("java.lang", "Object"), metadata.getTargetClassName(),
+                metadata.mapperClass(), true);
+        });
+        adapterMapperGenerator.write(processingEnv, mapMethodMap.values(),
+            AutoMapperProperties.getMapAdapterClassName());
+
+        mapperConfigGenerator.write(processingEnv, AutoMapperProperties.getMapConfigClassName(),
+            AutoMapperProperties.getMapAdapterClassName());
     }
 
     private void refreshProperties(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
@@ -116,10 +175,6 @@ public class AutoMapperProcessor extends AbstractProcessor {
         return String.valueOf(processingEnv.getElementUtils().getPackageOf(element).getQualifiedName());
     }
 
-    private void writeConfigClass() {
-        mapperConfigGenerator.write(processingEnv);
-    }
-
     private void processAutoMapperAnnotation(final RoundEnvironment roundEnv, final TypeElement annotation) {
         final List<AutoMapperMetadata> autoMapperMetadataList = roundEnv.getElementsAnnotatedWith(annotation)
             .stream()
@@ -141,15 +196,26 @@ public class AutoMapperProcessor extends AbstractProcessor {
 
         autoMapperMetadataList.addAll(reverseMapperMetadataList);
 
-        autoMapperMetadataList.forEach(this::writeAutoMapperClassFile);
+        autoMapperMetadataList.forEach(metadata -> {
+            this.writeAutoMapperClassFile(metadata);
+            addAdapterMethod(metadata.getSourceClassName(), metadata.getTargetClassName(), metadata.mapperClass());
+        });
 
-        adapterMapperGenerator.write(processingEnv, methodMap.values());
+        adapterMapperGenerator.write(processingEnv, methodMap.values(), AutoMapperProperties.getAdapterClassName());
+
+        mapperConfigGenerator.write(processingEnv, AutoMapperProperties.getConfigClassName(),
+            AutoMapperProperties.getAdapterClassName());
     }
 
     private AutoMapperMetadata reverseMapper(AutoMapperMetadata autoMapperMetadata) {
         AutoMapperMetadata reverseMapperMetadata = new AutoMapperMetadata();
         reverseMapperMetadata.setSourceClassName(autoMapperMetadata.getTargetClassName());
         reverseMapperMetadata.setTargetClassName(autoMapperMetadata.getSourceClassName());
+        reverseMapperMetadata.setSuperClass(autoMapperMetadata.getSuperClass());
+        reverseMapperMetadata.setSuperGenerics(
+            new ClassName[] {reverseMapperMetadata.getSourceClassName(), reverseMapperMetadata.getTargetClassName()});
+        reverseMapperMetadata.setMapstructConfigClass(
+            ClassName.get(AutoMapperProperties.getConfigPackage(), AutoMapperProperties.getConfigClassName()));
         // 需要继承的属性
         final List<AutoMappingMetadata> fieldMetadataList =
             autoMapperMetadata.getFieldMappingList().stream().map(fieldMapping -> {
@@ -169,8 +235,6 @@ public class AutoMapperProcessor extends AbstractProcessor {
             .createSourceFile(mapperPackage + "." + mapperClassName)
             .openWriter()) {
             mapperGenerator.write(metadata, writer);
-            addAdapterMethod(metadata.getSourceClassName(), metadata.getTargetClassName(),
-                ClassName.get(mapperPackage, mapperClassName));
         } catch (IOException e) {
             processingEnv.getMessager()
                 .printMessage(ERROR,
@@ -181,6 +245,12 @@ public class AutoMapperProcessor extends AbstractProcessor {
     private void addAdapterMethod(ClassName source, ClassName target, ClassName mapper) {
         AdapterMethodMetadata adapterMethodMetadata = AdapterMethodMetadata.newInstance(source, target, mapper);
         methodMap.put(adapterMethodMetadata.getMethodName(), adapterMethodMetadata);
+    }
+
+    private void addAdapterMapMethod(ClassName source, ClassName target, ClassName mapper, boolean objectConverter) {
+        final AdapterMapMethodMetadata adapterMapMethodMetadata =
+            new AdapterMapMethodMetadata(source, target, mapper, objectConverter);
+        mapMethodMap.put(adapterMapMethodMetadata.getMethodName(), adapterMapMethodMetadata);
     }
 
     private AutoMapperMetadata buildAutoMapperMetadata(final Element ele) {
@@ -203,6 +273,10 @@ public class AutoMapperProcessor extends AbstractProcessor {
         metadata.setTargetClassName(target);
         metadata.setUsesClassNameList(uses);
         metadata.setFieldMappingList(autoMappingMetadataList);
+        metadata.setSuperClass(ClassName.get("io.github.linpeilie", "BaseMapper"));
+        metadata.setSuperGenerics(new ClassName[] {source, target});
+        metadata.setMapstructConfigClass(
+            ClassName.get(AutoMapperProperties.getConfigPackage(), AutoMapperProperties.getConfigClassName()));
 
         return metadata;
     }

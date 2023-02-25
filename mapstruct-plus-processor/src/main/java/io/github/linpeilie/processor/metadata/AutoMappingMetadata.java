@@ -1,4 +1,4 @@
-package io.github.linpeilie.processor;
+package io.github.linpeilie.processor.metadata;
 
 public class AutoMappingMetadata {
 
