@@ -8,7 +8,9 @@ Mapstruct Plus 是对 Mapstruct 框架的一个增强，只做增强，不做修
 
 ## 链接
 
-[Document](https://mapstruct.plus)
+- [Document](https://mapstruct.plus)
+- [Gitee](https://gitee.com/linpeilie/mapstruct-plus)
+- [Github](https://github.com/linpeilie/mapstruct-plus)
 
 ## 快速开始
 
@@ -136,4 +138,4 @@ public class QuickStartTest {
 
 > vx : Clue8a796d01
 
-<img src="https://raw.githubusercontent.com/linpeilie/mapstruct-plus/main/assets/contact-me.jpeg" alt="联系我" width="546" height="745" />
+<img src="https://raw.githubusercontent.com/linpeilie/mapstruct-plus/main/assets/contact-me.jpeg" alt="联系我" width="364" height="497" />

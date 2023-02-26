@@ -14,3 +14,14 @@ Mapstruct Plus 是 Mapstruct 的增强工具，在 Mapstruct 的基础上，实�
 和 Mapstruct 一样，本质上都是一个基于 JSR 269 的 Java 注释处理器，因此可以由 Maven、Gradle、Ant 等来构建触发。
 
 Mapstruct Plus 内嵌 Mapstruct，和 Mapstruct 完全兼容，如果之前已经使用 Mapstruct，可以无缝替换依赖。
+
+# 代码托管
+
+- [Gitee](https://gitee.com/linpeilie/mapstruct-plus)
+- [Github](https://github.com/linpeilie/mapstruct-plus)
+
+# 联系我
+
+> vx : Clue8a796d01
+
+<img src="https://raw.githubusercontent.com/linpeilie/mapstruct-plus/main/assets/contact-me.jpeg" alt="联系我" width="364" height="497" />
