@@ -1,12 +1,24 @@
 package io.github.linpeilie.model;
 
-import java.util.Objects;
+import io.github.linpeilie.StringToListStringConverter;
+import io.github.linpeilie.annotations.AutoMapper;
+import io.github.linpeilie.annotations.AutoMapping;
 
+@AutoMapper(target = User.class, uses = StringToListStringConverter.class)
 public class UserDto {
 
     private String username;
     private int age;
     private boolean young;
+
+    @AutoMapping(target = "educationList")
+    private String educations;
+
+    private String birthday;
+
+    private String assets;
+
+    private String money;
 
     public String getUsername() {
         return username;
@@ -32,22 +44,36 @@ public class UserDto {
         this.young = young;
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final UserDto user = (UserDto) o;
-        return getAge() == user.getAge() && isYoung() == user.isYoung() &&
-               Objects.equals(getUsername(), user.getUsername());
+    public String getEducations() {
+        return educations;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getUsername(), getAge(), isYoung());
+    public void setEducations(final String educations) {
+        this.educations = educations;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(final String birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getAssets() {
+        return assets;
+    }
+
+    public void setAssets(final String assets) {
+        this.assets = assets;
+    }
+
+    public String getMoney() {
+        return money;
+    }
+
+    public void setMoney(final String money) {
+        this.money = money;
     }
 
     @Override
@@ -56,7 +82,10 @@ public class UserDto {
                "username='" + username + '\'' +
                ", age=" + age +
                ", young=" + young +
+               ", educations='" + educations + '\'' +
+               ", birthday='" + birthday + '\'' +
+               ", assets='" + assets + '\'' +
+               ", money='" + money + '\'' +
                '}';
     }
-
 }

@@ -20,12 +20,20 @@ public class AutoMapperProperties {
         return DEFAULT_ADAPTER_CLASS_NAME;
     }
 
+    public static String getMapAdapterClassName() {
+        return DEFAULT_MAP_ADAPTER_CLASS_NAME;
+    }
+
     public static String getConfigPackage() {
         return DEFAULT_BASE_PACKAGE;
     }
 
     public static String getConfigClassName() {
         return AUTO_MAPPER_CONFIG_CLASS_NAME;
+    }
+
+    public static String getMapConfigClassName() {
+        return AUTO_MAP_MAPPER_CONFIG_CLASS_NAME;
     }
 
     public static String getComponentModel() {

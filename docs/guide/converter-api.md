@@ -20,3 +20,6 @@ order: 6
 
 - `List<T> convert(List<S> source, Class<T> targetType)`
   将 `S` 类型的集合，转换为 `targetType` 类型的集合并返回
+
+- `<T> T convert(Map<String, Object> map, Class<T> target)`
+  将 `Map<String, Object>` 转换为 `target` 类型的集合并返回

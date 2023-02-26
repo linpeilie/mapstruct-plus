@@ -1,12 +1,11 @@
-package io.github.linpeilie.processor;
+package io.github.linpeilie.processor.metadata;
 
 import com.squareup.javapoet.ClassName;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
 
-public class AutoMapperMetadata {
+public class AutoMapperMetadata extends AbstractMapperMetadata {
 
-    private ClassName sourceClassName;
+
 
     private ClassName targetClassName;
 
@@ -14,22 +13,14 @@ public class AutoMapperMetadata {
 
     private List<AutoMappingMetadata> fieldMappingList;
 
-    public String mapperPackage() {
-        return StringUtils.isNotEmpty(AutoMapperProperties.getMapperPackage())
-               ? AutoMapperProperties.getMapperPackage() : sourceClassName.packageName();
-    }
+    private ClassName superClass;
+
+    private ClassName[] superGenerics;
+
+    private ClassName mapstructConfigClass;
 
     public String mapperName() {
         return sourceClassName.simpleName() + "To" + targetClassName.simpleName() + "Mapper";
-    }
-
-    public ClassName getSourceClassName() {
-        return sourceClassName;
-    }
-
-    public AutoMapperMetadata setSourceClassName(final ClassName sourceClassName) {
-        this.sourceClassName = sourceClassName;
-        return this;
     }
 
     public ClassName getTargetClassName() {
@@ -57,5 +48,29 @@ public class AutoMapperMetadata {
     public AutoMapperMetadata setFieldMappingList(final List<AutoMappingMetadata> fieldMappingList) {
         this.fieldMappingList = fieldMappingList;
         return this;
+    }
+
+    public ClassName getSuperClass() {
+        return superClass;
+    }
+
+    public ClassName[] getSuperGenerics() {
+        return superGenerics;
+    }
+
+    public void setSuperGenerics(final ClassName[] superGenerics) {
+        this.superGenerics = superGenerics;
+    }
+
+    public void setSuperClass(final ClassName superClass) {
+        this.superClass = superClass;
+    }
+
+    public ClassName getMapstructConfigClass() {
+        return mapstructConfigClass;
+    }
+
+    public void setMapstructConfigClass(final ClassName mapstructConfigClass) {
+        this.mapstructConfigClass = mapstructConfigClass;
     }
 }

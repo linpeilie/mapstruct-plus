@@ -3,14 +3,71 @@ title: 常见问题
 order: 8
 ---
 
-# 一个类需要对多个类进行转换如何实现？
+# 与 `lombok` 整合
 
-当一个类对多个类进行转换时，属性配置就稍微麻烦些，项目初期还没有实现。
+与 Mapstruct 整合 lombok 的方式一致。
 
-但也提供了一种方式，就是利用自动生成相反转换类的规则。
+- lombok 1.18.16 之前：
 
-例如：
+```xml
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>io.github.linpeilie</groupId>
+                            <artifactId>mapstruct-plus-processor</artifactId>
+                            <version>${mapstruct-plus.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+```
 
-`vo` / `dto` / `bo` 三层进行转换，作为中间层 `dto`，需要同时转换为 `vo`、`bo`，如果不需要自定义转换规则的话，可以只在 `vo` 和 `bo` 对象类上面增加 `@AutoMapper` 注解，在生成 `voToDtoMapper` 和 `boToDtoMapper` 的同时，会生成 `dtoToVoMapper` 和 `dtoToBoMapper`，变相的解决了这个问题。
+- lombok 1.18.16 之后：
 
-> 后面会针对这个问题进行开发，敬请期待
+```xml
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>io.github.linpeilie</groupId>
+                            <artifactId>mapstruct-plus-processor</artifactId>
+                            <version>${mapstruct-plus.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.2.0</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+```

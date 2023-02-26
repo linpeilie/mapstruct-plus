@@ -1,6 +1,10 @@
-package io.github.linpeilie.processor;
+package io.github.linpeilie.processor.metadata;
+
+import com.squareup.javapoet.ClassName;
 
 public class AutoMappingMetadata {
+
+    private ClassName targetClass;
 
     private String target = "";
 
@@ -13,6 +17,14 @@ public class AutoMappingMetadata {
     private String expression = "";
 
     private boolean ignore = false;
+
+    public ClassName getTargetClass() {
+        return targetClass;
+    }
+
+    public void setTargetClass(final ClassName targetClass) {
+        this.targetClass = targetClass;
+    }
 
     public String getTarget() {
         return target;
