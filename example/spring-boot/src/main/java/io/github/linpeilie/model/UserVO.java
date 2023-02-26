@@ -1,39 +1,22 @@
 package io.github.linpeilie.model;
 
-import io.github.linpeilie.annotations.AutoMapper;
-import io.github.linpeilie.annotations.AutoMappers;
 import io.github.linpeilie.annotations.AutoMapping;
-import io.github.linpeilie.annotations.AutoMappings;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
-@AutoMappers({
-    @AutoMapper(target = UserDto.class),
-    @AutoMapper(target = UserVO.class)
-})
-public class User {
+public class UserVO {
 
     private String username;
 
     private int age;
     private boolean young;
 
-    @AutoMapping(targetClass = UserDto.class, target = "educations", expression = "java(java.lang.String.join(\",\", source.getEducationList()))")
     private List<String> educationList;
 
-    @AutoMappings({
-        @AutoMapping(targetClass = UserDto.class, target = "birthday", dateFormat = "yyyy-MM-dd HH:mm:ss"),
-        @AutoMapping(targetClass = UserVO.class, target = "birthday", ignore = true)
-    })
     private Date birthday;
 
-    @AutoMapping(targetClass = UserDto.class, target = "assets", numberFormat = "$0.00")
     private double assets;
 
-    @AutoMappings({
-        @AutoMapping(targetClass = UserVO.class, target = "voField")
-    })
     private String voField;
 
     public String getUsername() {
@@ -94,7 +77,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "UserVO{" +
                "username='" + username + '\'' +
                ", age=" + age +
                ", young=" + young +
@@ -104,4 +87,5 @@ public class User {
                ", voField='" + voField + '\'' +
                '}';
     }
+
 }

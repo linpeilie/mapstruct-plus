@@ -18,6 +18,8 @@ public class Constants {
 
     public static final String AUTO_MAPPER_ANNOTATION = "io.github.linpeilie.annotations.AutoMapper";
 
+    public static final String AUTO_MAPPERS_ANNOTATION = "io.github.linpeilie.annotations.AutoMappers";
+
     public static final String AUTO_MAP_MAPPER_ANNOTATION = "io.github.linpeilie.annotations.AutoMapMapper";
 
     public static final String MAPPER_CONFIG_ANNOTATION = "io.github.linpeilie.annotations.MapperConfig";
