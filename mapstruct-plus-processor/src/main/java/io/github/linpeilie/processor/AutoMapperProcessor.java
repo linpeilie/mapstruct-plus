@@ -225,6 +225,9 @@ public class AutoMapperProcessor extends AbstractProcessor {
 
         mapperList.forEach(autoMapperMetadata -> {
             final AutoMapperMetadata reverseMapperMetadata = reverseMapper(autoMapperMetadata);
+            if (!reverseMapperMetadata.isReverseConvertGenerate()) {
+                return;
+            }
             if (!mapperSet.add(reverseMapperMetadata.mapperName())) {
                 return;
             }
@@ -337,6 +340,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         metadata.setSuperGenerics(new ClassName[] {source, target});
         metadata.setMapstructConfigClass(
             ClassName.get(AutoMapperProperties.getConfigPackage(), AutoMapperProperties.getConfigClassName()));
+        metadata.setReverseConvertGenerate(autoMapper.reverseConvertGenerate());
         return metadata;
     }
 
