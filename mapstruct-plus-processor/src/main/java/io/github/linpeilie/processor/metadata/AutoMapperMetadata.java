@@ -19,6 +19,8 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
 
     private ClassName mapstructConfigClass;
 
+    private boolean reverseConvertGenerate;
+
     public String mapperName() {
         return sourceClassName.simpleName() + "To" + targetClassName.simpleName() + "Mapper";
     }
@@ -72,5 +74,13 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
 
     public void setMapstructConfigClass(final ClassName mapstructConfigClass) {
         this.mapstructConfigClass = mapstructConfigClass;
+    }
+
+    public boolean isReverseConvertGenerate() {
+        return reverseConvertGenerate;
+    }
+
+    public void setReverseConvertGenerate(final boolean reverseConvertGenerate) {
+        this.reverseConvertGenerate = reverseConvertGenerate;
     }
 }

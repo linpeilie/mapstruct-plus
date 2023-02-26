@@ -13,4 +13,12 @@ public @interface AutoMapper {
 
     Class<?>[] uses() default {};
 
+    /**
+     * 是否生成反向转换的接口
+     *
+     * @return true : 生成反向转换的接口
+     *         false : 不生成反向转换的接口
+     */
+    boolean reverseConvertGenerate() default true;
+
 }
