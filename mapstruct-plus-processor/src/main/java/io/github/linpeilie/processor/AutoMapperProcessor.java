@@ -224,10 +224,10 @@ public class AutoMapperProcessor extends AbstractProcessor {
         List<AutoMapperMetadata> reverseMapperMetadataList = new ArrayList<>();
 
         mapperList.forEach(autoMapperMetadata -> {
-            final AutoMapperMetadata reverseMapperMetadata = reverseMapper(autoMapperMetadata);
-            if (!reverseMapperMetadata.isReverseConvertGenerate()) {
+            if (!autoMapperMetadata.isReverseConvertGenerate()) {
                 return;
             }
+            final AutoMapperMetadata reverseMapperMetadata = reverseMapper(autoMapperMetadata);
             if (!mapperSet.add(reverseMapperMetadata.mapperName())) {
                 return;
             }

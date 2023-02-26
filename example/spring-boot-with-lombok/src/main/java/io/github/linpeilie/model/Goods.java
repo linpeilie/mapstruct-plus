@@ -6,7 +6,7 @@ import io.github.linpeilie.annotations.AutoMappings;
 import lombok.Data;
 
 @Data
-@AutoMapper(target = GoodsVo.class, reverseConvertGenerate = true)
+@AutoMapper(target = GoodsVo.class, reverseConvertGenerate = false)
 public class Goods {
 
     private String price;
