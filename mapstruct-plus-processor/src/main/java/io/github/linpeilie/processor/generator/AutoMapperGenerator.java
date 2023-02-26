@@ -1,5 +1,6 @@
 package io.github.linpeilie.processor.generator;
 
+import cn.hutool.core.util.StrUtil;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -73,10 +74,16 @@ public class AutoMapperGenerator {
         return autoMappingMetadataList.stream().map(autoMappingMetadata -> {
             final AnnotationSpec.Builder builder = AnnotationSpec.builder(ClassName.get("org.mapstruct", "Mapping"))
                 .addMember("target", CodeBlock.builder().add("$S", autoMappingMetadata.getTarget()).build())
-
-                .addMember("dateFormat", CodeBlock.builder().add("$S", autoMappingMetadata.getDateFormat()).build())
-                .addMember("numberFormat", CodeBlock.builder().add("$S", autoMappingMetadata.getNumberFormat()).build())
                 .addMember("ignore", CodeBlock.builder().add(String.valueOf(autoMappingMetadata.isIgnore())).build());
+            if (StrUtil.isNotEmpty(autoMappingMetadata.getDateFormat())) {
+                builder.addMember("dateFormat", CodeBlock.builder().add("$S", autoMappingMetadata.getDateFormat()).build());
+            }
+            if (StrUtil.isNotEmpty(autoMappingMetadata.getNumberFormat())) {
+                builder.addMember("numberFormat", CodeBlock.builder().add("$S", autoMappingMetadata.getNumberFormat()).build());
+            }
+            if (StrUtil.isNotEmpty(autoMappingMetadata.getDefaultValue())) {
+                builder.addMember("defaultValue", CodeBlock.builder().add("$S", autoMappingMetadata.getDefaultValue()).build());
+            }
             if (StringUtils.isNoneEmpty(autoMappingMetadata.getExpression())) {
                 builder.addMember("expression",
                     CodeBlock.builder().add("$S", autoMappingMetadata.getExpression()).build());

@@ -18,6 +18,8 @@ public class AutoMappingMetadata {
 
     private boolean ignore = false;
 
+    private String defaultValue = "";
+
     public ClassName getTargetClass() {
         return targetClass;
     }
@@ -72,5 +74,13 @@ public class AutoMappingMetadata {
 
     public void setIgnore(final boolean ignore) {
         this.ignore = ignore;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(final String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 }

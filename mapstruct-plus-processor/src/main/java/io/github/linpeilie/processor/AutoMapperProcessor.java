@@ -378,9 +378,14 @@ public class AutoMapperProcessor extends AbstractProcessor {
         }
 
         AutoMappingMetadata metadata = new AutoMappingMetadata();
+        if (autoMapping.source() != null && !autoMapping.source().isEmpty()) {
+            metadata.setSource(autoMapping.source());
+        } else {
+            metadata.setSource(ele.getSimpleName().toString());
+        }
         metadata.setTargetClass(targetClass);
         metadata.setTarget(autoMapping.target());
-        metadata.setSource(ele.getSimpleName().toString());
+        metadata.setDefaultValue(autoMapping.defaultValue());
         metadata.setIgnore(autoMapping.ignore());
         metadata.setExpression(autoMapping.expression());
         metadata.setDateFormat(autoMapping.dateFormat());
