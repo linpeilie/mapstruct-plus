@@ -3,13 +3,18 @@ package io.github.linpeilie;
 import cn.hutool.core.date.DateUtil;
 import io.github.linpeilie.model.Goods;
 import io.github.linpeilie.model.GoodsDto;
+import io.github.linpeilie.model.GoodsVo;
 import io.github.linpeilie.model.MapModelA;
+import io.github.linpeilie.model.Sku;
+import io.github.linpeilie.model.SysMenu;
+import io.github.linpeilie.model.SysMenuVo;
 import io.github.linpeilie.model.User;
 import io.github.linpeilie.model.UserDto;
 import io.github.linpeilie.model.UserVO;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -133,6 +138,33 @@ public class QuickStartTest {
         assert userDto.getBirthday().equals("2023-02-23 02:01:43");
         assert userDto.getAssets().equals("$123.23");
         assert userDto.getMoney().equals("$12543.12");
+    }
+
+    @Test
+    public void treeTest() {
+        SysMenu sysMenu = new SysMenu();
+        sysMenu.setPath("/api");
+
+        final SysMenu role = new SysMenu();
+        role.setPath("/role");
+
+        final SysMenu user = new SysMenu();
+
+        sysMenu.setChildren(Arrays.asList(role, user));
+
+        final SysMenuVo sysMenuVo = converter.convert(sysMenu, SysMenuVo.class);
+        System.out.println(sysMenuVo);
+    }
+
+    @Test
+    public void sourceTest() {
+        Goods goods = new Goods();
+        Sku sku = new Sku();
+        sku.setPrice(134);
+        goods.setSku(sku);
+
+        final GoodsVo goodsVo = converter.convert(goods, GoodsVo.class);
+        System.out.println(goodsVo);
     }
 
 }

@@ -12,6 +12,13 @@ public @interface AutoMapping {
 
     Class<?> targetClass() default DefaultMapping.class;
 
+    /**
+     * 来源，默认取当前字段名称
+     * - 可以是当前类中的属性名
+     * - 也可以是属性名.属性名，例如：address.city.name
+     */
+    String source() default "";
+
     String target();
 
     String dateFormat() default "";
@@ -21,5 +28,10 @@ public @interface AutoMapping {
     String expression() default "";
 
     boolean ignore() default false;
+
+    /**
+     * 默认值
+     */
+    String defaultValue() default "";
 
 }
