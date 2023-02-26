@@ -15,7 +15,7 @@ order: 3
 
 ```xml
 <properties>
-    <mapstruct-plus.version>1.1.1</mapstruct-plus.version>
+    <mapstruct-plus.version>1.1.3</mapstruct-plus.version>
 </properties>
 <dependencies>
     <dependency>
@@ -50,9 +50,9 @@ order: 3
 
 ```groovy
 dependencies {
-    implementation 'io.github.linpeilie:mapstruct-plus:1.1.1'
+    implementation 'io.github.linpeilie:mapstruct-plus:1.1.3'
     
-    annotationProcessor 'io.github.linpeilie：mapstruct-plus-processor:1.1.1'
+    annotationProcessor 'io.github.linpeilie：mapstruct-plus-processor:1.1.3'
 }
 ```
 
@@ -62,7 +62,7 @@ dependencies {
 
 ```xml
 <properties>
-    <mapstruct-plus.version>1.1.1</mapstruct-plus.version>
+    <mapstruct-plus.version>1.1.3</mapstruct-plus.version>
 </properties>
 <dependencies>
     <dependency>
@@ -97,8 +97,8 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'io.github.linpeilie:mapstruct-plus-spring-boot-starter:1.1.1'
+    implementation 'io.github.linpeilie:mapstruct-plus-spring-boot-starter:1.1.3'
     
-    annotationProcessor 'io.github.linpeilie:mapstruct-plus-processor:1.1.1'
+    annotationProcessor 'io.github.linpeilie:mapstruct-plus-processor:1.1.3'
 }
 ```
