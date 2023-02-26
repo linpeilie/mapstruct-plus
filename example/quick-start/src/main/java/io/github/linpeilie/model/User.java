@@ -4,6 +4,7 @@ import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
 import io.github.linpeilie.annotations.AutoMapping;
 import io.github.linpeilie.annotations.AutoMappings;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class User {
     private boolean young;
 
     @AutoMapping(targetClass = UserDto.class, target = "educations", expression = "java(java.lang.String.join(\",\", source.getEducationList()))")
-    private List<String> educationList;
+    private List<String> educationList = new ArrayList<>();
 
     @AutoMappings({
         @AutoMapping(targetClass = UserDto.class, target = "birthday", dateFormat = "yyyy-MM-dd HH:mm:ss"),
