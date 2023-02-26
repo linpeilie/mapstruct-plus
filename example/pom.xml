@@ -12,7 +12,7 @@
         <module>quick-start</module>
         <module>spring-boot</module>
         <module>spring-boot-with-lombok</module>
-        <module>spring-boot-3</module>
+<!--        <module>spring-boot-3</module>-->
     </modules>
 
     <properties>
