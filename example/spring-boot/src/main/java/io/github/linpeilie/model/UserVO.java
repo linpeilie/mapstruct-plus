@@ -19,6 +19,8 @@ public class UserVO {
 
     private String voField;
 
+    private String money;
+
     public String getUsername() {
         return username;
     }
@@ -75,6 +77,14 @@ public class UserVO {
         this.voField = voField;
     }
 
+    public String getMoney() {
+        return money;
+    }
+
+    public void setMoney(final String money) {
+        this.money = money;
+    }
+
     @Override
     public String toString() {
         return "UserVO{" +
@@ -85,6 +95,7 @@ public class UserVO {
                ", birthday=" + birthday +
                ", assets=" + assets +
                ", voField='" + voField + '\'' +
+               ", money='" + money + '\'' +
                '}';
     }
 

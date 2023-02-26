@@ -30,6 +30,9 @@ public class User {
     @AutoMapping(targetClass = UserDto.class, target = "assets", numberFormat = "$0.00")
     private double assets;
 
+    @AutoMapping(target = "money", numberFormat = "$0.00")
+    private double money;
+
     @AutoMappings({
         @AutoMapping(targetClass = UserVO.class, target = "voField")
     })
@@ -91,6 +94,14 @@ public class User {
         this.voField = voField;
     }
 
+    public double getMoney() {
+        return money;
+    }
+
+    public void setMoney(final double money) {
+        this.money = money;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -100,6 +111,7 @@ public class User {
                ", educationList=" + educationList +
                ", birthday=" + birthday +
                ", assets=" + assets +
+               ", money=" + money +
                ", voField='" + voField + '\'' +
                '}';
     }

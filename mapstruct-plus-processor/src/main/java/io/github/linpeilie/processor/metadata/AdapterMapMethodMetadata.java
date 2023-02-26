@@ -18,10 +18,10 @@ public class AdapterMapMethodMetadata extends AbstractAdapterMethodMetadata {
         super(source, mapper);
         this.target = target;
         if (objectConverter) {
-            methodName = "objectTo" + source.simpleName();
+            methodName = "objectTo" + target.simpleName();
             mapperMethodName = "convertByObj";
         } else {
-            methodName = "mapTo" + source.simpleName();
+            methodName = "mapTo" + target.simpleName();
             mapperMethodName = "convert";
         }
     }

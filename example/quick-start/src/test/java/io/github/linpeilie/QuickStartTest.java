@@ -107,6 +107,7 @@ public class QuickStartTest {
         user.setBirthday(DateUtil.parseDateTime("2023-02-23 02:01:43"));
         user.setAssets(123.234);
         user.setVoField("vofieldfff");
+        user.setMoney(12543.123);
 
         final UserVO userVo = converter.convert(user, UserVO.class);
         System.out.println(userVo);
@@ -116,6 +117,7 @@ public class QuickStartTest {
         assert userVo.getBirthday() == null;
         assert user.getAssets() == userVo.getAssets();
         assert user.getVoField().equals(userVo.getVoField());
+        assert userVo.getMoney().equals("$12543.12");
 
         final UserDto userDto = converter.convert(user, UserDto.class);
         System.out.println(userDto);
@@ -126,6 +128,7 @@ public class QuickStartTest {
         assert userDto.getEducations().equals("1,2,3");
         assert userDto.getBirthday().equals("2023-02-23 02:01:43");
         assert userDto.getAssets().equals("$123.23");
+        assert userDto.getMoney().equals("$12543.12");
     }
 
 }

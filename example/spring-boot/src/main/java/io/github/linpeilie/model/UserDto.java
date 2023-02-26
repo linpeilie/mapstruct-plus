@@ -20,6 +20,8 @@ public class UserDto {
 
     private String assets;
 
+    private String money;
+
     public String getUsername() {
         return username;
     }
@@ -68,6 +70,14 @@ public class UserDto {
         this.assets = assets;
     }
 
+    public String getMoney() {
+        return money;
+    }
+
+    public void setMoney(final String money) {
+        this.money = money;
+    }
+
     @Override
     public String toString() {
         return "UserDto{" +
@@ -77,6 +87,7 @@ public class UserDto {
                ", educations='" + educations + '\'' +
                ", birthday='" + birthday + '\'' +
                ", assets='" + assets + '\'' +
+               ", money='" + money + '\'' +
                '}';
     }
 }
