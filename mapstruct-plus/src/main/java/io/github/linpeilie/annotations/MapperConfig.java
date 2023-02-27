@@ -18,6 +18,7 @@ public @interface MapperConfig {
 
     /**
      * 所生成的 Mapper 接口的包
+     * @return Mapper 接口自动生成后的包名，如果为空，则默认生成在要转换的类同包下
      */
     String mapperPackage() default "";
 

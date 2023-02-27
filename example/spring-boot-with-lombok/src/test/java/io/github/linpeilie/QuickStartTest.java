@@ -1,18 +1,25 @@
 package io.github.linpeilie;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Assert;
 import io.github.linpeilie.model.Goods;
 import io.github.linpeilie.model.GoodsDto;
 import io.github.linpeilie.model.GoodsVo;
 import io.github.linpeilie.model.MapModelA;
+import io.github.linpeilie.model.Order;
+import io.github.linpeilie.model.OrderVO;
 import io.github.linpeilie.model.Sku;
 import io.github.linpeilie.model.SysMenu;
 import io.github.linpeilie.model.SysMenuVo;
 import io.github.linpeilie.model.User;
 import io.github.linpeilie.model.UserDto;
 import io.github.linpeilie.model.UserVO;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -42,9 +49,9 @@ public class QuickStartTest {
         mapModel1.put("mapModelB", mapModel2);
 
         final MapModelA mapModelA = converter.convert(mapModel1, MapModelA.class);
-        System.out.println(mapModelA);  // MapModelA(str=1jkf1ijkj3f, i1=111, l2=11231, mapModelB=MapModelB(date=2023-02-23 01:03:23))
+        System.out.println(
+            mapModelA);  // MapModelA(str=1jkf1ijkj3f, i1=111, l2=11231, mapModelB=MapModelB(date=2023-02-23 01:03:23))
     }
-
 
     @Test
     public void ueseTest() {
@@ -165,6 +172,34 @@ public class QuickStartTest {
 
         final GoodsVo goodsVo = converter.convert(goods, GoodsVo.class);
         System.out.println(goodsVo);
+    }
+
+    @Test
+    public void reverseMappingTest() {
+        Order order = new Order();
+        order.setOrderId("394bcab38052404ab404c791cb975596");
+        order.setGoods(Arrays.asList("Apple", "Phone"));
+        order.setOrderPrice(BigDecimal.valueOf(123.3421));
+        order.setGoodsNum(32);
+        order.setOrderTime(LocalDateTime.of(2023, 1, 3, 12, 23, 1));
+        order.setCreateTime(DateUtil.parseDateTime("2023-01-03 11:06:01"));
+        order.setDate("2022-03-01");
+        User user = new User();
+        user.setUsername("Jack");
+        order.setUser(user);
+
+        OrderVO orderVO = converter.convert(order, OrderVO.class);
+        System.out.println(orderVO);
+
+        Assert.equals(orderVO.getOrderId(), "394bcab38052404ab404c791cb975596");
+        Assert.equals(orderVO.getGoods(), "Apple,Phone");
+        Assert.equals(orderVO.getOrderPrice(), "$123.34");
+        Assert.isNull(orderVO.getGoodsNum());
+        Assert.equals(orderVO.getOrderTime(), "2023-01-03 12:23:01");
+        Assert.equals(orderVO.getCreateTime(), "2023_01_03 110601");
+        Assert.equals(orderVO.getOrderDate(), LocalDate.parse("2022-03-01", DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        Assert.equals(orderVO.getUser(), "Jack");
+        Assert.equals(orderVO.getPayStatus(), "True");
     }
 
 }

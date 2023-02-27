@@ -9,4 +9,8 @@ public class StringToListStringConverter {
         return Arrays.asList(str.split(","));
     }
 
+    public static String listStringToString(List<String> list) {
+        return String.join(",", list);
+    }
+
 }

@@ -38,10 +38,6 @@ public class MapObjectConvert {
         return Convert.toDouble(obj);
     }
 
-    public static Number objToNumber(Object obj) {
-        return Convert.toNumber(obj);
-    }
-
     public static Boolean objToBoolean(Object obj) {
         return Convert.toBool(obj);
     }

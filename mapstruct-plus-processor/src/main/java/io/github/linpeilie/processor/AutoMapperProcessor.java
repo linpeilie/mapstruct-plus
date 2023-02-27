@@ -1,5 +1,7 @@
 package io.github.linpeilie.processor;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.squareup.javapoet.ClassName;
 import io.github.linpeilie.annotations.AutoMapMapper;
 import io.github.linpeilie.annotations.AutoMapper;
@@ -8,6 +10,8 @@ import io.github.linpeilie.annotations.AutoMapping;
 import io.github.linpeilie.annotations.AutoMappings;
 import io.github.linpeilie.annotations.ComponentModelConfig;
 import io.github.linpeilie.annotations.MapperConfig;
+import io.github.linpeilie.annotations.ReverseAutoMapping;
+import io.github.linpeilie.annotations.ReverseAutoMappings;
 import io.github.linpeilie.processor.generator.AutoMapperGenerator;
 import io.github.linpeilie.processor.generator.DefaultAdapterMapperGenerator;
 import io.github.linpeilie.processor.generator.MapperConfigGenerator;
@@ -43,6 +47,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.ReportingPolicy;
 
 import static io.github.linpeilie.processor.Constants.AUTO_MAPPERS_ANNOTATION;
 import static io.github.linpeilie.processor.Constants.AUTO_MAPPER_ANNOTATION;
@@ -68,6 +73,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
     private final Map<String, AbstractAdapterMethodMetadata> mapMethodMap = new HashMap<>();
 
     private final List<AutoMapperMetadata> mapperList = new ArrayList<>();
+
+    private final Set<String> mapperSet = new HashSet<>();
 
     public AutoMapperProcessor() {
         this.mapperGenerator = new AutoMapperGenerator();
@@ -216,19 +223,17 @@ public class AutoMapperProcessor extends AbstractProcessor {
     }
 
     private void generateMapper() {
-        final Set<String> mapperSet = new HashSet<>();
-
-        // 去重
-        mapperList.removeIf(mapper -> !mapperSet.add(mapper.mapperName()));
-
         List<AutoMapperMetadata> reverseMapperMetadataList = new ArrayList<>();
 
         mapperList.forEach(autoMapperMetadata -> {
             if (!autoMapperMetadata.isReverseConvertGenerate()) {
                 return;
             }
+            boolean defineReverseMapping = CollectionUtil.isNotEmpty(autoMapperMetadata.getFieldReverseMappingList());
             final AutoMapperMetadata reverseMapperMetadata = reverseMapper(autoMapperMetadata);
-            if (!mapperSet.add(reverseMapperMetadata.mapperName())) {
+            if (defineReverseMapping) {
+                addMapper(reverseMapperMetadata);
+            } else if (!mapperSet.add(reverseMapperMetadata.mapperName())) {
                 return;
             }
             reverseMapperMetadataList.add(reverseMapperMetadata);
@@ -237,6 +242,9 @@ public class AutoMapperProcessor extends AbstractProcessor {
         mapperList.addAll(reverseMapperMetadataList);
 
         mapperList.forEach(metadata -> {
+            if (!metadata.isConvertGenerate()) {
+                return;
+            }
             this.writeAutoMapperClassFile(metadata);
             addAdapterMethod(metadata.getSourceClassName(), metadata.getTargetClassName(), metadata.mapperClass());
         });
@@ -248,23 +256,25 @@ public class AutoMapperProcessor extends AbstractProcessor {
     }
 
     private AutoMapperMetadata reverseMapper(AutoMapperMetadata autoMapperMetadata) {
-        AutoMapperMetadata reverseMapperMetadata = new AutoMapperMetadata();
-        reverseMapperMetadata.setSourceClassName(autoMapperMetadata.getTargetClassName());
-        reverseMapperMetadata.setTargetClassName(autoMapperMetadata.getSourceClassName());
-        reverseMapperMetadata.setSuperClass(autoMapperMetadata.getSuperClass());
-        reverseMapperMetadata.setSuperGenerics(
-            new ClassName[] {reverseMapperMetadata.getSourceClassName(), reverseMapperMetadata.getTargetClassName()});
+        AutoMapperMetadata reverseMapperMetadata = initAutoMapperMetadata(
+            autoMapperMetadata.getTargetClassName(), autoMapperMetadata.getSourceClassName());
+        reverseMapperMetadata.setConvertGenerate(autoMapperMetadata.isReverseConvertGenerate());
+        reverseMapperMetadata.setUsesClassNameList(autoMapperMetadata.getUsesClassNameList());
         reverseMapperMetadata.setMapstructConfigClass(
             ClassName.get(AutoMapperProperties.getConfigPackage(), AutoMapperProperties.getConfigClassName()));
-        // 需要继承的属性
-        final List<AutoMappingMetadata> fieldMetadataList =
-            autoMapperMetadata.getFieldMappingList().stream().map(fieldMapping -> {
-                final AutoMappingMetadata autoMappingMetadata = new AutoMappingMetadata();
-                autoMappingMetadata.setSource(fieldMapping.getTarget());
-                autoMappingMetadata.setTarget(fieldMapping.getSource());
-                return autoMappingMetadata;
-            }).collect(Collectors.toList());
-        reverseMapperMetadata.setFieldMappingList(fieldMetadataList);
+        if (CollectionUtil.isNotEmpty(autoMapperMetadata.getFieldReverseMappingList())) {
+            reverseMapperMetadata.setFieldMappingList(autoMapperMetadata.getFieldReverseMappingList());
+        } else {
+            // 需要继承的属性
+            final List<AutoMappingMetadata> fieldMetadataList =
+                autoMapperMetadata.getFieldMappingList().stream().map(fieldMapping -> {
+                    final AutoMappingMetadata autoMappingMetadata = new AutoMappingMetadata();
+                    autoMappingMetadata.setSource(fieldMapping.getTarget());
+                    autoMappingMetadata.setTarget(fieldMapping.getSource());
+                    return autoMappingMetadata;
+                }).collect(Collectors.toList());
+            reverseMapperMetadata.setFieldMappingList(fieldMetadataList);
+        }
         return reverseMapperMetadata;
     }
 
@@ -293,12 +303,32 @@ public class AutoMapperProcessor extends AbstractProcessor {
         mapMethodMap.put(adapterMapMethodMetadata.getMethodName(), adapterMapMethodMetadata);
     }
 
+    private AutoMapperMetadata initAutoMapperMetadata(ClassName source, ClassName target) {
+        AutoMapperMetadata metadata = new AutoMapperMetadata();
+
+        metadata.setSourceClassName(source);
+        metadata.setTargetClassName(target);
+        metadata.setSuperClass(ClassName.get("io.github.linpeilie", "BaseMapper"));
+        metadata.setSuperGenerics(new ClassName[] {source, target});
+        metadata.setMapstructConfigClass(
+            ClassName.get(AutoMapperProperties.getConfigPackage(), AutoMapperProperties.getConfigClassName()));
+        return metadata;
+    }
+
     private List<AutoMapperMetadata> buildAutoMapperMetadataByAutoMappers(final Element ele) {
         final AutoMappers autoMappers = ele.getAnnotation(AutoMappers.class);
         if (autoMappers == null) {
             return null;
         }
+        Set<String> targetClassNames = new HashSet<>();
         return Arrays.stream(autoMappers.value())
+            .filter(autoMapper -> {
+                ClassName className = transToClassName(autoMapper::target);
+                if (className == null) {
+                    return false;
+                }
+                return targetClassNames.add(className.reflectionName());
+            })
             .map(autoMapper -> buildAutoMapperMetadata(autoMapper, ele))
             .collect(Collectors.toList());
     }
@@ -311,6 +341,31 @@ public class AutoMapperProcessor extends AbstractProcessor {
         return buildAutoMapperMetadata(autoMapperAnnotation, ele);
     }
 
+    private boolean hasReverseAutoMapping(Element ele) {
+        TypeElement typeElement = (TypeElement) ele;
+        if (!typeElement.getKind().isClass()) {
+            return false;
+        }
+        return typeElement.getEnclosedElements()
+            .stream().anyMatch(e -> {
+                if (e.getKind() != ElementKind.FIELD) {
+                    return false;
+                }
+                return e.getAnnotation(ReverseAutoMapping.class) != null
+                       || e.getAnnotation(ReverseAutoMappings.class) != null;
+            });
+    }
+
+    private boolean isTargetFieldMapping(ClassName target, AutoMappingMetadata mappingMetadata) {
+        if (MAPPING_DEFAULT_TARGET.reflectionName().contentEquals(mappingMetadata.getTargetClass().reflectionName())) {
+            return true;
+        }
+        if (target.reflectionName().contentEquals(mappingMetadata.getTargetClass().reflectionName())) {
+            return true;
+        }
+        return false;
+    }
+
     private AutoMapperMetadata buildAutoMapperMetadata(final AutoMapper autoMapper, final Element ele) {
         ClassName source = ClassName.get((TypeElement) ele);
         ClassName target = transToClassName(autoMapper::target);
@@ -319,29 +374,83 @@ public class AutoMapperProcessor extends AbstractProcessor {
         }
         List<ClassName> uses = transToClassNameList(autoMapper::uses);
         List<AutoMappingMetadata> autoMappingMetadataList = buildFieldMappingMetadata((TypeElement) ele);
-        autoMappingMetadataList.removeIf(mappingMetadata -> {
-            if (MAPPING_DEFAULT_TARGET.reflectionName()
-                .contentEquals(mappingMetadata.getTargetClass().reflectionName())) {
-                return false;
-            }
-            if (target.reflectionName().contentEquals(mappingMetadata.getTargetClass().reflectionName())) {
-                return false;
-            }
-            return true;
-        });
+        autoMappingMetadataList.removeIf(mappingMetadata -> !isTargetFieldMapping(target, mappingMetadata));
 
-        AutoMapperMetadata metadata = new AutoMapperMetadata();
+        List<AutoMappingMetadata> reverseMappingMetadataList = buildFieldReverseMappingMetadata((TypeElement) ele);
+        reverseMappingMetadataList.removeIf(mappingMetadata -> !isTargetFieldMapping(target, mappingMetadata));
 
-        metadata.setSourceClassName(source);
-        metadata.setTargetClassName(target);
+        AutoMapperMetadata metadata = initAutoMapperMetadata(source, target);
+
         metadata.setUsesClassNameList(uses);
         metadata.setFieldMappingList(autoMappingMetadataList);
-        metadata.setSuperClass(ClassName.get("io.github.linpeilie", "BaseMapper"));
-        metadata.setSuperGenerics(new ClassName[] {source, target});
-        metadata.setMapstructConfigClass(
-            ClassName.get(AutoMapperProperties.getConfigPackage(), AutoMapperProperties.getConfigClassName()));
+        metadata.setFieldReverseMappingList(reverseMappingMetadataList);
+        metadata.setConvertGenerate(autoMapper.convertGenerate());
         metadata.setReverseConvertGenerate(autoMapper.reverseConvertGenerate());
+
+        addMapper(metadata);
+
         return metadata;
+    }
+
+    private List<AutoMappingMetadata> buildFieldReverseMappingMetadata(final TypeElement ele) {
+        List<AutoMappingMetadata> list = new ArrayList<>();
+        if (!ele.getKind().isClass()) {
+            return list;
+        }
+        for (Element field : ele.getEnclosedElements()) {
+            if (field.getKind() != ElementKind.FIELD) {
+                continue;
+            }
+            ReverseAutoMapping reverseAutoMapping = field.getAnnotation(ReverseAutoMapping.class);
+            if (reverseAutoMapping != null) {
+                list.add(buildAutoMappingMetadata(reverseAutoMapping, field, ele));
+            }
+            ReverseAutoMappings reverseAutoMappings = field.getAnnotation(ReverseAutoMappings.class);
+            if (reverseAutoMappings != null) {
+                for (ReverseAutoMapping mapping : reverseAutoMappings.value()) {
+                    list.add(buildAutoMappingMetadata(mapping, field, ele));
+                }
+            }
+        }
+        list.removeIf(Objects::isNull);
+        return list;
+    }
+
+    private AutoMappingMetadata buildAutoMappingMetadata(ReverseAutoMapping reverseAutoMapping,
+                                                         Element ele,
+                                                         TypeElement type) {
+        ClassName targetClass = transToClassName(reverseAutoMapping::targetClass);
+        if (targetClass == null) {
+            return null;
+        }
+
+        AutoMappingMetadata metadata = new AutoMappingMetadata();
+        if (StrUtil.isNotEmpty(reverseAutoMapping.source())) {
+            metadata.setSource(reverseAutoMapping.source());
+        } else {
+            metadata.setSource(ele.getSimpleName().toString());
+        }
+        if (StrUtil.isNotEmpty(reverseAutoMapping.target())) {
+            metadata.setTarget(reverseAutoMapping.target());
+        } else {
+            metadata.setTarget(ele.getSimpleName().toString());
+        }
+        metadata.setTargetClass(targetClass);
+        metadata.setDefaultValue(reverseAutoMapping.defaultValue());
+        metadata.setIgnore(reverseAutoMapping.ignore());
+        metadata.setExpression(reverseAutoMapping.expression());
+        metadata.setDateFormat(reverseAutoMapping.dateFormat());
+        metadata.setNumberFormat(reverseAutoMapping.numberFormat());
+        return metadata;
+    }
+
+    private void addMapper(AutoMapperMetadata metadata) {
+        if (!mapperSet.add(metadata.mapperName())) {
+            throw new DuplicateMapperException("An exception occurred to generate " + metadata.mapperName()
+                                               + ", check the mapping configuration for "
+                                               + metadata.getSourceClassName().reflectionName()
+                                               + " or " + metadata.getTargetClassName().reflectionName());
+        }
     }
 
     private List<AutoMappingMetadata> buildFieldMappingMetadata(final TypeElement autoMapperEle) {
@@ -378,13 +487,17 @@ public class AutoMapperProcessor extends AbstractProcessor {
         }
 
         AutoMappingMetadata metadata = new AutoMappingMetadata();
-        if (autoMapping.source() != null && !autoMapping.source().isEmpty()) {
+        if (StrUtil.isNotEmpty(autoMapping.source())) {
             metadata.setSource(autoMapping.source());
         } else {
             metadata.setSource(ele.getSimpleName().toString());
         }
+        if (StrUtil.isNotEmpty(autoMapping.target())) {
+            metadata.setTarget(autoMapping.target());
+        } else {
+            metadata.setTarget(ele.getSimpleName().toString());
+        }
         metadata.setTargetClass(targetClass);
-        metadata.setTarget(autoMapping.target());
         metadata.setDefaultValue(autoMapping.defaultValue());
         metadata.setIgnore(autoMapping.ignore());
         metadata.setExpression(autoMapping.expression());
