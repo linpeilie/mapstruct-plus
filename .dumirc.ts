@@ -10,5 +10,5 @@ export default defineConfig({
   },
   base: '/',
   publicPath: '/',
-  sitemap: { hostname: 'https://d.umijs.org' }
+  sitemap: { hostname: 'https://mapstruct.plus' }
 });
