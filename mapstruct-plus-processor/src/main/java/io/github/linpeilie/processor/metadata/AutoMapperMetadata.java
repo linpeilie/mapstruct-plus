@@ -1,11 +1,11 @@
 package io.github.linpeilie.processor.metadata;
 
 import com.squareup.javapoet.ClassName;
+import io.github.linpeilie.processor.AutoMapperProperties;
 import java.util.List;
+import org.mapstruct.ReportingPolicy;
 
 public class AutoMapperMetadata extends AbstractMapperMetadata {
-
-
 
     private ClassName targetClassName;
 
@@ -13,11 +13,15 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
 
     private List<AutoMappingMetadata> fieldMappingList;
 
+    private List<AutoMappingMetadata> fieldReverseMappingList;
+
     private ClassName superClass;
 
     private ClassName[] superGenerics;
 
     private ClassName mapstructConfigClass;
+
+    private boolean convertGenerate;
 
     private boolean reverseConvertGenerate;
 
@@ -82,5 +86,21 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
 
     public void setReverseConvertGenerate(final boolean reverseConvertGenerate) {
         this.reverseConvertGenerate = reverseConvertGenerate;
+    }
+
+    public List<AutoMappingMetadata> getFieldReverseMappingList() {
+        return fieldReverseMappingList;
+    }
+
+    public void setFieldReverseMappingList(final List<AutoMappingMetadata> fieldReverseMappingList) {
+        this.fieldReverseMappingList = fieldReverseMappingList;
+    }
+
+    public boolean isConvertGenerate() {
+        return convertGenerate;
+    }
+
+    public void setConvertGenerate(final boolean convertGenerate) {
+        this.convertGenerate = convertGenerate;
     }
 }

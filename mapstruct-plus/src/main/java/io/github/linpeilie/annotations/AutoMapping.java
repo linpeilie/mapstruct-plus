@@ -16,10 +16,11 @@ public @interface AutoMapping {
      * 来源，默认取当前字段名称
      * - 可以是当前类中的属性名
      * - 也可以是属性名.属性名，例如：address.city.name
+     * @return 当前类中的属性
      */
     String source() default "";
 
-    String target();
+    String target() default "";
 
     String dateFormat() default "";
 
@@ -31,6 +32,7 @@ public @interface AutoMapping {
 
     /**
      * 默认值
+     * @return 当源属性为null时，设置的默认值
      */
     String defaultValue() default "";
 

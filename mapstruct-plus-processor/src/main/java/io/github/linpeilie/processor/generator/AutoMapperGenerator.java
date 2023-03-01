@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.lang.model.element.Modifier;
 import org.apache.commons.lang3.StringUtils;
+import org.mapstruct.ReportingPolicy;
 
 import static io.github.linpeilie.processor.Constants.*;
 
@@ -76,13 +77,16 @@ public class AutoMapperGenerator {
                 .addMember("target", CodeBlock.builder().add("$S", autoMappingMetadata.getTarget()).build())
                 .addMember("ignore", CodeBlock.builder().add(String.valueOf(autoMappingMetadata.isIgnore())).build());
             if (StrUtil.isNotEmpty(autoMappingMetadata.getDateFormat())) {
-                builder.addMember("dateFormat", CodeBlock.builder().add("$S", autoMappingMetadata.getDateFormat()).build());
+                builder.addMember("dateFormat",
+                    CodeBlock.builder().add("$S", autoMappingMetadata.getDateFormat()).build());
             }
             if (StrUtil.isNotEmpty(autoMappingMetadata.getNumberFormat())) {
-                builder.addMember("numberFormat", CodeBlock.builder().add("$S", autoMappingMetadata.getNumberFormat()).build());
+                builder.addMember("numberFormat",
+                    CodeBlock.builder().add("$S", autoMappingMetadata.getNumberFormat()).build());
             }
             if (StrUtil.isNotEmpty(autoMappingMetadata.getDefaultValue())) {
-                builder.addMember("defaultValue", CodeBlock.builder().add("$S", autoMappingMetadata.getDefaultValue()).build());
+                builder.addMember("defaultValue",
+                    CodeBlock.builder().add("$S", autoMappingMetadata.getDefaultValue()).build());
             }
             if (StringUtils.isNoneEmpty(autoMappingMetadata.getExpression())) {
                 builder.addMember("expression",

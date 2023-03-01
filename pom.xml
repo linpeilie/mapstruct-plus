@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
     <version>${mapstruct-plus.version}</version>
     <name>Mapstruct Plus</name>
-    <description>mapstruct增加工具包</description>
+    <description>mapstruct增强工具包</description>
     <modules>
         <module>mapstruct-plus</module>
         <module>mapstruct-plus-spring-boot-starter</module>
@@ -17,11 +17,11 @@
     </modules>
 
     <properties>
-        <mapstruct-plus.version>1.1.5</mapstruct-plus.version>
+        <mapstruct-plus.version>1.1.6</mapstruct-plus.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mapstruct.version>1.5.1.Final</mapstruct.version>
+        <mapstruct.version>1.5.3.Final</mapstruct.version>
         <hutool.version>5.8.9</hutool.version>
         <projectUrl>https://github.com/linpeilie/mapstruct-plus.git</projectUrl>
     </properties>

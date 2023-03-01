@@ -11,6 +11,7 @@ import lombok.Data;
 @Data
 @AutoMappers({
     @AutoMapper(target = UserDto.class),
+    @AutoMapper(target = UserDto.class),
     @AutoMapper(target = UserVO.class)
 })
 public class User {
@@ -24,15 +25,15 @@ public class User {
     private List<String> educationList;
 
     @AutoMappings({
-        @AutoMapping(targetClass = UserDto.class, target = "birthday", dateFormat = "yyyy-MM-dd HH:mm:ss"),
-        @AutoMapping(targetClass = UserVO.class, target = "birthday", ignore = true)
+        @AutoMapping(targetClass = UserDto.class, dateFormat = "yyyy-MM-dd HH:mm:ss"),
+        @AutoMapping(targetClass = UserVO.class, ignore = true)
     })
     private Date birthday;
 
-    @AutoMapping(targetClass = UserDto.class, target = "assets", numberFormat = "$0.00")
+    @AutoMapping(targetClass = UserDto.class, numberFormat = "$0.00")
     private double assets;
 
-    @AutoMapping(target = "money", numberFormat = "$0.00")
+    @AutoMapping(numberFormat = "$0.00")
     private double money;
 
     @AutoMappings({
