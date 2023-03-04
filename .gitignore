@@ -41,8 +41,12 @@ build/
 
 node_modules
 
-package-lock.json
-
 dist
 .dumi/tmp
 .dumi/tmp-production
+
+
+node_modules/
+docs/.vuepress/.cache/
+docs/.vuepress/.temp/
+docs/.vuepress/dist/

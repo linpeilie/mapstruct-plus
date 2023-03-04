@@ -1,9 +1,13 @@
 ---
 title: 快速开始
-order: 2
+icon: creative
+order: 3
+category:
+- 介绍
+tag:
+- 快速开始
+description: MapstructPlus快速开始教程
 ---
-
-# 快速开始
 
 下面演示如何使用 MapStruct Plus 来映射两个对象。
 
@@ -41,7 +45,7 @@ public class User {
 
 ```xml
 <properties>
-    <mapstruct-plus.version>1.1.3</mapstruct-plus.version>
+    <mapstruct-plus.version>最新版本</mapstruct-plus.version>
 </properties>
 <dependencies>
     <dependency>
@@ -137,7 +141,7 @@ public class QuickStart {
 
 ```xml
 <properties>
-    <mapstruct-plus.version>1.1.3</mapstruct-plus.version>
+    <mapstruct-plus.version>最新版本</mapstruct-plus.version>
 </properties>
 <dependencies>
     <dependency>

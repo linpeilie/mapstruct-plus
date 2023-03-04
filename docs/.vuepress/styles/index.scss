@@ -1,0 +1,8 @@
+// place your custom styles here
+@media (min-width: 1440px) {
+  .feature-item {
+    flex-basis: calc(33% - 3rem);
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+}
