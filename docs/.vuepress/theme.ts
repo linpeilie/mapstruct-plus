@@ -16,9 +16,9 @@ export default hopeTheme({
 
   // logo: "/logo.svg",
 
-  repo: "linpeilie/mapstruct",
+  repo: "linpeilie/mapstruct-plus",
   docsDir: 'docs',
-  docsBranch: 'docs',
+  docsBranch: 'main',
 
   locales: {
     "/": {
