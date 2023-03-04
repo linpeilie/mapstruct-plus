@@ -41,8 +41,6 @@ build/
 
 node_modules
 
-package-lock.json
-
 dist
 .dumi/tmp
 .dumi/tmp-production
