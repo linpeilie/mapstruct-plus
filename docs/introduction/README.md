@@ -1,10 +1,13 @@
 ---
-nav: 指南
 title: 简介
-order: -1
+icon: creative
+order: 1
+category:
+- 介绍
+tag:
+- 简介
+description: MapstructPlus简介，MapstructPlus是什么
 ---
-
-# 简介
 
 > 首先，先了解一下 Mapstruct：
 > [Mapstruct](https://mapstruct.org) 是一个代码生成器，通过定义类转换的接口，自动实现属性转换的具体逻辑。主要为了简化 Java 类型之间转换的实现。
@@ -15,13 +18,12 @@ Mapstruct Plus 是 Mapstruct 的增强工具，在 Mapstruct 的基础上，实�
 
 Mapstruct Plus 内嵌 Mapstruct，和 Mapstruct 完全兼容，如果之前已经使用 Mapstruct，可以无缝替换依赖。
 
-# 代码托管
+## 代码托管
 
 - [Gitee](https://gitee.com/linpeilie/mapstruct-plus)
 - [Github](https://github.com/linpeilie/mapstruct-plus)
 
-# 联系我
+## 参与贡献
 
-> vx : Clue8a796d01
-
-<img src="https://raw.githubusercontent.com/linpeilie/mapstruct-plus/main/assets/contact-me.jpeg" alt="联系我" width="364" height="497" />
+- 贡献代码：欢迎提交 Issue 或 Pull Requests
+- 维护文档：项目目录下的 docs 目录，欢迎参与翻译与修订
