@@ -31,8 +31,7 @@ var _hmt = _hmt || [];
 
     plugins: [
         shikiPlugin({
-            // theme: 'github-dark-dimmed'
-            theme: 'material-theme-darker'
+            theme: 'one-dark-pro'
         }),
         searchPlugin({
             isSearchable: (page) => page.path !== '/'
