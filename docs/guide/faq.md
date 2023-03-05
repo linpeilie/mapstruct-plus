@@ -1,6 +1,5 @@
 ---
 title: 常见问题
-icon: creative
 order: 5
 category:
 - 指南

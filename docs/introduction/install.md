@@ -1,6 +1,5 @@
 ---
 title: 安装
-icon: creative
 order: 2
 category:
 - 介绍 

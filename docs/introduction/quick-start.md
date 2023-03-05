@@ -1,6 +1,5 @@
 ---
 title: 快速开始
-icon: creative
 order: 3
 category:
 - 介绍

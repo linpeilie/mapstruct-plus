@@ -1,6 +1,5 @@
 ---
 title: 简介
-icon: creative
 order: 1
 category:
 - 介绍

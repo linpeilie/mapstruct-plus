@@ -1,6 +1,5 @@
 ---
 title: 两个类之间的转换
-icon: creative
 order: 1
 category:
 - 指南

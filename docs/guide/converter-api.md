@@ -1,6 +1,5 @@
 ---
 title: 类转换 API
-icon: creative
 order: 4
 category:
 - 指南

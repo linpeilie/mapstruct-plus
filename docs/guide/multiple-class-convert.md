@@ -1,6 +1,5 @@
 ---
 title: 一个类与多个类之间转换
-icon: creative
 order: 3
 category:
 - 指南

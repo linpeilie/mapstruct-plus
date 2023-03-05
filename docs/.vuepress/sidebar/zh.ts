@@ -10,7 +10,6 @@ export const zhSidebar = sidebar({
         },
         {
             text: "指南",
-            icon: "note",
             prefix: "guide/",
             children: "structure",
         },

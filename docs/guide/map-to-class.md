@@ -1,6 +1,5 @@
 ---
 title: Map 转对象
-icon: creative
 order: 2
 category:
 - 指南

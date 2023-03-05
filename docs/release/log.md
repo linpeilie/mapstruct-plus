@@ -1,6 +1,5 @@
 ---
 title: 更新日志
-icon: creative
 order: 1
 category:
 - 更新日志
