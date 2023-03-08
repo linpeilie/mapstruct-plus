@@ -1,6 +1,7 @@
 import {defineUserConfig} from "vuepress";
 import {shikiPlugin} from "@vuepress/plugin-shiki";
 import {searchPlugin} from "@vuepress/plugin-search";
+import {googleAnalyticsPlugin} from "@vuepress/plugin-google-analytics"
 import theme from "./theme.js";
 
 export default defineUserConfig({
@@ -32,6 +33,9 @@ export default defineUserConfig({
         }),
         searchPlugin({
             isSearchable: (page) => page.path !== '/'
+        }),
+        googleAnalyticsPlugin({
+            id: 'G-SXEZVNR8FZ'
         })
     ]
 });
