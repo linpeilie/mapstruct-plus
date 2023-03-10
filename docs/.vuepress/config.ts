@@ -17,7 +17,7 @@ export default defineUserConfig({
               s.parentNode.insertBefore(hm, s);
             })();
         `],
-        ['meta', {name: 'baidu-site-verification', content: 'codeva-0h8mfHFGqT'}]
+        ['meta', {name: 'baidu-site-verification', content: 'codeva-OceTRzMGJ2'}]
     ],
 
     locales: {
