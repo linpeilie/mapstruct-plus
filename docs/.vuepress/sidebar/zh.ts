@@ -1,6 +1,8 @@
 import {sidebar} from "vuepress-theme-hope";
 
 export const zhSidebar = sidebar({
+    "/mapstruct/": 'structure',
+    "/release": 'structure',
     "/": [
         {
             text: '介绍',
@@ -12,11 +14,6 @@ export const zhSidebar = sidebar({
             text: "指南",
             prefix: "guide/",
             children: "structure",
-        },
-        {
-            text: '更新日志',
-            prefix: 'release/',
-            children: 'structure'
         }
     ],
 });
