@@ -5,7 +5,7 @@ category:
 - 介绍
 tag:
 - 简介
-description: MapstructPlus简介，MapstructPlus是什么
+description: MapStructPlus MapstructPlus简介，MapstructPlus是什么
 ---
 
 > 首先，先了解一下 Mapstruct：

@@ -3,7 +3,7 @@ title: 类转换 API
 order: 4
 category:
 - 指南
-description: Mapstruct Converter接口API
+description: Mapstruct MapStructPlus Converter Converter接口API converter api 
 ---
 
 ## Converter

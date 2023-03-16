@@ -2,6 +2,7 @@
 home: true
 icon: home
 title: 主页
+description: MapStructPlus MapStruct Home 首页
 heroText: MapstructPlus
 tagline: 可能是最简单最强大的Java Bean转换工具
 actions:

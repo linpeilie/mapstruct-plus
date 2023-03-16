@@ -3,7 +3,7 @@ title: 两个类之间的转换
 order: 1
 category:
 - 指南
-description: MapstructPlus两个类之间的转换及配置
+description: MapStructPlus 两个类之间的转换及配置 class convert
 ---
 
 ## 简单转换

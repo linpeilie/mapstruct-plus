@@ -3,7 +3,7 @@ title: Map 转对象
 order: 2
 category:
 - 指南
-description: MapstructPlus Map转为对象
+description: MapStructPlus Map转为对象 map convert to class
 ---
 
 MapstructPlus 提供了更加强大的 `Map<String, Object>` 转对象的功能。

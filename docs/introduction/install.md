@@ -5,7 +5,7 @@ category:
 - 介绍 
 tag:
 - 安装
-description: MapstructPlus依赖安装
+description: MapStructPlus 依赖安装 install
 ---
 
 ::: warning

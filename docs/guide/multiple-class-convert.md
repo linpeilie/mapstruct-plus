@@ -3,7 +3,7 @@ title: 一个类与多个类之间转换
 order: 3
 category:
 - 指南
-description: MapstructPlus一个类与多个类之间转换
+description: MapStructPlus 一个类与多个类之间转换 multiple class convert
 ---
 
 MapstructPlus 除了支持一个类与单个目标类型进行转换，还支持一个类与多个目标类型进行转换。

@@ -3,6 +3,7 @@ title: 更新日志
 order: 1
 category:
 - 更新日志
+description: MapStructPlus release log
 ---
 
 ## 1.1.6

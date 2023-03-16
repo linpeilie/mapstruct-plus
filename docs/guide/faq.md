@@ -3,7 +3,7 @@ title: 常见问题
 order: 5
 category:
 - 指南
-description: MapstructPlus常见问题
+description: MapStructPlus MapStructPlus常见问题 faq
 ---
 
 ## 与 `lombok` 整合

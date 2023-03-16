@@ -5,7 +5,7 @@ category:
 - 介绍
 tag:
 - 快速开始
-description: MapstructPlus快速开始教程
+description: MapStructPlus 快速开始教程 quick start
 ---
 
 下面演示如何使用 MapStruct Plus 来映射两个对象。
