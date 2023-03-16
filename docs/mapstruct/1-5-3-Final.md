@@ -14,7 +14,7 @@ tag:
 
 这是 MapStruct 的参考文档，MapStruct 是一个基于注解处理器（annotation processor）的类转换器，它具有类型安全、高性能、没有其他依赖的特点。
 
-## 介绍
+## 1 介绍
 
 MapStruct 是一个 Java 注解处理器，用于生成类型安全的 bean 映射类。
 
@@ -30,7 +30,7 @@ MapStruct 是一个 Java 注解处理器，用于生成类型安全的 bean 映�
     - 映射不完整（并非所有目标属性都被映射）
     - 映射不正确（找不到适当的映射方法或者类型转换）
 
-## 安装
+## 2 安装
 
 MapStruct 是一个基于 JSR 269 的 Java 注释处理器，因此可以在命令行构建（javac、Ant、Maven 等）中使用，也可以在 IDE 中使用。
 
@@ -39,7 +39,7 @@ MapStruct 是一个基于 JSR 269 的 Java 注释处理器，因此可以在命�
 - `org.mapstruct:mapstruct`：包含所需要的注解，例如 `@Mapper`
 - `org.mapstruct:mapstruct-processor`：包含生成 mapper 实现类的注解处理器
 
-### Apache Maven
+### 2.1 Apache Maven
 
 对于基于 Maven 的项目，在 pom 文件中添加以下内容：
 
@@ -83,7 +83,7 @@ MapStruct 是一个基于 JSR 269 的 Java 注释处理器，因此可以在命�
 ```
 :::
 
-### Gradle
+### 2.2 Gradle
 
 在 Gradle 构建文件中添加如下：
 
@@ -110,7 +110,7 @@ dependencies {
 
 可以在 Github 中的 [mapstruct-example]([mapstruct-examples/mapstruct-on-gradle at main · mapstruct/mapstruct-examples (github.com)](https://github.com/mapstruct/mapstruct-examples/tree/main/mapstruct-on-gradle)) 查看完整的例子。
 
-### Apache Ant
+### 2.3 Apache Ant
 
 在 `build.xml` 文件中，添加如下 `javac` 任务配置：
 
@@ -132,7 +132,7 @@ dependencies {
 
 可以在 Github 中的 [mapstruct-example]([mapstruct-examples/mapstruct-on-gradle at main · mapstruct/mapstruct-examples (github.com)](https://github.com/mapstruct/mapstruct-examples/tree/main/mapstruct-on-gradle)) 查看完整的例子。
 
-### 配置选项
+### 2.4 配置选项
 
 MapStruct 代码生成器可以使用注解处理器选项（annotation processor options）进行配置。
 
@@ -204,7 +204,7 @@ compileJava {
 | mapstruct. disableBuilders | 如果设置为 true，那么在进行映射时 MapStruct 将不会使用构造器模式。这相当于为所有映射器添加了 `@Mapper(build = @Builder(disableBuilder = true))` 配置 | false |
 :::
 
-### 将 MapStruct 与 Java 模块系统一起使用
+### 2.5 将 MapStruct 与 Java 模块系统一起使用
 
 > 模块系统（Module System）：Java 9 的新特性
 
@@ -216,7 +216,7 @@ MapStruct 可以与 Java 9 及更高版本一起使用。
 
 `@Generated` JDK 11 之后被默认去除了，MapStruct 会根据运行环境，当 Java 11 及以后，会自动添加 `javax.annotation-api` 依赖包，从而使用该注解。
 
-### IDE 整合
+### 2.6 IDE 整合
 
 #### Intellij
 
@@ -239,11 +239,11 @@ Eclipse 同样提供了 [MapStruct Eclipse Plugin] 插件，以方便 MapStruct 
 - `target` 和 `source` 代码提示
 - 快速修复
 
-## 定义一个 mapper
+## 3 定义一个 mapper
 
 在本节，您将学习如何使用 MapStruct 定义 bean 映射器（mapper），以及可以配置哪些选项。
 
-### 基本映射（Basic Mappings）
+### 3.1 基本映射（Basic Mappings）
 
 要创建一个映射器，只需要定义一个接口、需要的映射方法，及在该接口上面添加 `org.mapstruct.Mapper` 注解。
 
@@ -348,7 +348,7 @@ MapStruct 的基本理念就是让生成的代码，尽可能地看起来像是�
 
 MapStruct 会对源类型和目标类型中所有公开（public)属性进行映射，包括定义在父类中的属性。
 
-### Mapping 组合（实验性）
+### 3.2 Mapping 组合（实验性）
 
 MapStruct 支持使用元注解。`@Mapping` 注解除了支持配置在方法上面，还可以配置在注解上面。这允许通过其他（用户定义）的注解来重复利用 `@Mapping` 注解。例如：
 
@@ -386,7 +386,7 @@ public interface StorageMapper {
 
 一种类型更安全（但也会更加啰嗦）的方式是定义一个基本类或者接口，目标类和源类继承该类，并且使用 `@InheritConfiguration` 注解，实现相同的结果（请参考[Mapping 配置继承](#Mapping 配置继承)）。
 
-### 在转换类中添加自定义方法
+### 3.3 在转换类中添加自定义方法
 
 在某些情况下，可能需要手动实现从一种类型映射为另一种类型的特性实现，这种实现是 MapStruct 无法生成的。处理这个问题的一种方式是在另一个类上实现自定义方法，然后由 MapStruct 生成的映射器来使用这个方法（请参考[执行其他映射器](#执行其他映射器)）
 
@@ -438,7 +438,7 @@ public abstract class CarMapper {
 
 MapStruct 将会生成 `CarMapper` 的子类，并且实现其中的抽象方法 `carToCarDto()`。在生成的 `carToCarDto()` 代码中，映射 `driver` 属性时，会执行手动实现的 `personToPersonDto()` 方法。
 
-### 多来源参数的映射方法
+### 3.4 多来源参数的映射方法
 
 MapStruct 支持多个来源参数的映射方法。这很有用。例如将几个实体组合到一个数据传输对象中。示例如下：
 
@@ -486,7 +486,7 @@ public interface AddressMapper {
 
 在这个例子中，来源参数直接映射到目标对象。参数 `hn` 是一个非 bean 类型（在这个例子是 `java.lang.Integer`）映射到 `houseNumber` 属性。
 
-### 嵌套对象属性映射到目标属性
+### 3.5 嵌套对象属性映射到目标属性
 
 如果不想显式地命名来源对象中嵌套 bean 的属性，可以配置 `target` 参数为 `.`。这将告诉 MapStruct 映射转换每一个嵌套 bean 的属性到目标对象中。下面是示例：
 
@@ -509,7 +509,7 @@ public interface AddressMapper {
 
 当多层级对象映射到平铺对象的时候（反之亦然 `@InheritInverseConfiguration`），这个特性非常有用.
 
-### 修改已经存在的对象实例
+### 3.6 修改已经存在的对象实例
 
 有的时候，需要执行映射时，不返回一个新的对象，而是更新现有的对象实例。这种可以通过将已经存在的目标对象，添加到映射方法的参数中，并用 `@MappingTarget` 注解标注。
 下面是一个例子：
@@ -530,7 +530,7 @@ public interface CarMapper {
 当目标属性类型是 `Collection` 或者 `Map`，当策略为 `CollectionMappingStrategy.ACCESSOR_ONLY` 时，将会先将集合清空（clear），再用源对象中的值填充。
 除此之外，当策略为 `CollectionMappingStrategy.ADDER_PREFERRED` 或 `CollectionMappingStrategy.TARGET_IMMUTABLE` 时，目标属性的集合不会清空，且立即填充值。
 
-### 直接访问属性的映射
+### 3.7 直接访问属性的映射
 
 MapStruct 同样支持 `public` 类型的字段（没有 getters/setters ）进行映射。
 当找不到这些属性的 getter/setter 方法时，会使用这些字段进行读写。
@@ -601,7 +601,7 @@ public class CustomerMapperImpl implements CustomerMapper {
 
 可以在 [mapstruct-example-field-mapping](https://github.com/mapstruct/mapstruct-examples/tree/master/mapstruct-field-mapping) 中查看完整的示例。
 
-### 使用构造器
+### 3.8 使用构造器
 
 MapStruct 支持使用构造器来映射不可变的类型。在 MapStruct 执行映射时，会检查是否存在可以用于映射类型的构造器。
 这是通过 `BuilderProvider` SPI 来实现的，如果存在的话，则会使用该构造器来映射。
@@ -684,6 +684,70 @@ public class PersonMapperImpl implements PersonMapper {
 
         return builder.create();
     }
+}
+```
+:::
+
+支持的构造器框架：
+
+- Lombok：~~需要将 Lombok 类放在单独的模块中。有关更多信息，可以查看 [lombok#1538](https://github.com/projectlombok/lombok/issues/1538)~~，并使用 MapStruct 设置 Lombok，请参阅 [Lombok](#Lombok)。
+
+> 这里说的单独的模块，应该是 Lombok 之前的问题，现在已经解决，可以忽略。
+
+- AutoValue
+- Immutables：当注释处理器路径上存在 Immutables 时，默认使用 `ImmutablesAccessorNamingStrategy` 和 `ImmutablesBuilderProvider`。
+- FreeBuilder：当注释处理器路径上存在 FreeBuilder 时，默认使用 `FreeBuilderAccessorNamingStrategy`。当使用 FreeBuilder 时，应当遵循 JavaBean 约定，否则 MapStruct 将无法识别流利的 getters。
+- 同样适用于自定义的构造器（手写构造器），前提构造器实现支持 `BuilderProvider` 定义的规则。否则，需要编写一个自定义的 `BuilderProvider`。
+
+::: warning
+如果想要禁用构造器，那么可以将 MapStruct 处理器选项 `mapstruct.disablebuilders` 传递给编译期。例如：`-Amapstruct.disableBuilders=true`
+:::
+
+### 3.9 使用构造函数
+
+MapStruct 支持使用构造函数来映射目标类型。当 MapStruct 执行映射时，会检查是否存在目标类型的构造器。
+如果没有构造器，MapStruct 会寻找一个可访问的构造函数。当有多个构造函数时，将按照如下规则，选择一个构造函数来使用：
+
+- 如果一个构造函数被 `@Default`（任意包都可以，参考[未列出注释](#未列出注释)） 注解标注，那么会使用该构造函数。
+- 如果只存在一个公开的构造函数，则会使用它来构造对象，其他的非公开构造函数将被忽略。
+- 如果存在无参构造函数，那么会用它来构造对象，而其他构造函数将被忽略。
+- 如果存在多个符合条件的构造函数，优于模棱两可的构造函数将出现编译异常。为了打破歧义，可以使用 `@Default` 注解来标注。
+
+::: details 例19：决定使用哪个构造函数
+```java
+public class Vehicle {
+
+    protected Vehicle() { }
+
+    // MapStruct will use this constructor, because it is a single public constructor
+    public Vehicle(String color) { }
+}
+
+public class Car {
+
+    // MapStruct will use this constructor, because it is a parameterless empty constructor
+    public Car() { }
+
+    public Car(String make, String color) { }
+}
+
+public class Truck {
+
+    public Truck() { }
+
+    // MapStruct will use this constructor, because it is annotated with @Default
+    @Default
+    public Truck(String make, String color) { }
+}
+
+public class Van {
+
+    // There will be a compilation error when using this class because MapStruct cannot pick a constructor
+
+    public Van(String make) { }
+
+    public Van(String make, String color) { }
+
 }
 ```
 :::
