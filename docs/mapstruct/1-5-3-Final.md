@@ -752,3 +752,205 @@ public class Van {
 ```
 :::
 
+使用构造函数时，默认使用构造函数的参数名与目标属性匹配。
+如果构造函数上有 `@ConstructorProperties`（任意来源包，请参考[未列出注释](#未列出注释)） 名称的注解时，则会使用该注解来获取参数名称。
+
+::: info
+当存在 `@ObjectFactory` 注解标注的对象工厂方法时，该方法比所有的构造函数优先级更高。在这种情况下，将不会使用目标对象的构造函数。
+:::
+
+::: details 例20：具有构造函数参数的 Person
+```java
+public class Person {
+
+    private final String name;
+    private final String surname;
+
+    public Person(String name, String surname) {
+        this.name = name;
+        this.surname = surname;
+    }
+}
+```
+:::
+
+::: details 例21：定义 Person 的构造函数转换器
+```java
+public interface PersonMapper {
+
+    Person map(PersonDto dto);
+}
+```
+:::
+
+::: details 例22：生成的转换器实现类
+```java
+// GENERATED CODE
+public class PersonMapperImpl implements PersonMapper {
+
+    public Person map(PersonDto dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        String name;
+        String surname;
+        name = dto.getName();
+        surname = dto.getSurname();
+
+        Person person = new Person( name, surname );
+
+        return person;
+    }
+}
+```
+:::
+
+### 3.10 映射 Map 为 Bean
+
+在某些情况下，需要将一个 `Map<String, ???>` 映射为一个指定的 Bean。
+MapStruct 提供了一种方法，通过目标类的属性（或者通过 `Mapping#source` 定义），从 Map 中提取相应的值，来完成映射。例如：
+
+::: details 例23：映射 Map 为 Bean 的示例类
+```java
+public class Customer {
+
+    private Long id;
+    private String name;
+
+    //getters and setter omitted for brevity
+}
+
+@Mapper
+public interface CustomerMapper {
+
+    @Mapping(target = "name", source = "customerName")
+    Customer toCustomer(Map<String, String> map);
+
+}
+```
+:::
+
+::: details 例24：映射 Map 为 Bean 的转换器实现类
+```java
+// GENERATED CODE
+public class CustomerMapperImpl implements CustomerMapper {
+
+    @Override
+    public Customer toCustomer(Map<String, String> map) {
+        // ...
+        if ( map.containsKey( "id" ) ) {
+            customer.setId( Integer.parseInt( map.get( "id" ) ) );
+        }
+        if ( map.containsKey( "customerName" ) ) {
+            customer.setName( map.get( "customerName" ) );
+        }
+        // ...
+    }
+}
+```
+:::
+
+::: info
+目前支持的不同类型之间的映射，以及使用 `Mapper#uses` 中定义的其他映射器，或者在映射器中自定义的方法，同样支持 Map 转换为 Bean。
+例如，也可以从一个 `Map<String, Integer>` 转换为一个 Bean 对象，这就需要每个属性都将从 `Integer` 类型转换而来。
+:::
+
+## 4 检索映射器
+
+### 4.1 映射器工厂（非依赖注入）「Mappers Factory」
+
+当不适用依赖注入的框架时，可以通过 `org.mapstruct.factory.Mappers` 类检索映射器实例。只需要调用 `getMapper()` 方法，并传入接口类型，则会返回相应的映射器实例。
+
+::: details 例25：使用映射器工厂
+```java
+CarMapper mapper = Mappers.getMapper( CarMapper.class );
+```
+:::
+
+按照惯例，映射器接口应该定义一个名为 `INSTANCE` 的属性，该属性保存着当前映射器类型的单个实例：
+
+::: details 例26：声明一个转换器接口的实例
+```java
+@Mapper
+public interface CarMapper {
+
+    CarMapper INSTANCE = Mappers.getMapper( CarMapper.class );
+
+    CarDto carToCarDto(Car car);
+}
+```
+:::
+
+::: details 例27：声明一个转换器抽象类的实例
+```java
+@Mapper
+public abstract class CarMapper {
+
+    public static final CarMapper INSTANCE = Mappers.getMapper( CarMapper.class );
+
+    CarDto carToCarDto(Car car);
+}
+```
+:::
+
+这种方式可以非常容易地使用映射器对象，而无需重复实例化新的实例：
+
+::: details 例28：访问映射器
+```java
+Car car = ...;
+CarDto dto = CarMapper.INSTANCE.carToCarDto( car );
+```
+:::
+
+注意：由 MapStruct 生成的映射器是无状态且线程安全的，因此可以同时多线程访问。
+
+### 4.2 使用依赖注入
+
+如果你使用的是一个依赖注入的框架，例如 CDI 或者 Spring 框架，建议通过依赖注入的方式获取映射器对象，而不是像上面描述的那样通过 `Mappers` 类来获取。
+为此，可以通过 `@Mapper#componentModel` 或者定义处理器属性（参考[配置选项](#24-配置选项)）指定生成的映射器类的组件模型（component model）。
+
+目前支持 CDI 和 Spring（后者通过自定义注解或者使用 JSR 330 注解）。
+请参阅[配置选项](#24-配置选项)中 `componentModel` 属性允许的值，该配置和 `mapstruct.defaultComponentModel` 一致，且具体的常量都定义在类 `MappingConstants.ComponentModel` 中。
+在这两种情况下，所需的注解都将被添加到生成的转换器实现类中，以保证依赖注入的方式相同。下面展示了使用 CDI 的示例：
+
+::: details 例29：使用 CDI 组件模型的转换器
+@Mapper(componentModel = MappingConstants.ComponentModel.CDI)
+public interface CarMapper {
+
+    CarDto carToCarDto(Car car);
+}
+:::
+
+生成的转换器实现类会被 `@ApplicationScoped` 注解标注，并且可以使用 `@Inject` 注解，通过属性或构造器注入。
+
+::: details 例30：通过依赖注入的方式获取一个转换器
+```java
+@Inject
+private CarMapper mapper;
+```
+:::
+
+如果在一个映射器中使用其他的映射器（参考[执行其他映射器](#54-执行其他映射器)），将会使用配置的组件模型来获取这些映射器的对象。所以这里如果上一个示例中 `CarMapper` 使用了另一个映射器，则该映射器也必须是一个可注入的 CDI bean。
+
+### 4.3 注入策略
+
+当使用依赖注入时，可以选择属性注入还是构造器注入。可以通过 `@Mapper` 或 `@MapperConfig` 注解来配置该注入策略。
+
+::: details 例31：使用构造器注入
+```java
+@Mapper(componentModel = MappingConstants.ComponentModel.CDI, uses = EngineMapper.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+public interface CarMapper {
+    CarDto carToCarDto(Car car);
+}
+```
+:::
+
+如果 MapStruct 检测到 uses 属性中定义了其他的映射器时，则会在生成的映射器实现类中注入这些类的实例。
+当使用 `InjectionStrategy#CONSTRUCTOR` 策略时，将会在构造器上增加合适的注解，而不会添加到属性上面。
+当使用 `InjectionStrategy#FIELD` 策略时，注解会被添加到属性本身上。默认的注入策略是属性注入，但是可以在[配置选项](#24-配置选项)中进行配置。
+推荐使用构造器注入，来简化测试。
+
+::: info
+对于抽象类映射器，应当使用 setter 注入策略
+:::

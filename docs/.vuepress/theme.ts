@@ -40,6 +40,13 @@ export default hopeTheme({
   },
 
   plugins: {
+    comment: {
+      provider: 'Giscus',
+      repo: 'linpeilie/mapstruct-plus',
+      repoId: 'R_kgDOJA3-jg',
+      category: 'Announcements',
+      categoryId: 'DIC_kwDOJA3-js4CU8EO'
+    },
     copyCode: {
       showInMobile: false
     },
