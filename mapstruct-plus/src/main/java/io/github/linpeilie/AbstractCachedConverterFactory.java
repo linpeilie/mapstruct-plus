@@ -12,7 +12,7 @@ public abstract class AbstractCachedConverterFactory implements ConverterFactory
     @SuppressWarnings("unchecked")
     public <S, T> BaseMapper<S, T> getMapper(final Class<S> sourceType, final Class<T> targetType) {
         final String key = key(sourceType, targetType);
-        if (mapperMap.contains(key)) {
+        if (mapperMap.containsKey(key)) {
             return mapperMap.get(key);
         }
         final BaseMapper mapper = findMapper(sourceType, targetType);
@@ -26,7 +26,7 @@ public abstract class AbstractCachedConverterFactory implements ConverterFactory
     @Override
     public <S> BaseMapMapper<S> getMapMapper(final Class<S> sourceType) {
         final String key = sourceType.getName();
-        if (mapMapperMap.contains(key)) {
+        if (mapMapperMap.containsKey(key)) {
             return mapMapperMap.get(key);
         }
         final BaseMapMapper mapper = findMapMapper(sourceType);

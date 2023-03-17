@@ -6,6 +6,12 @@ category:
 description: MapStructPlus release log
 ---
 
+## 1.1.7
+
+- fixBug: [issue#8](https://github.com/linpeilie/mapstruct-plus/issues/11) Converter 转换已有对象不生效的问题
+- 添加寻找转换接口的缓存，转换速度更快
+- 使用 Java 17 打包，解决 Java 17 环境下编译警告的问题
+
 ## 1.1.6
 
 - 支持在添加 `AutoMapper` 的类中，配置目标类到当前类的转换规则，适配多种场景下的使用；
