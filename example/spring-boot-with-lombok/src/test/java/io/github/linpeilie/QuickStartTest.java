@@ -171,6 +171,9 @@ public class QuickStartTest {
         goods.setSku(sku);
 
         final GoodsVo goodsVo = converter.convert(goods, GoodsVo.class);
+
+        final GoodsVo newGoodsVo = new GoodsVo();
+        converter.convert(goods, newGoodsVo);
         System.out.println(goodsVo);
     }
 
