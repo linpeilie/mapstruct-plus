@@ -17,9 +17,9 @@
     </modules>
 
     <properties>
-        <mapstruct-plus.version>1.1.6</mapstruct-plus.version>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <mapstruct-plus.version>1.1.7</mapstruct-plus.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mapstruct.version>1.5.3.Final</mapstruct.version>
         <hutool.version>5.8.9</hutool.version>
@@ -117,7 +117,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.9.1</version>
                 <configuration>
-                    <javadocExecutable>${java.home}/../bin/javadoc</javadocExecutable>
+                    <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
                 </configuration>
                 <executions>
                     <execution>

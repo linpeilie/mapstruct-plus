@@ -41,7 +41,7 @@ public class Converter {
         }
         BaseMapper<S, T> mapper = (BaseMapper<S, T>) converterFactory.getMapper(source.getClass(), target.getClass());
         if (mapper != null) {
-            return mapper.convert(source);
+            return mapper.convert(source, target);
         }
         throw new ConvertException("cannot find converter from " + source.getClass().getSimpleName() + " to " +
                                    target.getClass().getSimpleName());
