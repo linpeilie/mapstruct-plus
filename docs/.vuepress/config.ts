@@ -44,7 +44,8 @@ export default defineUserConfig({
             id: 'G-SXEZVNR8FZ'
         }),
         searchConsolePlugin({
-            baiduId: 'fab881821b3db8a7c460db1c91ea0f3a'
+            baiduId: 'fab881821b3db8a7c460db1c91ea0f3a',
+            toutiaoAutoPushId: '866dcc2ae0f9a8ffdfd3f1b664eafc71e58e4febb19fd7d283afc51c8e2dd61dfd9a9dcb5ced4d7780eb6f3bbd089073c2a6d54440560d63862bbf4ec01bba3a'
         })
     ]
 });
