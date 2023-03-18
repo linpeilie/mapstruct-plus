@@ -14,7 +14,7 @@ export default hopeTheme({
 
   iconAssets: "iconfont",
 
-  // logo: "/logo.svg",
+  logo: "/logo.svg",
 
   repo: "linpeilie/mapstruct-plus",
   docsDir: 'docs',
