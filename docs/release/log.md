@@ -6,6 +6,11 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.1.8
+
+- 解决当只有 @AutoMapMapper 注解时，没有生成转换器的问题
+- 修改没有找到转换器时的异常描述
+
 ## 1.1.7
 
 - fixBug: [issue#8](https://github.com/linpeilie/mapstruct-plus/issues/11) Converter 转换已有对象不生效的问题

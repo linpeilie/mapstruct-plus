@@ -66,7 +66,7 @@ public class Converter {
             return mapper.convert(map);
         }
         throw new ConvertException("cannot find converter from " + map.getClass().getName() + " to " +
-                                   target.getClass().getSimpleName());
+                                   target.getSimpleName());
     }
 
 }
