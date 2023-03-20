@@ -46,23 +46,22 @@ copyright: false
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.1.7</version>
+    <version>1.1.8</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.1.7'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.1.8'
 ```
 
 ## 更新日志
 
-### 1.1.7
+### 1.1.8
 
-- fixBug: [issue#8](https://github.com/linpeilie/mapstruct-plus/issues/11) Converter 转换已有对象不生效的问题
-- 添加寻找转换接口的缓存，转换速度更快
-- 使用 Java 17 打包，解决 Java 17 环境下编译警告的问题
+- 解决当只有 @AutoMapMapper 注解时，没有生成转换器的问题
+- 修改没有找到转换器时的异常描述
 
 ……
 

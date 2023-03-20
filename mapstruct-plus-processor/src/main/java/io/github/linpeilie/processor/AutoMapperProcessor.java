@@ -104,7 +104,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
         boolean hasAutoMapper = annotations.stream().anyMatch(this::isAutoMapperAnnotation);
-        if (!hasAutoMapper) {
+        final boolean hasAutoMapMapper = annotations.stream().anyMatch(this::isAutoMapMapperAnnotation);
+        if (!hasAutoMapper && !hasAutoMapMapper) {
             return false;
         }
         // 刷新配置
