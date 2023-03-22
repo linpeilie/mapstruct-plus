@@ -38,6 +38,10 @@ features:
 copyright: false
 ---
 
+## 其他开源项目
+
+- **EasyRelation**：[GitHub](https://github.com/linpeilie/easy-relation) | [Gitee](https://gitee.com/easii/easy-relation) | [Document](https://easy-relation.easii.cn)
+
 ## 最新版本
 
 - maven

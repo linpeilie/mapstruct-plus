@@ -6,6 +6,8 @@ Mapstruct Plus 是对 Mapstruct 框架的一个增强，只做增强，不做修
 
 目标：做最简单、最强大的类型转换工具
 
+**如果该项目帮助了您，希望能点个 Star 鼓励一下！**
+
 ## 链接
 
 - [Document](https://mapstruct.plus)
@@ -13,6 +15,10 @@ Mapstruct Plus 是对 Mapstruct 框架的一个增强，只做增强，不做修
 - [Gitee](https://gitee.com/linpeilie/mapstruct-plus)
 - [Github](https://github.com/linpeilie/mapstruct-plus)
 - [彻底干掉 BeanUtils，最优雅的 Mapstruct 增强工具全新出炉](https://juejin.cn/post/7204307381688909882)
+
+## 其他开源项目
+
+- **EasyRelation**：[GitHub](https://github.com/linpeilie/easy-relation) | [Gitee](https://gitee.com/easii/easy-relation) | [Document](https://easy-relation.easii.cn)
 
 ## 快速开始
 
