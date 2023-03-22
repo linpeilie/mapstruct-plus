@@ -61,6 +61,11 @@ export default defineUserConfig({
                         link: "https://gitee.com/easii/easy-relation",
                         "type": "default"
                       },
+                      {
+                        text: "Document",
+                        link: "https://easy-relation.easii.cn",
+                        "type": "primary"
+                      },
                     ],
                     fullscreen: false,
                   }
