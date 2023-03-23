@@ -6,9 +6,8 @@ category:
 description: MapStructPlus release log
 ---
 
-### 1.1.9
+### 1.2.0
 
-- 解决编译时警告jdk版本的问题
 - 增加unmappedSourcePolicy、unmappedTargetPolicy配置，并且设置unmappedTargetPolicy默认为ignore
 - 增加Builder配置，并设置disableBuilder默认为true
 
