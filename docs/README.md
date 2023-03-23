@@ -50,22 +50,23 @@ copyright: false
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.1.8</version>
+    <version>1.1.9</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.1.8'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.1.9'
 ```
 
 ## 更新日志
 
-### 1.1.8
+### 1.1.9
 
-- 解决当只有 @AutoMapMapper 注解时，没有生成转换器的问题
-- 修改没有找到转换器时的异常描述
+- 解决编译时警告jdk版本的问题
+- 增加unmappedSourcePolicy、unmappedTargetPolicy配置，并且设置unmappedTargetPolicy默认为ignore
+- 增加Builder配置，并设置disableBuilder默认为true
 
 ……
 

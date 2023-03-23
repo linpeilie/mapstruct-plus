@@ -6,6 +6,12 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.1.9
+
+- 解决编译时警告jdk版本的问题
+- 增加unmappedSourcePolicy、unmappedTargetPolicy配置，并且设置unmappedTargetPolicy默认为ignore
+- 增加Builder配置，并设置disableBuilder默认为true
+
 ### 1.1.8
 
 - 解决当只有 @AutoMapMapper 注解时，没有生成转换器的问题
@@ -15,7 +21,6 @@ description: MapStructPlus release log
 
 - fixBug: [issue#8](https://github.com/linpeilie/mapstruct-plus/issues/11) Converter 转换已有对象不生效的问题
 - 添加寻找转换接口的缓存，转换速度更快
-- 使用 Java 17 打包，解决 Java 17 环境下编译警告的问题
 
 ## 1.1.6
 
