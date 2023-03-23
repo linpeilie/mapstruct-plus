@@ -6,6 +6,10 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.2.1
+
+- 解决JDK17编译警告
+
 ### 1.2.0
 
 - 增加unmappedSourcePolicy、unmappedTargetPolicy配置，并且设置unmappedTargetPolicy默认为ignore
