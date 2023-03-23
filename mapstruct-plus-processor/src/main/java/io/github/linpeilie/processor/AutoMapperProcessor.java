@@ -38,6 +38,8 @@ import java.util.stream.Collectors;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
@@ -58,6 +60,7 @@ import static javax.tools.Diagnostic.Kind.ERROR;
 
 @SupportedAnnotationTypes({AUTO_MAPPER_ANNOTATION, AUTO_MAPPERS_ANNOTATION, AUTO_MAP_MAPPER_ANNOTATION,
                            MAPPER_CONFIG_ANNOTATION, COMPONENT_MODEL_CONFIG_ANNOTATION})
+@SupportedSourceVersion(SourceVersion.RELEASE_17)
 public class AutoMapperProcessor extends AbstractProcessor {
 
     private static final ClassName MAPPING_DEFAULT_TARGET = ClassName.get("io.github.linpeilie", "DefaultMapping");
@@ -184,6 +187,10 @@ public class AutoMapperProcessor extends AbstractProcessor {
                     element) : mapperConfig.mapperPackage();
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "mapper package " + mapperPackage);
                 AutoMapperProperties.setMapperPackage(mapperPackage);
+                AutoMapperProperties.setUnmappedSourcePolicy(mapperConfig.unmappedSourcePolicy());
+                AutoMapperProperties.setUnmappedTargetPolicy(mapperConfig.unmappedTargetPolicy());
+                AutoMapperProperties.setBuildMethod(mapperConfig.builder().buildMethod());
+                AutoMapperProperties.setDisableBuilder(mapperConfig.builder().disableBuilder());
             });
         annotations.stream()
             .filter(this::isComponentModelConfigAnnotation)

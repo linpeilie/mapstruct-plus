@@ -4,6 +4,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.mapstruct.Builder;
+import org.mapstruct.ReportingPolicy;
 
 /**
  * 在一个类或者接口上添加该注释，作为自动生成 Mapper 的配置类。在一个模块中，只能有一个有该注释的类。
@@ -21,5 +23,23 @@ public @interface MapperConfig {
      * @return Mapper 接口自动生成后的包名，如果为空，则默认生成在要转换的类同包下
      */
     String mapperPackage() default "";
+
+    /**
+     * 当来源类中没有对应属性时的策略，默认忽略
+     * @return {@link ReportingPolicy}
+     */
+    ReportingPolicy unmappedSourcePolicy() default ReportingPolicy.IGNORE;
+
+    /**
+     * 当来源类中没有对应属性时的策略，默认忽略
+     * @return {@link ReportingPolicy}
+     */
+    ReportingPolicy unmappedTargetPolicy() default ReportingPolicy.IGNORE;
+
+    /**
+     * 构造者模式配置，由于 mapstruct 和 lombok 和 builder 一起使用时，会丢失父类属性，这里默认改为关闭
+     * @return  {@link Builder}
+     */
+    Builder builder() default @Builder(disableBuilder = true);
 
 }

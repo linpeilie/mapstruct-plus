@@ -40,11 +40,32 @@ public class MapperConfigGenerator {
         usesCodeBuilder.add("$T.class",
             ClassName.get(AutoMapperProperties.getAdapterPackage(), adapterClassName));
         CodeBlock usesCodeBlock = usesCodeBuilder.add("}").build();
-        return AnnotationSpec.builder(ClassName.get("org.mapstruct", "MapperConfig"))
+        final AnnotationSpec.Builder builder = AnnotationSpec.builder(ClassName.get("org.mapstruct", "MapperConfig"))
             .addMember("componentModel",
                 CodeBlock.builder().add("$S", AutoMapperProperties.getComponentModel()).build())
-            .addMember("uses", usesCodeBlock)
+            .addMember("uses", usesCodeBlock);
+        // unmappedSourcePolicy
+        if (AutoMapperProperties.getUnmappedSourcePolicy() != null) {
+            CodeBlock unmappedSourcePolicyCodeBlock = CodeBlock.builder().add("$T.$L",
+                ClassName.get("org.mapstruct", "ReportingPolicy"),
+                AutoMapperProperties.getUnmappedSourcePolicy()).build();
+            builder.addMember("unmappedSourcePolicy", unmappedSourcePolicyCodeBlock);
+        }
+
+        // unmappedTargetPolicy
+        if (AutoMapperProperties.getUnmappedTargetPolicy() != null) {
+            CodeBlock unmappedTargetPolicyCodeBlock = CodeBlock.builder().add("$T.$L",
+                ClassName.get("org.mapstruct", "ReportingPolicy"),
+                AutoMapperProperties.getUnmappedTargetPolicy()).build();
+            builder.addMember("unmappedTargetPolicy", unmappedTargetPolicyCodeBlock);
+        }
+        // builder
+        CodeBlock builderCodeBlock = CodeBlock.builder()
+            .add("@$T(buildMethod = $S, disableBuilder = $L)", ClassName.get("org.mapstruct", "Builder"),
+                AutoMapperProperties.getBuildMethod(), AutoMapperProperties.isDisableBuilder())
             .build();
+        builder.addMember("builder", builderCodeBlock);
+        return builder.build();
     }
 
 }
