@@ -6,6 +6,10 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.2.2
+
+- fixbug: 定义多个uses时的问题
+
 ### 1.2.1
 
 - 解决JDK17编译警告

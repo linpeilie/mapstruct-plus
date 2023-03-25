@@ -50,21 +50,21 @@ copyright: false
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.2.1'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.2.2'
 ```
 
 ## 更新日志
 
-### 1.2.1
+### 1.2.2
 
-- 解决JDK17编译警告
+- fixbug: 定义多个uses时的问题
 
 ……
 
