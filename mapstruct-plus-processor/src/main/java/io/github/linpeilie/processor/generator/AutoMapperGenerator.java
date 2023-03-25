@@ -109,7 +109,12 @@ public class AutoMapperGenerator {
 
         // uses
         CodeBlock.Builder usesCodeBuilder = CodeBlock.builder().add("{");
-        usesClassNameList.forEach(item -> usesCodeBuilder.add("$T.class", item));
+        for (int i = 0; i < usesClassNameList.size(); i++) {
+            usesCodeBuilder.add("$T.class", usesClassNameList.get(i));
+            if (i != usesClassNameList.size() - 1) {
+                usesCodeBuilder.add(",");
+            }
+        }
         CodeBlock usesCodeBlock = usesCodeBuilder.add("}").build();
 
         AnnotationSpec.Builder builder =
