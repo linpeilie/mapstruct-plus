@@ -22,6 +22,8 @@ public class Constants {
 
     public static final String AUTO_MAP_MAPPER_ANNOTATION = "io.github.linpeilie.annotations.AutoMapMapper";
 
+    public static final String AUTO_ENUM_MAPPER_ANNOTATION = "io.github.linpeilie.annotations.AutoEnumMapper";
+
     public static final String MAPPER_CONFIG_ANNOTATION = "io.github.linpeilie.annotations.MapperConfig";
 
     public static final String COMPONENT_MODEL_CONFIG_ANNOTATION = "io.github.linpeilie.annotations.ComponentModelConfig";

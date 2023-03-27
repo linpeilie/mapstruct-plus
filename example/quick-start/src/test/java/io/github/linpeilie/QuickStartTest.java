@@ -3,6 +3,7 @@ package io.github.linpeilie;
 import cn.hutool.core.date.DateUtil;
 import io.github.linpeilie.model.Goods;
 import io.github.linpeilie.model.GoodsDto;
+import io.github.linpeilie.model.GoodsStateEnum;
 import io.github.linpeilie.model.MapModelA;
 import io.github.linpeilie.model.User;
 import io.github.linpeilie.model.UserDto;
@@ -129,6 +130,20 @@ public class QuickStartTest {
         assert userDto.getBirthday().equals("2023-02-23 02:01:43");
         assert userDto.getAssets().equals("$123.23");
         assert userDto.getMoney().equals("$12543.12");
+    }
+
+    @Test
+    public void enumMapTest() {
+        Goods goods = new Goods();
+        goods.setState(GoodsStateEnum.ENABLED);
+        final GoodsDto goodsDto = converter.convert(goods, GoodsDto.class);
+        System.out.println(goodsDto);
+
+        GoodsDto goodsDto1 = new GoodsDto();
+        goodsDto1.setType(1);
+        goodsDto1.setState(1);
+        final Goods goods1 = converter.convert(goodsDto1, Goods.class);
+        System.out.println(goods1);
     }
 
 }

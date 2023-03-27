@@ -9,6 +9,7 @@ description: MapStructPlus release log
 ### 1.2.2
 
 - fixbug: 定义多个uses时的问题
+- feature: 增加 `@AutoEnumMapper` 注解，可以在类型转换时，自动转换枚举
 
 ### 1.2.1
 

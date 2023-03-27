@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Assert;
 import io.github.linpeilie.model.Goods;
 import io.github.linpeilie.model.GoodsDto;
+import io.github.linpeilie.model.GoodsStateEnum;
 import io.github.linpeilie.model.GoodsVo;
 import io.github.linpeilie.model.MapModelA;
 import io.github.linpeilie.model.Order;
@@ -203,6 +204,28 @@ public class QuickStartTest {
         Assert.equals(orderVO.getOrderDate(), LocalDate.parse("2022-03-01", DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         Assert.equals(orderVO.getUser(), "Jack");
         Assert.equals(orderVO.getPayStatus(), "True");
+    }
+
+    @Test
+    public void enumMapTest() {
+        Goods goods = new Goods();
+        goods.setState(GoodsStateEnum.ENABLED);
+        final GoodsDto goodsDto = converter.convert(goods, GoodsDto.class);
+        System.out.println(goodsDto);
+
+        final GoodsVo goodsVo = converter.convert(goods, GoodsVo.class);
+        System.out.println(goodsVo);
+        Assert.equals(goodsVo.getState(), goods.getState().getState());
+
+        final Goods goods2 = converter.convert(goodsVo, Goods.class);
+        System.out.println(goods2);
+        Assert.equals(goods2.getState(), GoodsStateEnum.ENABLED);
+
+        GoodsDto goodsDto1 = new GoodsDto();
+        goodsDto1.setType(1);
+        goodsDto1.setState(1);
+        final Goods goods1 = converter.convert(goodsDto1, Goods.class);
+        System.out.println(goods1);
     }
 
 }

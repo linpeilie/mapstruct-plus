@@ -6,7 +6,7 @@ import io.github.linpeilie.annotations.AutoMappings;
 import lombok.Data;
 
 @Data
-@AutoMapper(target = GoodsVo.class, reverseConvertGenerate = false)
+@AutoMapper(target = GoodsVo.class)
 public class Goods {
 
     private String price;
@@ -15,5 +15,9 @@ public class Goods {
 
     @AutoMapping(target = "price", source = "sku.price")
     private Sku sku;
+
+    private GoodsStateEnum state;
+
+    private GoodsTypeEnum type;
 
 }

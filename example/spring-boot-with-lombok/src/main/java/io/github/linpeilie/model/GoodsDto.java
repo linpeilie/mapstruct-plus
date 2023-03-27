@@ -15,4 +15,8 @@ public class GoodsDto {
     @AutoMapping(target = "price", numberFormat = "$#.00")
     private int price;
 
+    private Integer state;
+
+    private int type;
+
 }

@@ -17,7 +17,8 @@ public class AdapterMethodMetadata extends AbstractAdapterMethodMetadata {
 
     @Override
     public String getMethodName() {
-        return source.simpleName().substring(0, 1).toLowerCase() + source.simpleName().substring(1) + "To" +
+        final String sourceName = source.toString().replace(".", "_");
+        return sourceName.substring(0, 1).toLowerCase() + sourceName.substring(1) + "To" +
                target.simpleName();
     }
 

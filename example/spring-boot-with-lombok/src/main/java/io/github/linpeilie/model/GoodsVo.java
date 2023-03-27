@@ -7,4 +7,6 @@ public class GoodsVo {
 
     private Integer price;
 
+    private Integer state;
+
 }

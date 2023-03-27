@@ -1,6 +1,6 @@
 ---
 title: 一个类与多个类之间转换
-order: 3
+order: 4
 category:
 - 指南
 description: MapStructPlus 一个类与多个类之间转换 multiple class convert

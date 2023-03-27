@@ -1,6 +1,7 @@
 package io.github.linpeilie.processor.generator;
 
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -16,7 +17,7 @@ public class DefaultAdapterMapperGenerator extends AbstractAdapterMapperGenerato
                 ClassName.get(adapterPackage(), adapterClassName))
             .addModifiers(Modifier.PUBLIC);
 
-        adapterMethods.forEach(adapterMethod -> adapterBuilder.addMethod(buildDefaultProxyMethod(adapterMethod)));
+        adapterMethods.forEach(adapterMethod -> adapterBuilder.addMethod(buildProxyMethod(adapterMethod)));
 
         return adapterBuilder.build();
     }
@@ -25,18 +26,10 @@ public class DefaultAdapterMapperGenerator extends AbstractAdapterMapperGenerato
         return str.substring(0, 1).toLowerCase() + str.substring(1);
     }
 
-    private MethodSpec buildDefaultProxyMethod(AbstractAdapterMethodMetadata adapterMethodMetadata) {
-        ParameterSpec parameterSpec = ParameterSpec.builder(adapterMethodMetadata.getSource(),
-            firstWordToLower(adapterMethodMetadata.getSource().simpleName())).build();
-        return MethodSpec.methodBuilder(adapterMethodMetadata.getMethodName())
-            .addModifiers(Modifier.PUBLIC)
-            .addParameter(parameterSpec)
-            .returns(adapterMethodMetadata.getReturn())
-            .addStatement("return ($T.getMapper($T.class)).$N($N)",
-                ClassName.get("org.mapstruct.factory", "Mappers"), adapterMethodMetadata.getMapper(),
-                adapterMethodMetadata.getMapperMethodName(),
-                firstWordToLower(adapterMethodMetadata.getSource().simpleName()))
-            .build();
+    @Override
+    protected CodeBlock proxyMethodTarget(final AbstractAdapterMethodMetadata adapterMethodMetadata) {
+        return CodeBlock.of("return ($T.getMapper($T.class)).$N($N);",
+            ClassName.get("org.mapstruct.factory", "Mappers"), adapterMethodMetadata.getMapper(),
+            adapterMethodMetadata.getMapperMethodName(), "param");
     }
-
 }

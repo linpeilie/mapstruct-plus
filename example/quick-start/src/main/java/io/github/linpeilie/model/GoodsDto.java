@@ -13,6 +13,10 @@ public class GoodsDto {
     @AutoMapping(target = "price", numberFormat = "$#.00")
     private int price;
 
+    private Integer state;
+
+    private int type;
+
     public int getPrice() {
         return price;
     }
@@ -29,11 +33,29 @@ public class GoodsDto {
         this.takeDownTime = takeDownTime;
     }
 
+    public Integer getState() {
+        return state;
+    }
+
+    public void setState(final Integer state) {
+        this.state = state;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(final int type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return "GoodsDto{" +
                "takeDownTime=" + takeDownTime +
                ", price=" + price +
+               ", state=" + state +
+               ", type=" + type +
                '}';
     }
 }
