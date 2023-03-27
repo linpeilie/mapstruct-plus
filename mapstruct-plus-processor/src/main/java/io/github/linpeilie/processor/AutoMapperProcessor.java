@@ -3,6 +3,8 @@ package io.github.linpeilie.processor;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
+import io.github.linpeilie.annotations.AutoEnumMapper;
 import io.github.linpeilie.annotations.AutoMapMapper;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
@@ -12,18 +14,22 @@ import io.github.linpeilie.annotations.ComponentModelConfig;
 import io.github.linpeilie.annotations.MapperConfig;
 import io.github.linpeilie.annotations.ReverseAutoMapping;
 import io.github.linpeilie.annotations.ReverseAutoMappings;
+import io.github.linpeilie.processor.generator.AutoEnumMapperGenerator;
 import io.github.linpeilie.processor.generator.AutoMapperGenerator;
 import io.github.linpeilie.processor.generator.DefaultAdapterMapperGenerator;
 import io.github.linpeilie.processor.generator.MapperConfigGenerator;
 import io.github.linpeilie.processor.generator.SpringAdapterMapperGenerator;
 import io.github.linpeilie.processor.metadata.AbstractAdapterMethodMetadata;
+import io.github.linpeilie.processor.metadata.AdapterEnumMethodMetadata;
 import io.github.linpeilie.processor.metadata.AdapterMapMethodMetadata;
 import io.github.linpeilie.processor.metadata.AdapterMethodMetadata;
+import io.github.linpeilie.processor.metadata.AutoEnumMapperMetadata;
 import io.github.linpeilie.processor.metadata.AutoMapMapperMetadata;
 import io.github.linpeilie.processor.metadata.AutoMapperMetadata;
 import io.github.linpeilie.processor.metadata.AutoMappingMetadata;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.annotation.ElementType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,6 +48,8 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.MirroredTypesException;
@@ -51,6 +59,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 
+import static io.github.linpeilie.processor.Constants.AUTO_ENUM_MAPPER_ANNOTATION;
 import static io.github.linpeilie.processor.Constants.AUTO_MAPPERS_ANNOTATION;
 import static io.github.linpeilie.processor.Constants.AUTO_MAPPER_ANNOTATION;
 import static io.github.linpeilie.processor.Constants.AUTO_MAP_MAPPER_ANNOTATION;
@@ -59,7 +68,7 @@ import static io.github.linpeilie.processor.Constants.MAPPER_CONFIG_ANNOTATION;
 import static javax.tools.Diagnostic.Kind.ERROR;
 
 @SupportedAnnotationTypes({AUTO_MAPPER_ANNOTATION, AUTO_MAPPERS_ANNOTATION, AUTO_MAP_MAPPER_ANNOTATION,
-                           MAPPER_CONFIG_ANNOTATION, COMPONENT_MODEL_CONFIG_ANNOTATION})
+                           AUTO_ENUM_MAPPER_ANNOTATION, MAPPER_CONFIG_ANNOTATION, COMPONENT_MODEL_CONFIG_ANNOTATION})
 public class AutoMapperProcessor extends AbstractProcessor {
 
     private static final ClassName MAPPING_DEFAULT_TARGET = ClassName.get("io.github.linpeilie", "DefaultMapping");
@@ -95,6 +104,10 @@ public class AutoMapperProcessor extends AbstractProcessor {
         return AUTO_MAP_MAPPER_ANNOTATION.contentEquals(annotation.getQualifiedName());
     }
 
+    private boolean isAutoEnumMapperAnnotation(TypeElement annotation) {
+        return AUTO_ENUM_MAPPER_ANNOTATION.contentEquals(annotation.getQualifiedName());
+    }
+
     private boolean isMapperConfigAnnotation(TypeElement annotation) {
         return MAPPER_CONFIG_ANNOTATION.contentEquals(annotation.getQualifiedName());
     }
@@ -107,7 +120,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
         boolean hasAutoMapper = annotations.stream().anyMatch(this::isAutoMapperAnnotation);
         final boolean hasAutoMapMapper = annotations.stream().anyMatch(this::isAutoMapMapperAnnotation);
-        if (!hasAutoMapper && !hasAutoMapMapper) {
+        final boolean hasAutoEnumMapper = annotations.stream().anyMatch(this::isAutoEnumMapperAnnotation);
+        if (!hasAutoMapper && !hasAutoMapMapper && !hasAutoEnumMapper) {
             return false;
         }
         // 刷新配置
@@ -118,18 +132,25 @@ public class AutoMapperProcessor extends AbstractProcessor {
                                           .contentEquals(
                                               MappingConstants.ComponentModel.SPRING) ? new SpringAdapterMapperGenerator() : new DefaultAdapterMapperGenerator();
 
-        // 获取 MapMapper
+        // AutoMapMapper
         annotations.stream()
             .filter(this::isAutoMapMapperAnnotation)
             .findFirst()
             .ifPresent(annotation -> processAutoMapMapperAnnotation(roundEnv, annotation));
 
-        // 组装数据
+        // AutoEnumMapper
+        annotations.stream()
+            .filter(this::isAutoEnumMapperAnnotation)
+            .findFirst()
+            .ifPresent(annotation -> processAutoEnumMapperAnnotation(roundEnv, annotation));
+
+        // AutoMapper
         annotations.stream()
             .filter(this::isAutoMapperAnnotation)
             .findFirst()
             .ifPresent(annotation -> processAutoMapperAnnotation(roundEnv, annotation));
 
+        // AutoMappers
         annotations.stream()
             .filter(this::isAutoMappersAnnotation)
             .findFirst()
@@ -139,6 +160,81 @@ public class AutoMapperProcessor extends AbstractProcessor {
         generateMapper();
 
         return false;
+    }
+
+    private void processAutoEnumMapperAnnotation(final RoundEnvironment roundEnv, final TypeElement annotation) {
+        roundEnv.getElementsAnnotatedWith(annotation)
+            .stream()
+            .map(this::buildAutoEnumMapperMetadata)
+            .filter(Objects::nonNull)
+            .forEach(this::writeAutoEnumMapperFile);
+    }
+
+    private void writeAutoEnumMapperFile(final AutoEnumMapperMetadata autoEnumMapperMetadata) {
+        final AutoEnumMapperGenerator autoEnumMapperGenerator = new AutoEnumMapperGenerator();
+        try (final Writer writer = processingEnv.getFiler()
+            .createSourceFile(autoEnumMapperMetadata.mapperPackage() + "." + autoEnumMapperMetadata.mapperName())
+            .openWriter()) {
+            autoEnumMapperGenerator.write(autoEnumMapperMetadata, writer);
+        } catch (IOException e) {
+            processingEnv.getMessager()
+                .printMessage(ERROR,
+                    "Error while opening " + autoEnumMapperMetadata.mapperName() + " output file : " + e.getMessage());
+        }
+        addAdapterMethodMetadata(autoEnumMapperMetadata);
+    }
+
+    private void addAdapterMethodMetadata(final AutoEnumMapperMetadata autoEnumMapperMetadata) {
+        // toValue
+        final AdapterEnumMethodMetadata toValueProxyMethod =
+            new AdapterEnumMethodMetadata(autoEnumMapperMetadata.getSourceClassName(),
+                ClassName.get(autoEnumMapperMetadata.mapperPackage(), autoEnumMapperMetadata.mapperName()),
+                autoEnumMapperMetadata.toValueMethodName(),
+                autoEnumMapperMetadata.getReturnType());
+        // toEnum
+        final AdapterEnumMethodMetadata toEnumProxyMethod =
+            new AdapterEnumMethodMetadata(autoEnumMapperMetadata.getReturnType(),
+                ClassName.get(autoEnumMapperMetadata.mapperPackage(), autoEnumMapperMetadata.mapperName()),
+                autoEnumMapperMetadata.toEnumMethodName(),
+                autoEnumMapperMetadata.getSourceClassName());
+        methodMap.put(
+            autoEnumMapperMetadata.getSourceClassName().simpleName() + toValueProxyMethod.getMapperMethodName(),
+            toValueProxyMethod);
+        methodMap.put(
+            autoEnumMapperMetadata.getSourceClassName().simpleName() + toEnumProxyMethod.getMapperMethodName(),
+            toEnumProxyMethod);
+    }
+
+    private AutoEnumMapperMetadata buildAutoEnumMapperMetadata(final Element element) {
+        final AutoEnumMapper autoEnumMapper = element.getAnnotation(AutoEnumMapper.class);
+        final ClassName enumClassName = ClassName.get((TypeElement) element);
+        final String enumCodeFieldName = autoEnumMapper.value();
+        Element enumCodeGetterElement = null;
+        // 获取getter
+        final List<? extends Element> enclosedElements = element.getEnclosedElements();
+        for (Element ele : enclosedElements) {
+            if (!ElementKind.METHOD.equals(ele.getKind())) {
+                continue;
+            }
+            boolean isGetter = StrUtil.equalsIgnoreCase(ele.getSimpleName(), "get" + enumCodeFieldName)
+                               || StrUtil.equalsIgnoreCase(ele.getSimpleName(), "is" + enumCodeFieldName);
+            if (isGetter) {
+                enumCodeGetterElement = ele;
+                break;
+            }
+        }
+        if (enumCodeGetterElement == null) {
+            return null;
+        }
+        final String getter = enumCodeGetterElement.getSimpleName().toString();
+        final TypeName returnType = TypeName.get(((ExecutableElement) enumCodeGetterElement).getReturnType());
+
+        AutoEnumMapperMetadata autoEnumMapperMetadata = new AutoEnumMapperMetadata();
+        autoEnumMapperMetadata.setSourceClassName(enumClassName);
+        autoEnumMapperMetadata.setGetter(getter);
+        autoEnumMapperMetadata.setReturnType(returnType);
+
+        return autoEnumMapperMetadata;
     }
 
     private void processAutoMapMapperAnnotation(final RoundEnvironment roundEnv, final TypeElement annotation) {
@@ -424,8 +520,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
     }
 
     private AutoMappingMetadata buildAutoMappingMetadata(ReverseAutoMapping reverseAutoMapping,
-                                                         Element ele,
-                                                         TypeElement type) {
+        Element ele,
+        TypeElement type) {
         ClassName targetClass = transToClassName(reverseAutoMapping::targetClass);
         if (targetClass == null) {
             return null;

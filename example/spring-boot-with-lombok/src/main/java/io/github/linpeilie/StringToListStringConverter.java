@@ -1,5 +1,6 @@
 package io.github.linpeilie;
 
+import io.github.linpeilie.model.GoodsStateEnum;
 import java.util.Arrays;
 import java.util.List;
 

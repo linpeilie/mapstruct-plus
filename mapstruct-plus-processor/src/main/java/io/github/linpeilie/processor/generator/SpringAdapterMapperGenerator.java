@@ -2,6 +2,7 @@ package io.github.linpeilie.processor.generator;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
@@ -19,7 +20,9 @@ public class SpringAdapterMapperGenerator extends AbstractAdapterMapperGenerator
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(ClassName.get("org.springframework.stereotype", "Component"));
 
-        adapterMethods.stream().map(AbstractAdapterMethodMetadata::getMapper)
+        adapterMethods.stream()
+            .filter(adapterMethodMetadata -> !adapterMethodMetadata.isStatic())
+            .map(AbstractAdapterMethodMetadata::getMapper)
             .distinct()
             .forEach(mapper -> adapterBuilder.addField(buildMapperField(mapper))
                 .addMethod(buildMapperSetterMethod(mapper)));
@@ -38,16 +41,12 @@ public class SpringAdapterMapperGenerator extends AbstractAdapterMapperGenerator
         return str.substring(0, 1).toLowerCase() + str.substring(1);
     }
 
-    private MethodSpec buildProxyMethod(AbstractAdapterMethodMetadata adapterMethodMetadata) {
-        ParameterSpec parameterSpec = ParameterSpec.builder(adapterMethodMetadata.getSource(),
-            firstWordToLower(adapterMethodMetadata.getSource().simpleName())).build();
-        return MethodSpec.methodBuilder(adapterMethodMetadata.getMethodName())
-            .addModifiers(Modifier.PUBLIC)
-            .addParameter(parameterSpec)
-            .returns(adapterMethodMetadata.getReturn())
-            .addStatement("return $N.$N($N)", firstWordToLower(adapterMethodMetadata.getMapper().simpleName()),
+    @Override
+    protected CodeBlock proxyMethodTarget(AbstractAdapterMethodMetadata adapterMethodMetadata) {
+        return CodeBlock.builder()
+            .add("return $N.$N($N);", firstWordToLower(adapterMethodMetadata.getMapper().simpleName()),
                 adapterMethodMetadata.getMapperMethodName(),
-                firstWordToLower(adapterMethodMetadata.getSource().simpleName()))
+                "param")
             .build();
     }
 

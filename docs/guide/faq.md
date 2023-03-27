@@ -1,6 +1,6 @@
 ---
 title: 常见问题
-order: 5
+order: 6
 category:
 - 指南
 description: MapStructPlus MapStructPlus常见问题 faq
