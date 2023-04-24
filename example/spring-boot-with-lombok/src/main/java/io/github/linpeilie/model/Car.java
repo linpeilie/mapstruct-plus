@@ -11,6 +11,7 @@ public class Car {
     private String make;
     private SeatConfiguration seatConfiguration;
     private CarType type;
+    private Tyre tyre;
 
     @AutoMapping(target = "wheels", ignore = true)
     private Wheels wheels;

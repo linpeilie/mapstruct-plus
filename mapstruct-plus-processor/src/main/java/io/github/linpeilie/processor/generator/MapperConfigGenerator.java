@@ -1,5 +1,6 @@
 package io.github.linpeilie.processor.generator;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -8,18 +9,20 @@ import com.squareup.javapoet.TypeSpec;
 import io.github.linpeilie.processor.AutoMapperProperties;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.type.TypeMirror;
 
 import static javax.tools.Diagnostic.Kind.ERROR;
 
 public class MapperConfigGenerator {
 
-    public void write(ProcessingEnvironment processingEnv, String mapstructConfigName, String adapterClassName) {
+    public void write(ProcessingEnvironment processingEnv, String mapstructConfigName, String adapterClassName, List<TypeMirror> uses) {
         try (final Writer writer = processingEnv.getFiler()
             .createSourceFile(AutoMapperProperties.getConfigPackage() + "." + mapstructConfigName)
             .openWriter()) {
-            JavaFile.builder(AutoMapperProperties.getConfigPackage(), createConfigTypeSpec(mapstructConfigName, adapterClassName)).build().writeTo(writer);
+            JavaFile.builder(AutoMapperProperties.getConfigPackage(), createConfigTypeSpec(mapstructConfigName, adapterClassName, uses)).build().writeTo(writer);
         } catch (IOException e) {
             processingEnv.getMessager()
                 .printMessage(ERROR,
@@ -28,17 +31,23 @@ public class MapperConfigGenerator {
         }
     }
 
-    private TypeSpec createConfigTypeSpec(final String mapstructConfigName, final String adapterClassName) {
+    private TypeSpec createConfigTypeSpec(final String mapstructConfigName,
+        final String adapterClassName,
+        final List<TypeMirror> uses) {
         return TypeSpec.interfaceBuilder(mapstructConfigName)
             .addModifiers(Modifier.PUBLIC)
-            .addAnnotation(buildMapperConfigAnnotationSpec(adapterClassName))
+            .addAnnotation(buildMapperConfigAnnotationSpec(adapterClassName, uses))
             .build();
     }
 
-    private AnnotationSpec buildMapperConfigAnnotationSpec(final String adapterClassName) {
+    private AnnotationSpec buildMapperConfigAnnotationSpec(final String adapterClassName, final List<TypeMirror> uses) {
         CodeBlock.Builder usesCodeBuilder = CodeBlock.builder().add("{");
-        usesCodeBuilder.add("$T.class",
-            ClassName.get(AutoMapperProperties.getAdapterPackage(), adapterClassName));
+        usesCodeBuilder.add("$T.class", ClassName.get(AutoMapperProperties.getAdapterPackage(), adapterClassName));
+        if (CollectionUtil.isNotEmpty(uses)) {
+            uses.forEach(use -> {
+                usesCodeBuilder.add(", $T.class", use);
+            });
+        }
         CodeBlock usesCodeBlock = usesCodeBuilder.add("}").build();
         final AnnotationSpec.Builder builder = AnnotationSpec.builder(ClassName.get("org.mapstruct", "MapperConfig"))
             .addMember("componentModel",

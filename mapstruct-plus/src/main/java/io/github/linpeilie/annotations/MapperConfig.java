@@ -31,7 +31,7 @@ public @interface MapperConfig {
     ReportingPolicy unmappedSourcePolicy() default ReportingPolicy.IGNORE;
 
     /**
-     * 当来源类中没有对应属性时的策略，默认忽略
+     * 当目标类中没有对应属性时的策略，默认忽略
      * @return {@link ReportingPolicy}
      */
     ReportingPolicy unmappedTargetPolicy() default ReportingPolicy.IGNORE;
@@ -41,5 +41,23 @@ public @interface MapperConfig {
      * @return  {@link Builder}
      */
     Builder builder() default @Builder(disableBuilder = true);
+
+    /**
+     * 默认包名为：io.github.linpeilie
+     * @return ConvertAdapterClass 包名
+     */
+    String adapterPackage() default "";
+
+    /**
+     * 默认类名为：ConvertMapperAdapter
+     * @return ConvertAdapterClass 类名
+     */
+    String adapterClassName() default "";
+
+    /**
+     * 默认类名为：MapConvertMapperAdapter
+     * @return MapConvertAdapterClass 类名
+     */
+    String mapAdapterClassName() default "";
 
 }

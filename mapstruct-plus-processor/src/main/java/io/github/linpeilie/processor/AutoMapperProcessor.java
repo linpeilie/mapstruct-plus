@@ -29,7 +29,6 @@ import io.github.linpeilie.processor.metadata.AutoMapperMetadata;
 import io.github.linpeilie.processor.metadata.AutoMappingMetadata;
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.annotation.ElementType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,12 +43,10 @@ import java.util.stream.Collectors;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.MirroredTypesException;
@@ -57,18 +54,19 @@ import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.MappingConstants;
-import org.mapstruct.ReportingPolicy;
 
 import static io.github.linpeilie.processor.Constants.AUTO_ENUM_MAPPER_ANNOTATION;
 import static io.github.linpeilie.processor.Constants.AUTO_MAPPERS_ANNOTATION;
 import static io.github.linpeilie.processor.Constants.AUTO_MAPPER_ANNOTATION;
 import static io.github.linpeilie.processor.Constants.AUTO_MAP_MAPPER_ANNOTATION;
 import static io.github.linpeilie.processor.Constants.COMPONENT_MODEL_CONFIG_ANNOTATION;
+import static io.github.linpeilie.processor.Constants.MAPPER_ANNOTATION;
 import static io.github.linpeilie.processor.Constants.MAPPER_CONFIG_ANNOTATION;
 import static javax.tools.Diagnostic.Kind.ERROR;
 
 @SupportedAnnotationTypes({AUTO_MAPPER_ANNOTATION, AUTO_MAPPERS_ANNOTATION, AUTO_MAP_MAPPER_ANNOTATION,
-                           AUTO_ENUM_MAPPER_ANNOTATION, MAPPER_CONFIG_ANNOTATION, COMPONENT_MODEL_CONFIG_ANNOTATION})
+                           AUTO_ENUM_MAPPER_ANNOTATION, MAPPER_CONFIG_ANNOTATION, COMPONENT_MODEL_CONFIG_ANNOTATION,
+                            MAPPER_ANNOTATION})
 public class AutoMapperProcessor extends AbstractProcessor {
 
     private static final ClassName MAPPING_DEFAULT_TARGET = ClassName.get("io.github.linpeilie", "DefaultMapping");
@@ -84,6 +82,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
     private final Map<String, AbstractAdapterMethodMetadata> mapMethodMap = new HashMap<>();
 
     private final List<AutoMapperMetadata> mapperList = new ArrayList<>();
+
+    private final List<TypeMirror> customMapperList = new ArrayList<>();
 
     private final Set<String> mapperSet = new HashSet<>();
 
@@ -110,6 +110,10 @@ public class AutoMapperProcessor extends AbstractProcessor {
 
     private boolean isMapperConfigAnnotation(TypeElement annotation) {
         return MAPPER_CONFIG_ANNOTATION.contentEquals(annotation.getQualifiedName());
+    }
+
+    private boolean isMapperAnnotation(TypeElement annotation) {
+        return MAPPER_ANNOTATION.contentEquals(annotation.getQualifiedName());
     }
 
     private boolean isComponentModelConfigAnnotation(TypeElement annotation) {
@@ -156,10 +160,21 @@ public class AutoMapperProcessor extends AbstractProcessor {
             .findFirst()
             .ifPresent(annotation -> processAutoMappersAnnotation(roundEnv, annotation));
 
+        // custom mapper
+        annotations.stream()
+            .filter(this::isMapperAnnotation)
+            .findFirst()
+            .ifPresent(annotation -> processMapperAnnotation(roundEnv, annotation));
+
         // 生成类
         generateMapper();
 
         return false;
+    }
+
+    private void processMapperAnnotation(final RoundEnvironment roundEnv, final TypeElement annotation) {
+        roundEnv.getElementsAnnotatedWith(annotation)
+            .forEach(element -> customMapperList.add(element.asType()));
     }
 
     private void processAutoEnumMapperAnnotation(final RoundEnvironment roundEnv, final TypeElement annotation) {
@@ -268,7 +283,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
             AutoMapperProperties.getMapAdapterClassName());
 
         mapperConfigGenerator.write(processingEnv, AutoMapperProperties.getMapConfigClassName(),
-            AutoMapperProperties.getMapAdapterClassName());
+            AutoMapperProperties.getMapAdapterClassName(), null);
     }
 
     private void refreshProperties(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
@@ -286,6 +301,15 @@ public class AutoMapperProcessor extends AbstractProcessor {
                 AutoMapperProperties.setUnmappedTargetPolicy(mapperConfig.unmappedTargetPolicy());
                 AutoMapperProperties.setBuildMethod(mapperConfig.builder().buildMethod());
                 AutoMapperProperties.setDisableBuilder(mapperConfig.builder().disableBuilder());
+                if (StrUtil.isNotEmpty(mapperConfig.adapterPackage())) {
+                    AutoMapperProperties.setAdapterPackage(mapperConfig.adapterPackage());
+                }
+                if (StrUtil.isNotEmpty(mapperConfig.adapterClassName())) {
+                    AutoMapperProperties.setAdapterClassName(mapperConfig.adapterClassName());
+                }
+                if (StrUtil.isNotEmpty(mapperConfig.mapAdapterClassName())) {
+                    AutoMapperProperties.setMapAdapterClassName(mapperConfig.mapAdapterClassName());
+                }
             });
         annotations.stream()
             .filter(this::isComponentModelConfigAnnotation)
@@ -355,7 +379,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         adapterMapperGenerator.write(processingEnv, methodMap.values(), AutoMapperProperties.getAdapterClassName());
 
         mapperConfigGenerator.write(processingEnv, AutoMapperProperties.getConfigClassName(),
-            AutoMapperProperties.getAdapterClassName());
+            AutoMapperProperties.getAdapterClassName(), customMapperList);
     }
 
     private AutoMapperMetadata reverseMapper(AutoMapperMetadata autoMapperMetadata) {

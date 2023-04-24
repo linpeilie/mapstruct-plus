@@ -6,6 +6,12 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.2.3
+
+- MapStructPlus 版本由 `1.5.3.Final` 升级为 `1.5.5.Final`
+- 增加自定义 `ConvertMapperAdapter` 和 `MapConvertMapperAdapter` 类名和包名的功能
+- 生成的转换接口，自动接入自定义转换接口，具体[详见](/guide/class-convert.html#自动接入自定义转换接口)
+
 ### 1.2.2
 
 - fixbug: 定义多个uses时的问题
