@@ -349,6 +349,140 @@ public class User {
 }
 ```
 
+## 自动接入自定义转换接口
+
+::: info
+since `1.2.3`
+:::
+
+当有的类型转换逻辑比较复杂，可以通过自定义转换接口来实现，即使用 MapStruct 原生的方式。
+
+当使用这种方式时，默认生成的类型转换中，如果有前面提供的类型转换时，会自动引用。
+
+例如：
+
+::: code-tabs#java
+
+@tab Car
+
+```java
+@AutoMapper(target = CarDto.class)
+@Data
+public class Car {
+    private Tyre tyre;
+}
+```
+
+@tab CarDto
+
+```java
+@Data
+public class CarDto {
+    private TyreDTO tyre;
+}
+```
+
+:::
+
+这里定义 `Tyre` 和 `TyreDTO` 之间的转换接口：
+
+```java
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public interface TyreMapper {
+
+    TyreDTO tyreToTyreDTO(Tyre tyre);
+
+    Tyre tyreDtoToTyre(TyreDTO tyreDTO);
+
+}
+```
+ 
+生成的 `Car` 与 `CarDto` 转换接口的实现类如下：
+
+::: code-tabs#java
+
+@tab CarToCarDtoMapperImpl
+
+```java
+@Generated(
+    value = "org.mapstruct.ap.MappingProcessor",
+    date = "2023-04-24T15:38:48+0800",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 1.8.0_202 (Oracle Corporation)"
+)
+@Component
+public class CarToCarDtoMapperImpl implements CarToCarDtoMapper {
+
+    @Autowired
+    private TyreMapper tyreMapper;
+
+    @Override
+    public CarDto convert(Car source) {
+        if ( source == null ) {
+            return null;
+        }
+
+        CarDto carDto = new CarDto();
+
+        carDto.setTyre( tyreMapper.tyreToTyreDTO( source.getTyre() ) );
+
+        return carDto;
+    }
+
+    @Override
+    public CarDto convert(Car source, CarDto target) {
+        if ( source == null ) {
+            return target;
+        }
+
+        target.setTyre( tyreMapper.tyreToTyreDTO( source.getTyre() ) );
+
+        return target;
+    }
+}
+```
+
+@tab CarDtoToCarMapperImpl
+
+```java
+@Generated(
+    value = "org.mapstruct.ap.MappingProcessor",
+    date = "2023-04-24T15:38:49+0800",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 1.8.0_202 (Oracle Corporation)"
+)
+@Component
+public class CarDtoToCarMapperImpl implements CarDtoToCarMapper {
+
+    @Autowired
+    private TyreMapper tyreMapper;
+
+    @Override
+    public Car convert(CarDto source) {
+        if ( source == null ) {
+            return null;
+        }
+
+        Car car = new Car();
+
+        car.setTyre( tyreMapper.tyreDtoToTyre( source.getTyre() ) );
+
+        return car;
+    }
+
+    @Override
+    public Car convert(CarDto source, Car target) {
+        if ( source == null ) {
+            return target;
+        }
+
+        target.setTyre( tyreMapper.tyreDtoToTyre( source.getTyre() ) );
+
+        return target;
+    }
+}
+```
+:::
+
+
 ## 反向属性映射配置
 
 ::: info

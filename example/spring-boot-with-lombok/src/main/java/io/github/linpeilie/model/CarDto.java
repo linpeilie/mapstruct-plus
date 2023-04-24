@@ -9,5 +9,6 @@ public class CarDto {
     private SeatConfigurationDto seatConfiguration;
     private String type;
     private List<WheelDto> wheels;
+    private TyreDTO tyre;
 
 }

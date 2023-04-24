@@ -19,20 +19,38 @@ public class AutoMapperProperties {
 
     private static boolean disableBuilder = true;
 
+    private static String adapterPackage = DEFAULT_BASE_PACKAGE;
+
+    private static String adapterClassName = DEFAULT_ADAPTER_CLASS_NAME;
+
+    private static String mapAdapterClassName = DEFAULT_MAP_ADAPTER_CLASS_NAME;
+
     public static String getMapperPackage() {
         return mapperPackage;
     }
 
     public static String getAdapterPackage() {
-        return DEFAULT_BASE_PACKAGE;
+        return adapterPackage;
+    }
+
+    public static void setAdapterPackage(final String adapterPackage) {
+        AutoMapperProperties.adapterPackage = adapterPackage;
     }
 
     public static String getAdapterClassName() {
-        return DEFAULT_ADAPTER_CLASS_NAME;
+        return adapterClassName;
+    }
+
+    public static void setAdapterClassName(final String adapterClassName) {
+        AutoMapperProperties.adapterClassName = adapterClassName;
     }
 
     public static String getMapAdapterClassName() {
-        return DEFAULT_MAP_ADAPTER_CLASS_NAME;
+        return mapAdapterClassName;
+    }
+
+    public static void setMapAdapterClassName(final String mapAdapterClassName) {
+        AutoMapperProperties.mapAdapterClassName = mapAdapterClassName;
     }
 
     public static String getConfigPackage() {

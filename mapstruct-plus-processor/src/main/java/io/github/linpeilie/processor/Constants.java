@@ -26,6 +26,8 @@ public class Constants {
 
     public static final String MAPPER_CONFIG_ANNOTATION = "io.github.linpeilie.annotations.MapperConfig";
 
+    public static final String MAPPER_ANNOTATION = "org.mapstruct.Mapper";
+
     public static final String COMPONENT_MODEL_CONFIG_ANNOTATION = "io.github.linpeilie.annotations.ComponentModelConfig";
 
     public static final String BASE_MAPPER_PACKAGE = "io.github.linpeilie";

@@ -50,7 +50,7 @@ copyright: false
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
 </dependency>
 ```
 
@@ -62,10 +62,11 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 
 ## 更新日志
 
-### 1.2.2
+### 1.2.3
 
-- fixbug: 定义多个uses时的问题
-- feature: 增加 `@AutoEnumMapper` 注解，可以在类型转换时，自动转换枚举
+- MapStructPlus 版本由 `1.5.3.Final` 升级为 `1.5.5.Final`
+- 增加自定义 `ConvertMapperAdapter` 和 `MapConvertMapperAdapter` 类名和包名的功能
+- 生成的转换接口，自动接入自定义转换接口
 
 ……
 
