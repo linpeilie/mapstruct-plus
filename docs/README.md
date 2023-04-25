@@ -57,7 +57,7 @@ copyright: false
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.2.2'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.2.3'
 ```
 
 ## 更新日志
