@@ -1,5 +1,6 @@
 package io.github.linpeilie;
 
+import cn.hutool.core.bean.BeanUtil;
 import java.util.Map;
 
 public interface BaseMapMapper<T> {
@@ -14,6 +15,10 @@ public interface BaseMapMapper<T> {
             return convert((Map<String, Object>) obj);
         }
         return null;
+    }
+
+    default Map<String, Object> toMap(T obj) {
+        return BeanUtil.beanToMap(obj);
     }
 
 }

@@ -27,9 +27,8 @@ public class SpringAdapterMapperGenerator extends AbstractAdapterMapperGenerator
             .forEach(mapper -> adapterBuilder.addField(buildMapperField(mapper))
                 .addMethod(buildMapperSetterMethod(mapper)));
 
-        adapterMethods.forEach(adapterMethod -> adapterBuilder
-            .addMethod(buildProxyMethod(adapterMethod)));
-
+        adapterMethods.forEach(adapterMethod ->
+            adapterBuilder.addMethods(buildProxyMethod(adapterMethod)));
         return adapterBuilder.build();
     }
 

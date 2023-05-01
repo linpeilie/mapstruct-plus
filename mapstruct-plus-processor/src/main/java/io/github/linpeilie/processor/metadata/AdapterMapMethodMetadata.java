@@ -1,5 +1,6 @@
 package io.github.linpeilie.processor.metadata;
 
+import cn.hutool.core.util.StrUtil;
 import com.squareup.javapoet.ClassName;
 import java.lang.annotation.Target;
 
@@ -17,9 +18,12 @@ public class AdapterMapMethodMetadata extends AbstractAdapterMethodMetadata {
                                     boolean objectConverter) {
         super(source, mapper);
         this.target = target;
-        if (objectConverter) {
+        if ("java.lang.Object".contentEquals(source.toString())) {
             methodName = "objectTo" + target.simpleName();
             mapperMethodName = "convertByObj";
+        } else if ("java.util.Map".contentEquals(target.toString())) {
+            methodName = StrUtil.lowerFirst(source.simpleName()) + "ToMap";
+            mapperMethodName = "toMap";
         } else {
             methodName = "mapTo" + target.simpleName();
             mapperMethodName = "convert";

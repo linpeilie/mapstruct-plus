@@ -1,6 +1,7 @@
 package io.github.linpeilie.processor;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.StrUtil;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
@@ -66,7 +67,7 @@ import static javax.tools.Diagnostic.Kind.ERROR;
 
 @SupportedAnnotationTypes({AUTO_MAPPER_ANNOTATION, AUTO_MAPPERS_ANNOTATION, AUTO_MAP_MAPPER_ANNOTATION,
                            AUTO_ENUM_MAPPER_ANNOTATION, MAPPER_CONFIG_ANNOTATION, COMPONENT_MODEL_CONFIG_ANNOTATION,
-                            MAPPER_ANNOTATION})
+                           MAPPER_ANNOTATION})
 public class AutoMapperProcessor extends AbstractProcessor {
 
     private static final ClassName MAPPING_DEFAULT_TARGET = ClassName.get("io.github.linpeilie", "DefaultMapping");
@@ -278,12 +279,14 @@ public class AutoMapperProcessor extends AbstractProcessor {
                 false);
             addAdapterMapMethod(ClassName.get("java.lang", "Object"), metadata.getTargetClassName(),
                 metadata.mapperClass(), true);
+            addAdapterMapMethod(metadata.getTargetClassName(), ClassName.get("java.util", "Map"),
+                metadata.mapperClass(), false);
         });
         adapterMapperGenerator.write(processingEnv, mapMethodMap.values(),
             AutoMapperProperties.getMapAdapterClassName());
 
         mapperConfigGenerator.write(processingEnv, AutoMapperProperties.getMapConfigClassName(),
-            AutoMapperProperties.getMapAdapterClassName(), null);
+            ListUtil.toList(AutoMapperProperties.getMapAdapterClassName()), null);
     }
 
     private void refreshProperties(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
@@ -379,7 +382,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
         adapterMapperGenerator.write(processingEnv, methodMap.values(), AutoMapperProperties.getAdapterClassName());
 
         mapperConfigGenerator.write(processingEnv, AutoMapperProperties.getConfigClassName(),
-            AutoMapperProperties.getAdapterClassName(), customMapperList);
+            ListUtil.toList(AutoMapperProperties.getAdapterClassName(), AutoMapperProperties.getMapAdapterClassName()),
+            customMapperList);
     }
 
     private AutoMapperMetadata reverseMapper(AutoMapperMetadata autoMapperMetadata) {

@@ -17,7 +17,8 @@ public class DefaultAdapterMapperGenerator extends AbstractAdapterMapperGenerato
                 ClassName.get(adapterPackage(), adapterClassName))
             .addModifiers(Modifier.PUBLIC);
 
-        adapterMethods.forEach(adapterMethod -> adapterBuilder.addMethod(buildProxyMethod(adapterMethod)));
+        adapterMethods.forEach(adapterMethod ->
+            adapterBuilder.addMethods(buildProxyMethod(adapterMethod)));
 
         return adapterBuilder.build();
     }

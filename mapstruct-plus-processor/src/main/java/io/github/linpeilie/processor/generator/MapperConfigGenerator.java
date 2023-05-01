@@ -18,11 +18,11 @@ import static javax.tools.Diagnostic.Kind.ERROR;
 
 public class MapperConfigGenerator {
 
-    public void write(ProcessingEnvironment processingEnv, String mapstructConfigName, String adapterClassName, List<TypeMirror> uses) {
+    public void write(ProcessingEnvironment processingEnv, String mapstructConfigName, List<String> adapterClassNames, List<TypeMirror> uses) {
         try (final Writer writer = processingEnv.getFiler()
             .createSourceFile(AutoMapperProperties.getConfigPackage() + "." + mapstructConfigName)
             .openWriter()) {
-            JavaFile.builder(AutoMapperProperties.getConfigPackage(), createConfigTypeSpec(mapstructConfigName, adapterClassName, uses)).build().writeTo(writer);
+            JavaFile.builder(AutoMapperProperties.getConfigPackage(), createConfigTypeSpec(mapstructConfigName, adapterClassNames, uses)).build().writeTo(writer);
         } catch (IOException e) {
             processingEnv.getMessager()
                 .printMessage(ERROR,
@@ -32,20 +32,22 @@ public class MapperConfigGenerator {
     }
 
     private TypeSpec createConfigTypeSpec(final String mapstructConfigName,
-        final String adapterClassName,
+        final List<String> adapterClassNames,
         final List<TypeMirror> uses) {
         return TypeSpec.interfaceBuilder(mapstructConfigName)
             .addModifiers(Modifier.PUBLIC)
-            .addAnnotation(buildMapperConfigAnnotationSpec(adapterClassName, uses))
+            .addAnnotation(buildMapperConfigAnnotationSpec(adapterClassNames, uses))
             .build();
     }
 
-    private AnnotationSpec buildMapperConfigAnnotationSpec(final String adapterClassName, final List<TypeMirror> uses) {
+    private AnnotationSpec buildMapperConfigAnnotationSpec(final List<String> adapterClassNames, final List<TypeMirror> uses) {
         CodeBlock.Builder usesCodeBuilder = CodeBlock.builder().add("{");
-        usesCodeBuilder.add("$T.class", ClassName.get(AutoMapperProperties.getAdapterPackage(), adapterClassName));
+        for (String adapterClassName : adapterClassNames) {
+            usesCodeBuilder.add("$T.class, ", ClassName.get(AutoMapperProperties.getAdapterPackage(), adapterClassName));
+        }
         if (CollectionUtil.isNotEmpty(uses)) {
             uses.forEach(use -> {
-                usesCodeBuilder.add(", $T.class", use);
+                usesCodeBuilder.add("$T.class, ", use);
             });
         }
         CodeBlock usesCodeBlock = usesCodeBuilder.add("}").build();

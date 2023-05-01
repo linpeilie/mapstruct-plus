@@ -17,7 +17,7 @@
     </modules>
 
     <properties>
-        <mapstruct-plus.version>1.2.3</mapstruct-plus.version>
+        <mapstruct-plus.version>1.2.4-SNAPSHOT</mapstruct-plus.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
