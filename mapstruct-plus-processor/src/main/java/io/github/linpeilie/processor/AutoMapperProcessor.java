@@ -381,8 +381,14 @@ public class AutoMapperProcessor extends AbstractProcessor {
 
         adapterMapperGenerator.write(processingEnv, methodMap.values(), AutoMapperProperties.getAdapterClassName());
 
+        List<String> adapterClasses;
+        if (mapMethodMap.isEmpty()) {
+            adapterClasses = ListUtil.toList(AutoMapperProperties.getAdapterClassName());
+        } else {
+            adapterClasses = ListUtil.toList(AutoMapperProperties.getAdapterClassName(), AutoMapperProperties.getMapAdapterClassName());
+        }
         mapperConfigGenerator.write(processingEnv, AutoMapperProperties.getConfigClassName(),
-            ListUtil.toList(AutoMapperProperties.getAdapterClassName(), AutoMapperProperties.getMapAdapterClassName()),
+            adapterClasses,
             customMapperList);
     }
 
