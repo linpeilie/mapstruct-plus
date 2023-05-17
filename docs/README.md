@@ -9,6 +9,8 @@ actions:
   - text: 快速开始 💡
     link: /introduction/quick-start/
     type: primary
+  - text: 常见问题
+    link: /guide/faq
 
 features:
   - title: 快速

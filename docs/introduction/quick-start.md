@@ -42,6 +42,8 @@ public class User {
 
 引入 `mapstruct-plus` 依赖：
 
+#### Maven
+
 ```xml
 <properties>
     <mapstruct-plus.version>最新版本</mapstruct-plus.version>
@@ -73,6 +75,16 @@ public class User {
         </plugin>
     </plugins>
 </build>
+```
+
+#### Gradle
+
+```groovy
+dependencies {
+    implementation group: 'io.github.linpeilie', name: 'mapstruct-plus', version: ${mapstruct-plus.version}
+    
+    annotationProcessor group: 'io.github.linpeilie', name: 'mapstruct-plus-processor', version: ${mapstruct-plus.version}
+}
 ```
 
 ### 添加配置类
@@ -138,6 +150,8 @@ public class QuickStart {
 
 引入 `mapstruct-plus-spring-boot-starter` 依赖：
 
+#### Maven
+
 ```xml
 <properties>
     <mapstruct-plus.version>最新版本</mapstruct-plus.version>
@@ -169,6 +183,16 @@ public class QuickStart {
         </plugin>
     </plugins>
 </build>
+```
+
+#### Gradle
+
+```groovy
+dependencies {
+    implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: ${mapstruct-plus.version}
+    
+    annotationProcessor group: 'io.github.linpeilie', name: 'mapstruct-plus-processor', version: ${mapstruct-plus.version}
+}
 ```
 
 ### 指定对象映射关系
