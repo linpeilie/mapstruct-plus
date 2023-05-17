@@ -6,6 +6,10 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.2.4
+
+- fixbug: 修复当项目中只有 AutoMappers 注解时，没有生成转换接口的问题
+
 ### 1.2.3
 
 - MapStructPlus 版本由 `1.5.3.Final` 升级为 `1.5.5.Final`
