@@ -125,7 +125,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
         boolean hasAutoMapper = annotations.stream().anyMatch(this::isAutoMapperAnnotation);
         final boolean hasAutoMapMapper = annotations.stream().anyMatch(this::isAutoMapMapperAnnotation);
         final boolean hasAutoEnumMapper = annotations.stream().anyMatch(this::isAutoEnumMapperAnnotation);
-        if (!hasAutoMapper && !hasAutoMapMapper && !hasAutoEnumMapper) {
+        final boolean hasAutoMapMappers = annotations.stream().anyMatch(this::isAutoMappersAnnotation);
+        if (!hasAutoMapper && !hasAutoMapMapper && !hasAutoEnumMapper && !hasAutoMapMappers) {
             return false;
         }
         // 刷新配置
