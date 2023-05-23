@@ -50,6 +50,25 @@ public class MapStructPlusConfiguration {
   - `ERROR`：抛出异常
 - **默认值**：`IGNORE`
 
+### nullValueMappingStrategy
+
+- **说明**：空值对象处理策略，默认返回空值
+- **类型**：`NullValueMappingStrategy`
+- **可选项**：
+  - `RETURN_NULL`：返回空值
+  - `RETURN_DEFAULT`：返回默认值
+- **默认值**：`RETURN_NULL`
+- 
+### nullValuePropertyMappingStrategy
+
+- **说明**：当属性值为 `null` 时应对的策略，默认设置 `null`
+- **类型**：`NullValuePropertyMappingStrategy`
+- **可选项**：
+  - `SET_TO_NULL`：设置为 `null`
+  - `SET_TO_DEFAULT`：设置为默认值
+  - `IGNORE`：忽略
+- **默认值**：`SET_TO_NULL`
+
 ### builder
 
 - **说明**：构造者模式配置，MapStruct 与 lombok 的 builder 一起使用时，会丢失父类属性，所以这里将默认使用构造者模式关闭

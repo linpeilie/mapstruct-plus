@@ -1,6 +1,8 @@
 package io.github.linpeilie.processor;
 
 import org.mapstruct.Builder;
+import org.mapstruct.NullValueMappingStrategy;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
 import static io.github.linpeilie.processor.Constants.*;
@@ -14,6 +16,10 @@ public class AutoMapperProperties {
     private static ReportingPolicy unmappedSourcePolicy = ReportingPolicy.IGNORE;
 
     private static ReportingPolicy unmappedTargetPolicy = ReportingPolicy.IGNORE;
+
+    private static NullValueMappingStrategy nullValueMappingStrategy = NullValueMappingStrategy.RETURN_NULL;
+
+    private static NullValuePropertyMappingStrategy nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL;
 
     private static String buildMethod = "build";
 
@@ -91,6 +97,22 @@ public class AutoMapperProperties {
 
     public static void setUnmappedTargetPolicy(final ReportingPolicy unmappedTargetPolicy) {
         AutoMapperProperties.unmappedTargetPolicy = unmappedTargetPolicy;
+    }
+
+    public static NullValueMappingStrategy getNullValueMappingStrategy() {
+        return nullValueMappingStrategy;
+    }
+
+    public static void setNullValueMappingStrategy(NullValueMappingStrategy nullValueMappingStrategy) {
+        AutoMapperProperties.nullValueMappingStrategy = nullValueMappingStrategy;
+    }
+
+    public static NullValuePropertyMappingStrategy getNullValuePropertyMappingStrategy() {
+        return nullValuePropertyMappingStrategy;
+    }
+
+    public static void setNullValuePropertyMappingStrategy(NullValuePropertyMappingStrategy nullValuePropertyMappingStrategy) {
+        AutoMapperProperties.nullValuePropertyMappingStrategy = nullValuePropertyMappingStrategy;
     }
 
     public static String getBuildMethod() {
