@@ -5,6 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.mapstruct.Builder;
+import org.mapstruct.NullValueMappingStrategy;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
 /**
@@ -35,6 +37,18 @@ public @interface MapperConfig {
      * @return {@link ReportingPolicy}
      */
     ReportingPolicy unmappedTargetPolicy() default ReportingPolicy.IGNORE;
+
+    /**
+     * 空对象的映射策略，默认返回 <code>null</code>
+     * @return {@link NullValueMappingStrategy}
+     */
+    NullValueMappingStrategy nullValueMappingStrategy() default NullValueMappingStrategy.RETURN_NULL;
+
+    /**
+     * 当属性值为 <code>null</code> 时应对的策略，默认设置为 <code>null</code>
+     * @return {@link NullValuePropertyMappingStrategy}
+     */
+    NullValuePropertyMappingStrategy nullValuePropertyMappingStrategy() default NullValuePropertyMappingStrategy.SET_TO_NULL;
 
     /**
      * 构造者模式配置，由于 mapstruct 和 lombok 和 builder 一起使用时，会丢失父类属性，这里默认改为关闭
