@@ -1,9 +1,12 @@
 package io.github.linpeilie.processor;
 
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.github.linpeilie.processor.metadata.AbstractAdapterMethodMetadata;
 import java.io.IOException;
@@ -39,11 +42,24 @@ public abstract class AbstractAdapterMapperGenerator {
         return AutoMapperProperties.getAdapterPackage();
     }
 
+    private TypeName wrapperTypeName(TypeName source) {
+        if (source.isPrimitive() || source.isBoxedPrimitive()) {
+            return source;
+        }
+        if ("java.util.Map".contentEquals(source.toString())) {
+            return ParameterizedTypeName.get((ClassName) source,
+                ClassName.get("java.lang", "String"),
+                ClassName.get("java.lang", "Object"));
+        }
+        return source;
+    }
+
     protected MethodSpec buildProxyMethod(AbstractAdapterMethodMetadata adapterMethodMetadata) {
         CodeBlock targetCode = adapterMethodMetadata.isStatic() ? CodeBlock.of("return $T.$N($N);",
             adapterMethodMetadata.getMapper(), adapterMethodMetadata.getMapperMethodName(),
             "param") : proxyMethodTarget(adapterMethodMetadata);
-        ParameterSpec parameterSpec = ParameterSpec.builder(adapterMethodMetadata.getSource(), "param").build();
+        ParameterSpec parameterSpec = ParameterSpec.builder(
+            wrapperTypeName(adapterMethodMetadata.getSource()), "param").build();
         return MethodSpec.methodBuilder(adapterMethodMetadata.getMethodName())
             .addModifiers(Modifier.PUBLIC)
             .addParameter(parameterSpec)
