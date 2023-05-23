@@ -24,7 +24,7 @@ public class SpringAdapterMapperGenerator extends IocAdapterMapperGenerator {
 
     private AnnotationSpec autowired() {
         return AnnotationSpec
-            .builder(ClassName.get("org.springframework.beans", "Autowired"))
+            .builder(ClassName.get("org.springframework.beans.factory.annotation", "Autowired"))
             .build();
     }
 

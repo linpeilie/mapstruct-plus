@@ -299,6 +299,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
     }
 
     private void refreshProperties(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
+        // annotation --> MapperConfig
         annotations.stream()
             .filter(this::isMapperConfigAnnotation)
             .findFirst()
@@ -326,10 +327,14 @@ public class AutoMapperProcessor extends AbstractProcessor {
                     AutoMapperProperties.setMapAdapterClassName(mapperConfig.mapAdapterClassName());
                 }
             });
-        // 构建参数
-        String componentModel = processingEnv.getOptions().get(DEFAULT_COMPONENT_MODEL);
-        AutoMapperProperties.setComponentModel(componentModel);
 
+        // compilerArgs
+        String componentModel = processingEnv.getOptions().get(DEFAULT_COMPONENT_MODEL);
+        if (StrUtil.isNotEmpty(componentModel)) {
+            AutoMapperProperties.setComponentModel(componentModel);
+        }
+
+        // annotation --> ComponentModelConfig
         annotations.stream()
             .filter(this::isComponentModelConfigAnnotation)
             .findFirst()
