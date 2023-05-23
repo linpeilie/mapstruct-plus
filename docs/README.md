@@ -64,9 +64,11 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 
 ## 更新日志
 
-### 1.2.4
+### 1.2.5
 
-- fixbug: 修复当项目中只有 AutoMappers 注解时，没有生成转换接口的问题
+- fix: 解决 MapConvertMapperAdapter 编译警告问题
+- feat: 增加 `nullValueMappingStrategy` 和 `nullValuePropertyMappingStrategy` 配置项
+- feat: 适配 solon
 
 ……
 
