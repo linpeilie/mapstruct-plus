@@ -313,8 +313,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
                 AutoMapperProperties.setUnmappedSourcePolicy(mapperConfig.unmappedSourcePolicy());
                 AutoMapperProperties.setUnmappedTargetPolicy(mapperConfig.unmappedTargetPolicy());
                 AutoMapperProperties.setNullValueMappingStrategy(mapperConfig.nullValueMappingStrategy());
-                AutoMapperProperties.setNullValuePropertyMappingStrategy(
-                    mapperConfig.nullValuePropertyMappingStrategy());
+                AutoMapperProperties.setNullValuePropertyMappingStrategy(mapperConfig.nullValuePropertyMappingStrategy());
                 AutoMapperProperties.setBuildMethod(mapperConfig.builder().buildMethod());
                 AutoMapperProperties.setDisableBuilder(mapperConfig.builder().disableBuilder());
                 if (StrUtil.isNotEmpty(mapperConfig.adapterPackage())) {
