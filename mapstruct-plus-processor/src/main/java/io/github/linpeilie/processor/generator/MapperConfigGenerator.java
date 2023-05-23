@@ -68,6 +68,23 @@ public class MapperConfigGenerator {
                 AutoMapperProperties.getUnmappedTargetPolicy()).build();
             builder.addMember("unmappedTargetPolicy", unmappedTargetPolicyCodeBlock);
         }
+
+        // nullValueMappingStrategy
+        if (AutoMapperProperties.getNullValueMappingStrategy() != null) {
+            CodeBlock nullValueMappingStrategyCodeBlock = CodeBlock.builder().add("$T.$L",
+                    ClassName.get("org.mapstruct", "NullValueMappingStrategy"),
+                    AutoMapperProperties.getNullValueMappingStrategy()).build();
+            builder.addMember("nullValueMappingStrategy", nullValueMappingStrategyCodeBlock);
+        }
+
+        // nullValuePropertyMappingStrategy
+        if (AutoMapperProperties.getNullValuePropertyMappingStrategy() != null) {
+            CodeBlock nullValuePropertyMappingStrategyCodeBlock = CodeBlock.builder().add("$T.$L",
+                    ClassName.get("org.mapstruct", "NullValuePropertyMappingStrategy"),
+                    AutoMapperProperties.getNullValuePropertyMappingStrategy()).build();
+            builder.addMember("nullValuePropertyMappingStrategy", nullValuePropertyMappingStrategyCodeBlock);
+        }
+
         // builder
         CodeBlock builderCodeBlock = CodeBlock.builder()
             .add("@$T(buildMethod = $S, disableBuilder = $L)", ClassName.get("org.mapstruct", "Builder"),
