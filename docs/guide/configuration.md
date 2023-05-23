@@ -58,7 +58,7 @@ public class MapStructPlusConfiguration {
   - `RETURN_NULL`：返回空值
   - `RETURN_DEFAULT`：返回默认值
 - **默认值**：`RETURN_NULL`
-- 
+
 ### nullValuePropertyMappingStrategy
 
 - **说明**：当属性值为 `null` 时应对的策略，默认设置 `null`

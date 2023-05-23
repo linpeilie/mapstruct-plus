@@ -52,21 +52,23 @@ copyright: false
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.2.4</version>
+    <version>1.2.5</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.2.4'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.2.5'
 ```
 
 ## 更新日志
 
-### 1.2.4
+### 1.2.5
 
-- fixbug: 修复当项目中只有 AutoMappers 注解时，没有生成转换接口的问题
+- fix: 解决 MapConvertMapperAdapter 编译警告问题
+- feat: 增加 `nullValueMappingStrategy` 和 `nullValuePropertyMappingStrategy` 配置项
+- feat: 适配 solon
 
 ……
 

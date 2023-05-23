@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
+import io.github.linpeilie.ComponentModelConstant;
 import io.github.linpeilie.annotations.AutoEnumMapper;
 import io.github.linpeilie.annotations.AutoMapMapper;
 import io.github.linpeilie.annotations.AutoMapper;
@@ -18,6 +19,7 @@ import io.github.linpeilie.processor.generator.AutoEnumMapperGenerator;
 import io.github.linpeilie.processor.generator.AutoMapperGenerator;
 import io.github.linpeilie.processor.generator.DefaultAdapterMapperGenerator;
 import io.github.linpeilie.processor.generator.MapperConfigGenerator;
+import io.github.linpeilie.processor.generator.SolonAdapterMapperGenerator;
 import io.github.linpeilie.processor.generator.SpringAdapterMapperGenerator;
 import io.github.linpeilie.processor.metadata.AbstractAdapterMethodMetadata;
 import io.github.linpeilie.processor.metadata.AdapterEnumMethodMetadata;
@@ -66,10 +68,12 @@ import static javax.tools.Diagnostic.Kind.ERROR;
 
 @SupportedAnnotationTypes({AUTO_MAPPER_ANNOTATION, AUTO_MAPPERS_ANNOTATION, AUTO_MAP_MAPPER_ANNOTATION,
                            AUTO_ENUM_MAPPER_ANNOTATION, MAPPER_CONFIG_ANNOTATION, COMPONENT_MODEL_CONFIG_ANNOTATION,
-                            MAPPER_ANNOTATION})
+                           MAPPER_ANNOTATION})
 public class AutoMapperProcessor extends AbstractProcessor {
 
     private static final ClassName MAPPING_DEFAULT_TARGET = ClassName.get("io.github.linpeilie", "DefaultMapping");
+
+    protected static final String DEFAULT_COMPONENT_MODEL = "mapstruct.defaultComponentModel";
 
     private final AutoMapperGenerator mapperGenerator;
 
@@ -133,9 +137,16 @@ public class AutoMapperProcessor extends AbstractProcessor {
         refreshProperties(annotations, roundEnv);
 
         // 根据配置生成适配类生成器
-        this.adapterMapperGenerator = AutoMapperProperties.getComponentModel()
-                                          .contentEquals(
-                                              MappingConstants.ComponentModel.SPRING) ? new SpringAdapterMapperGenerator() : new DefaultAdapterMapperGenerator();
+        switch (AutoMapperProperties.getComponentModel()) {
+            case MappingConstants.ComponentModel.SPRING:
+                this.adapterMapperGenerator = new SpringAdapterMapperGenerator();
+                break;
+            case ComponentModelConstant.SOLON:
+                this.adapterMapperGenerator = new SolonAdapterMapperGenerator();
+                break;
+            default:
+                this.adapterMapperGenerator = new DefaultAdapterMapperGenerator();
+        }
 
         // AutoMapMapper
         annotations.stream()
@@ -288,6 +299,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
     }
 
     private void refreshProperties(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
+        // annotation --> MapperConfig
         annotations.stream()
             .filter(this::isMapperConfigAnnotation)
             .findFirst()
@@ -314,16 +326,24 @@ public class AutoMapperProcessor extends AbstractProcessor {
                     AutoMapperProperties.setMapAdapterClassName(mapperConfig.mapAdapterClassName());
                 }
             });
+
+        // compilerArgs
+        String componentModel = processingEnv.getOptions().get(DEFAULT_COMPONENT_MODEL);
+        if (StrUtil.isNotEmpty(componentModel)) {
+            AutoMapperProperties.setComponentModel(componentModel);
+        }
+
+        // annotation --> ComponentModelConfig
         annotations.stream()
             .filter(this::isComponentModelConfigAnnotation)
             .findFirst()
             .flatMap(annotation -> roundEnv.getElementsAnnotatedWith(annotation).stream().findFirst())
             .ifPresent(element -> {
-                final ComponentModelConfig componentModelConfig = element.getAnnotation(ComponentModelConfig.class);
-                String componentModel = StringUtils.isEmpty(
-                    componentModelConfig.componentModel()) ? "default" : componentModelConfig.componentModel();
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "component model " + componentModel);
-                AutoMapperProperties.setComponentModel(componentModel);
+                if (StrUtil.isEmpty(componentModel)) {
+                    final ComponentModelConfig componentModelConfig = element.getAnnotation(ComponentModelConfig.class);
+                    String componentModelByAnnotation = componentModelConfig.componentModel();
+                    AutoMapperProperties.setComponentModel(componentModelByAnnotation);
+                }
             });
     }
 
