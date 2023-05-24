@@ -234,6 +234,89 @@ public class QuickStartTest {
 }
 ```
 
+## Solon
+
+### 添加依赖
+
+引入 `mapstruct-plu-solon-plugin` 依赖
+
+> `mapstruct-plu-solon-plugin` 已添加到 `solon-parent` 依赖管理中，最新版本可以到 [solon-plugins](https://gitee.com/dromara/solon-plugins) 中查看
+
+```xml
+    <dependencies>
+        <dependency>
+            <groupId>org.dromara.solon-plugins</groupId>
+            <artifactId>mapstruct-plus-solon-plugins</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>io.github.linpeilie</groupId>
+                            <artifactId>mapstruct-plus-processor</artifactId>
+                            <version>${mapstruct-plus.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>
+                            -Amapstruct.defaultComponentModel=solon
+                        </arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+```
+
+### 指定对象映射关系
+
+同非 SpringBoot 环境
+
+### 测试
+
+```java
+@SolonTest(DemoApp.class)
+@ExtendWith(SolonJUnit5Extension.class)
+public class QuickStartTest {
+
+    @Inject
+    private Converter converter;
+
+    @Test
+    public void test() {
+        User user = new User();
+        user.setUsername("jack");
+        user.setAge(23);
+        user.setYoung(false);
+
+        UserDto userDto = converter.convert(user, UserDto.class);
+        System.out.println(userDto);    // UserDto{username='jack', age=23, young=false}
+
+        assert user.getUsername().equals(userDto.getUsername());
+        assert user.getAge() == userDto.getAge();
+        assert user.isYoung() == userDto.isYoung();
+
+        User newUser = converter.convert(userDto, User.class);
+
+        System.out.println(newUser);    // User{username='jack', age=23, young=false}
+
+        assert user.getUsername().equals(newUser.getUsername());
+        assert user.getAge() == newUser.getAge();
+        assert user.isYoung() == newUser.isYoung();
+    }
+
+}
+```
+
 ## 小结
 
 引入依赖后，使用 Mapstruct Plus 步骤非常简单。
