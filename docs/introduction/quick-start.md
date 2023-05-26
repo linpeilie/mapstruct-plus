@@ -236,6 +236,10 @@ public class QuickStartTest {
 
 ## Solon
 
+:::info
+since `1.2.5`
+:::
+
 ### 添加依赖
 
 引入 `mapstruct-plu-solon-plugin` 依赖
