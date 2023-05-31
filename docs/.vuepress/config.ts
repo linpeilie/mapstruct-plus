@@ -7,7 +7,7 @@ import { componentsPlugin } from "vuepress-plugin-components"
 import theme from "./theme.js";
 
 export default defineUserConfig({
-    base: "/",
+    base: "/mapstruct-plus",
 
     head: [
         ['script', {}, `

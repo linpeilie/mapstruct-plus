@@ -41,7 +41,6 @@ build/
 
 node_modules
 
-dist
 .dumi/tmp
 .dumi/tmp-production
 
@@ -49,4 +48,3 @@ dist
 node_modules/
 docs/.vuepress/.cache/
 docs/.vuepress/.temp/
-docs/.vuepress/dist/
