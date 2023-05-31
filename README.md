@@ -11,6 +11,7 @@ Mapstruct Plus 是对 Mapstruct 框架的一个增强，只做增强，不做修
 ## 链接
 
 - [Document](https://mapstruct.plus)
+- [Document 国内站点](https://easii.gitee.io/mapstruct-plus/)
 - [Mapstruct](https://mapstruct.org)
 - [Gitee](https://gitee.com/linpeilie/mapstruct-plus)
 - [Github](https://github.com/linpeilie/mapstruct-plus)
