@@ -20,6 +20,7 @@ export default defineUserConfig({
             })();
         `],
         ['meta', {name: 'baidu-site-verification', content: 'codeva-OceTRzMGJ2'}],
+        ['meta', {name: 'baidu-site-verification', content: 'codeva-Wq6ZBhz2PJ'}],
         ['meta', {name: 'bytedance-verification-code', content: 'fXSJ80ILSanHaf/RIZGQ'}],
     ],
 
