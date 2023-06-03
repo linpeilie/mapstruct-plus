@@ -7,7 +7,7 @@ heroText: MapstructPlus
 tagline: 可能是最简单最强大的Java Bean转换工具
 actions:
   - text: 快速开始 💡
-    link: /introduction/quick-start/
+    link: /introduction/quick-start
     type: primary
   - text: 常见问题
     link: /guide/faq
