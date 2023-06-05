@@ -26,6 +26,23 @@ description: MapStructPlus MapStructPlus常见问题 faq
 
 > 需要注意，如果是外部依赖包，也会生成在外部依赖类所在的同名包下，导致 Spring 扫描不到，这种情况下，建议指定具体的目录。
 
+## "Couldn't retrieve @Mapper annotation" 异常
+
+该异常是因为 MapStruct 依赖冲突导致的，由于 MapStructPlus 中已经依赖了 MapStruct，所以在使用时无需再添加 MapStruct 的依赖。
+同时，建议其它依赖中的 MapStruct，也建议排除掉，比如 springfox-swagger2 中就依赖了 MapStruct。
+
+排除完依赖后，重新执行 clean compile
+
+## "NoSuchMethodError: …… io.github.linpeilie.ConvertMapperAdapter.xxxMethod" 异常
+
+当所有转换类都能正常生成，在执行时，抛出 `NoSuchMethodError` 异常，但看生成的代码中，`ConvertMapperAdapter` 类中是存在该方法的。
+
+当出现该异常时，是因为存在多个模块，且模块之间存在依赖关系，每个模块中，都有需要转换的类，
+故在生成时，每个模块中，都生成了 `io.github.linpeilie.ConvertMapperAdapter` 这个类，
+由于类加载器在加载类时，同名同包的类，只会加载一个，所以在具体执行的时候，实际上调用的不是我们想要的那个类。故出现 `NoSuchMethod` 异常。
+
+**解决方案**：为每个模块中添加 MapStructPlus 的配置类，每个模块中指定 `adapterPackage` 包不同的路径。
+
 ## 与 `lombok` 整合
 
 与 Mapstruct 整合 lombok 的方式一致。
