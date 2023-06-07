@@ -3,7 +3,7 @@ import { zhNavbar } from "./navbar";
 import { zhSidebar } from "./sidebar";
 
 export default hopeTheme({
-  hostname: "https://mapstruct.plus",
+  hostname: "https://easii.gitee.io/mapstruct-plus",
   // 是否显示打印按钮
   print: false,
 

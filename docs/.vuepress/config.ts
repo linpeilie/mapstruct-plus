@@ -3,6 +3,7 @@ import {shikiPlugin} from "@vuepress/plugin-shiki";
 import {searchPlugin} from "@vuepress/plugin-search";
 import {googleAnalyticsPlugin} from "@vuepress/plugin-google-analytics"
 import { componentsPlugin } from "vuepress-plugin-components"
+import { sitemapPlugin } from "vuepress-plugin-sitemap2"
 
 import theme from "./theme.js";
 
