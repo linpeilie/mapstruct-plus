@@ -44,6 +44,9 @@ export default defineUserConfig({
         googleAnalyticsPlugin({
             id: 'G-SXEZVNR8FZ'
         }),
+        sitemapPlugin({
+            hostname: 'easii.gitee.io'
+        }),
         componentsPlugin({
               rootComponents: {
                 notice: [
