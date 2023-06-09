@@ -97,5 +97,10 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 
 ## 联系我
 
-![Wechat --- Clue8a796d01](/assets/contact-me.png =346x403)
+- 个人网站：[代码笔耕](https://easii.gitee.io)    
+- vx : **Clue8a796d01**    
+  ![Clue8a796d01](https://img-1318183505.cos.ap-nanjing.myqcloud.com/20230609091707.webp)
+- 公众号：**代码笔耕**    
+  ![代码笔耕](https://img-1318183505.cos.ap-nanjing.myqcloud.com/qrcode_for_gh_c207b35e04b8_344.webp)
+
 
