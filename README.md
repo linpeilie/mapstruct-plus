@@ -17,6 +17,10 @@ Mapstruct Plus 是对 Mapstruct 框架的一个增强，只做增强，不做修
 - [Github](https://github.com/linpeilie/mapstruct-plus)
 - [彻底干掉 BeanUtils，最优雅的 Mapstruct 增强工具全新出炉](https://juejin.cn/post/7204307381688909882)
 
+## 个人主页
+
+- [代码笔耕](https://easii.gitee.io/)
+
 ## 其他开源项目
 
 - **EasyRelation**：[GitHub](https://github.com/linpeilie/easy-relation) | [Gitee](https://gitee.com/easii/easy-relation) | [Document](https://easy-relation.easii.cn)
@@ -145,6 +149,13 @@ public class QuickStartTest {
 
 ## 联系我
 
+> 个人网站：[代码笔耕](https://easii.gitee.io)
+
 > vx : Clue8a796d01
 
-<img src="https://raw.githubusercontent.com/linpeilie/mapstruct-plus/main/assets/contact-me.jpeg" alt="联系我" width="364" height="497" />
+![Clue8a796d01](https://img-1318183505.cos.ap-nanjing.myqcloud.com/20230609091707.webp)
+
+> 公众号：**代码笔耕**
+
+![代码笔耕](https://img-1318183505.cos.ap-nanjing.myqcloud.com/qrcode_for_gh_c207b35e04b8_344.webp)
+

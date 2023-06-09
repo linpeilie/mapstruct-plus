@@ -47,34 +47,34 @@ export default defineUserConfig({
         sitemapPlugin({
             hostname: 'easii.gitee.io'
         }),
-        componentsPlugin({
-              rootComponents: {
-                notice: [
-                  {
-                    path: "/",
-                    title: "推荐最新开源项目 EasyRelation",
-                    content: "EasyRelation 是一个简单、高效的自动关联数据框架，可以通过一行代码，自动关联查询并填充需要的数据，对于性能影响极小，且省略了大量冗余代码。",
-                    actions: [
-                      {
-                        text: "GitHub",
-                        link: "https://github.com/linpeilie/easy-relation",
-                        type: "default",
-                      },
-                      {
-                        text: "Gitee",
-                        link: "https://gitee.com/easii/easy-relation",
-                        "type": "default"
-                      },
-                      {
-                        text: "Document",
-                        link: "https://easy-relation.easii.cn",
-                        "type": "primary"
-                      },
-                    ],
-                    fullscreen: false,
-                  }
-                ],
-              },
-            }),
+//         componentsPlugin({
+//               rootComponents: {
+//                 notice: [
+//                   {
+//                     path: "/",
+//                     title: "推荐最新开源项目 EasyRelation",
+//                     content: "EasyRelation 是一个简单、高效的自动关联数据框架，可以通过一行代码，自动关联查询并填充需要的数据，对于性能影响极小，且省略了大量冗余代码。",
+//                     actions: [
+//                       {
+//                         text: "GitHub",
+//                         link: "https://github.com/linpeilie/easy-relation",
+//                         type: "default",
+//                       },
+//                       {
+//                         text: "Gitee",
+//                         link: "https://gitee.com/easii/easy-relation",
+//                         "type": "default"
+//                       },
+//                       {
+//                         text: "Document",
+//                         link: "https://easy-relation.easii.cn",
+//                         "type": "primary"
+//                       },
+//                     ],
+//                     fullscreen: false,
+//                   }
+//                 ],
+//               },
+//             }),
     ]
 });
