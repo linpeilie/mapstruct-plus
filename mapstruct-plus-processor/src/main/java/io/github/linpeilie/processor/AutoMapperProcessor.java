@@ -45,6 +45,7 @@ import java.util.stream.Collectors;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -69,11 +70,25 @@ import static javax.tools.Diagnostic.Kind.ERROR;
 @SupportedAnnotationTypes({AUTO_MAPPER_ANNOTATION, AUTO_MAPPERS_ANNOTATION, AUTO_MAP_MAPPER_ANNOTATION,
                            AUTO_ENUM_MAPPER_ANNOTATION, MAPPER_CONFIG_ANNOTATION, COMPONENT_MODEL_CONFIG_ANNOTATION,
                            MAPPER_ANNOTATION})
+@SupportedOptions({
+    AutoMapperProcessor.MAPPER_PACKAGE,
+    AutoMapperProcessor.ADAPTER_PACKAGE,
+    AutoMapperProcessor.ADAPTER_CLASS_NAME,
+    AutoMapperProcessor.MAP_ADAPTER_CLASS_NAME,
+})
 public class AutoMapperProcessor extends AbstractProcessor {
 
     private static final ClassName MAPPING_DEFAULT_TARGET = ClassName.get("io.github.linpeilie", "DefaultMapping");
 
     protected static final String DEFAULT_COMPONENT_MODEL = "mapstruct.defaultComponentModel";
+
+    protected static final String MAPPER_PACKAGE = "mapstruct.plus.mapperPackage";
+
+    protected static final String ADAPTER_PACKAGE = "mapstruct.plus.adapterPackage";
+
+    protected static final String ADAPTER_CLASS_NAME = "mapstruct.plus.adapterClassName";
+
+    protected static final String MAP_ADAPTER_CLASS_NAME = "mapstruct.plus.mapAdapterClassName";
 
     private final AutoMapperGenerator mapperGenerator;
 
@@ -306,16 +321,15 @@ public class AutoMapperProcessor extends AbstractProcessor {
             .flatMap(annotation -> roundEnv.getElementsAnnotatedWith(annotation).stream().findFirst())
             .ifPresent(element -> {
                 final MapperConfig mapperConfig = element.getAnnotation(MapperConfig.class);
-                String mapperPackage = StringUtils.isEmpty(mapperConfig.mapperPackage()) ? getPackageName(
-                    element) : mapperConfig.mapperPackage();
-                processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "mapper package " + mapperPackage);
-                AutoMapperProperties.setMapperPackage(mapperPackage);
                 AutoMapperProperties.setUnmappedSourcePolicy(mapperConfig.unmappedSourcePolicy());
                 AutoMapperProperties.setUnmappedTargetPolicy(mapperConfig.unmappedTargetPolicy());
                 AutoMapperProperties.setNullValueMappingStrategy(mapperConfig.nullValueMappingStrategy());
                 AutoMapperProperties.setNullValuePropertyMappingStrategy(mapperConfig.nullValuePropertyMappingStrategy());
                 AutoMapperProperties.setBuildMethod(mapperConfig.builder().buildMethod());
                 AutoMapperProperties.setDisableBuilder(mapperConfig.builder().disableBuilder());
+                if (StrUtil.isNotEmpty(mapperConfig.mapperPackage())) {
+                    AutoMapperProperties.setMapperPackage(mapperConfig.mapperPackage());
+                }
                 if (StrUtil.isNotEmpty(mapperConfig.adapterPackage())) {
                     AutoMapperProperties.setAdapterPackage(mapperConfig.adapterPackage());
                 }
@@ -327,24 +341,41 @@ public class AutoMapperProcessor extends AbstractProcessor {
                 }
             });
 
-        // compilerArgs
-        String componentModel = processingEnv.getOptions().get(DEFAULT_COMPONENT_MODEL);
-        if (StrUtil.isNotEmpty(componentModel)) {
-            AutoMapperProperties.setComponentModel(componentModel);
-        }
-
         // annotation --> ComponentModelConfig
         annotations.stream()
             .filter(this::isComponentModelConfigAnnotation)
             .findFirst()
             .flatMap(annotation -> roundEnv.getElementsAnnotatedWith(annotation).stream().findFirst())
             .ifPresent(element -> {
-                if (StrUtil.isEmpty(componentModel)) {
-                    final ComponentModelConfig componentModelConfig = element.getAnnotation(ComponentModelConfig.class);
-                    String componentModelByAnnotation = componentModelConfig.componentModel();
-                    AutoMapperProperties.setComponentModel(componentModelByAnnotation);
-                }
+                final ComponentModelConfig componentModelConfig = element.getAnnotation(ComponentModelConfig.class);
+                String componentModelByAnnotation = componentModelConfig.componentModel();
+                AutoMapperProperties.setComponentModel(componentModelByAnnotation);
             });
+        // compilerArgs
+        loadCompilerArgs();
+    }
+
+    private void loadCompilerArgs() {
+        String componentModel = processingEnv.getOptions().get(DEFAULT_COMPONENT_MODEL);
+        if (StrUtil.isNotEmpty(componentModel)) {
+            AutoMapperProperties.setComponentModel(componentModel);
+        }
+        final String mapperPackage = processingEnv.getOptions().get(MAPPER_PACKAGE);
+        if (StrUtil.isNotEmpty(mapperPackage)) {
+            AutoMapperProperties.setMapperPackage(mapperPackage);
+        }
+        final String adapterPackage = processingEnv.getOptions().get(ADAPTER_PACKAGE);
+        if (StrUtil.isNotEmpty(adapterPackage)) {
+            AutoMapperProperties.setAdapterPackage(adapterPackage);
+        }
+        final String adapterClassName = processingEnv.getOptions().get(ADAPTER_CLASS_NAME);
+        if (StrUtil.isNotEmpty(adapterClassName)) {
+            AutoMapperProperties.setAdapterClassName(adapterClassName);
+        }
+        final String mapAdapterClassName = processingEnv.getOptions().get(MAP_ADAPTER_CLASS_NAME);
+        if (StrUtil.isNotEmpty(mapAdapterClassName)) {
+            AutoMapperProperties.setMapAdapterClassName(mapAdapterClassName);
+        }
     }
 
     private String getPackageName(Element element) {

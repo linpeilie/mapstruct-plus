@@ -74,6 +74,17 @@
                             <version>0.2.0</version>
                         </path>
                     </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>
+                            -Amapstruct.plus.adapterClassName=DemoConvertMapperAdapter
+                        </arg>
+                        <arg>
+                            -Amapstruct.plus.adapterPackage=io.github.linpeilie.adapter
+                        </arg>
+                        <arg>
+                            -Amapstruct.plus.mapAdapterClassName=DemoMapConvertMapperAdapter
+                        </arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>
