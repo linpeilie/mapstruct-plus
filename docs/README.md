@@ -56,21 +56,27 @@ copyright: false
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.3.0</version>
+    <version>1.3.1</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.3.0'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.3.1'
 ```
 
 ## 更新日志
 
+### 1.3.1
+
+- 增加编译参数中指定配置类的功能
+- 更好地适配 IDEA 部分编译场景
+
 ### 1.3.0
 
 - fix: 解决本地开发时 IDEA 编译或者运行时报错等与预期不一致的问题
+- feature: AutoMapper 注解增加 imports 属性支持
 
 ……
 

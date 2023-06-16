@@ -14,6 +14,7 @@ import java.io.Writer;
 import java.util.Collection;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 
 import static javax.tools.Diagnostic.Kind.ERROR;
 
@@ -22,6 +23,12 @@ public abstract class AbstractAdapterMapperGenerator {
     public void write(ProcessingEnvironment processingEnv,
         Collection<AbstractAdapterMethodMetadata> adapterMethods,
         String adapterClassName) {
+        final TypeElement typeElement =
+            processingEnv.getElementUtils().getTypeElement(adapterPackage() + "." + adapterClassName);
+        if (typeElement != null) {
+            System.out.println("adapter class existed");
+            return;
+        }
         // write Adapter
         try (final Writer writer = processingEnv.getFiler()
             .createSourceFile(adapterPackage() + "." + adapterClassName)

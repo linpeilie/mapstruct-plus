@@ -12,6 +12,7 @@ import java.io.Writer;
 import java.util.List;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import static javax.tools.Diagnostic.Kind.ERROR;
@@ -19,6 +20,12 @@ import static javax.tools.Diagnostic.Kind.ERROR;
 public class MapperConfigGenerator {
 
     public void write(ProcessingEnvironment processingEnv, String mapstructConfigName, String adapterClassName, List<TypeMirror> uses) {
+        final TypeElement typeElement =
+            processingEnv.getElementUtils().getTypeElement(AutoMapperProperties.getConfigPackage() + "." + adapterClassName);
+        if (typeElement != null) {
+            System.out.println("mapperConfig class existed");
+            return;
+        }
         try (final Writer writer = processingEnv.getFiler()
             .createSourceFile(AutoMapperProperties.getConfigPackage() + "." + mapstructConfigName)
             .openWriter()) {

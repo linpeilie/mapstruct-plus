@@ -72,6 +72,7 @@ import static io.github.linpeilie.processor.ProcessorOptions.*;
                            AUTO_ENUM_MAPPER_ANNOTATION, MAPPER_CONFIG_ANNOTATION, COMPONENT_MODEL_CONFIG_ANNOTATION,
                            MAPPER_ANNOTATION})
 @SupportedOptions({
+    MAPPER_CONFIG_CLASS,
     MAPPER_PACKAGE,
     UNMAPPED_SOURCE_POLICY,
     UNMAPPED_TARGET_POLICY,
@@ -310,33 +311,46 @@ public class AutoMapperProcessor extends AbstractProcessor {
             AutoMapperProperties.getMapAdapterClassName(), null);
     }
 
+    private void loadMapperConfig(MapperConfig mapperConfig) {
+        if (mapperConfig == null) {
+            return;
+        }
+        AutoMapperProperties.setUnmappedSourcePolicy(mapperConfig.unmappedSourcePolicy());
+        AutoMapperProperties.setUnmappedTargetPolicy(mapperConfig.unmappedTargetPolicy());
+        AutoMapperProperties.setNullValueMappingStrategy(mapperConfig.nullValueMappingStrategy());
+        AutoMapperProperties.setNullValuePropertyMappingStrategy(mapperConfig.nullValuePropertyMappingStrategy());
+        AutoMapperProperties.setBuildMethod(mapperConfig.builder().buildMethod());
+        AutoMapperProperties.setDisableBuilder(mapperConfig.builder().disableBuilder());
+        if (StrUtil.isNotEmpty(mapperConfig.mapperPackage())) {
+            AutoMapperProperties.setMapperPackage(mapperConfig.mapperPackage());
+        }
+        if (StrUtil.isNotEmpty(mapperConfig.adapterPackage())) {
+            AutoMapperProperties.setAdapterPackage(mapperConfig.adapterPackage());
+        }
+        if (StrUtil.isNotEmpty(mapperConfig.adapterClassName())) {
+            AutoMapperProperties.setAdapterClassName(mapperConfig.adapterClassName());
+        }
+        if (StrUtil.isNotEmpty(mapperConfig.mapAdapterClassName())) {
+            AutoMapperProperties.setMapAdapterClassName(mapperConfig.mapAdapterClassName());
+        }
+    }
+
     private void refreshProperties(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
         // annotation --> MapperConfig
         annotations.stream()
             .filter(this::isMapperConfigAnnotation)
             .findFirst()
             .flatMap(annotation -> roundEnv.getElementsAnnotatedWith(annotation).stream().findFirst())
-            .ifPresent(element -> {
-                final MapperConfig mapperConfig = element.getAnnotation(MapperConfig.class);
-                AutoMapperProperties.setUnmappedSourcePolicy(mapperConfig.unmappedSourcePolicy());
-                AutoMapperProperties.setUnmappedTargetPolicy(mapperConfig.unmappedTargetPolicy());
-                AutoMapperProperties.setNullValueMappingStrategy(mapperConfig.nullValueMappingStrategy());
-                AutoMapperProperties.setNullValuePropertyMappingStrategy(mapperConfig.nullValuePropertyMappingStrategy());
-                AutoMapperProperties.setBuildMethod(mapperConfig.builder().buildMethod());
-                AutoMapperProperties.setDisableBuilder(mapperConfig.builder().disableBuilder());
-                if (StrUtil.isNotEmpty(mapperConfig.mapperPackage())) {
-                    AutoMapperProperties.setMapperPackage(mapperConfig.mapperPackage());
-                }
-                if (StrUtil.isNotEmpty(mapperConfig.adapterPackage())) {
-                    AutoMapperProperties.setAdapterPackage(mapperConfig.adapterPackage());
-                }
-                if (StrUtil.isNotEmpty(mapperConfig.adapterClassName())) {
-                    AutoMapperProperties.setAdapterClassName(mapperConfig.adapterClassName());
-                }
-                if (StrUtil.isNotEmpty(mapperConfig.mapAdapterClassName())) {
-                    AutoMapperProperties.setMapAdapterClassName(mapperConfig.mapAdapterClassName());
-                }
-            });
+            .ifPresent(element -> loadMapperConfig(element.getAnnotation(MapperConfig.class)));
+
+        // special MapperConfig Class
+        final String mapperConfigClass = processingEnv.getOptions().get(MAPPER_CONFIG_CLASS);
+        if (StrUtil.isNotEmpty(mapperConfigClass)) {
+            final TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(mapperConfigClass);
+            if (typeElement != null) {
+                loadMapperConfig(typeElement.getAnnotation(MapperConfig.class));
+            }
+        }
 
         // annotation --> ComponentModelConfig
         annotations.stream()
