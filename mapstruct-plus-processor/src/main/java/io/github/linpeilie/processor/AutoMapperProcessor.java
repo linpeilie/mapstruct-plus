@@ -66,29 +66,26 @@ import static io.github.linpeilie.processor.Constants.COMPONENT_MODEL_CONFIG_ANN
 import static io.github.linpeilie.processor.Constants.MAPPER_ANNOTATION;
 import static io.github.linpeilie.processor.Constants.MAPPER_CONFIG_ANNOTATION;
 import static javax.tools.Diagnostic.Kind.ERROR;
+import static io.github.linpeilie.processor.ProcessorOptions.*;
 
 @SupportedAnnotationTypes({AUTO_MAPPER_ANNOTATION, AUTO_MAPPERS_ANNOTATION, AUTO_MAP_MAPPER_ANNOTATION,
                            AUTO_ENUM_MAPPER_ANNOTATION, MAPPER_CONFIG_ANNOTATION, COMPONENT_MODEL_CONFIG_ANNOTATION,
                            MAPPER_ANNOTATION})
 @SupportedOptions({
-    AutoMapperProcessor.MAPPER_PACKAGE,
-    AutoMapperProcessor.ADAPTER_PACKAGE,
-    AutoMapperProcessor.ADAPTER_CLASS_NAME,
-    AutoMapperProcessor.MAP_ADAPTER_CLASS_NAME,
+    MAPPER_PACKAGE,
+    UNMAPPED_SOURCE_POLICY,
+    UNMAPPED_TARGET_POLICY,
+    NULL_VALUE_MAPPING_STRATEGY,
+    NULL_VALUE_PROPERTY_MAPPING_STRATEGY,
+    BUILDER_BUILD_METHOD,
+    BUILDER_DISABLE_BUILDER,
+    ADAPTER_PACKAGE,
+    ADAPTER_CLASS_NAME,
+    MAP_ADAPTER_CLASS_NAME,
 })
 public class AutoMapperProcessor extends AbstractProcessor {
 
     private static final ClassName MAPPING_DEFAULT_TARGET = ClassName.get("io.github.linpeilie", "DefaultMapping");
-
-    protected static final String DEFAULT_COMPONENT_MODEL = "mapstruct.defaultComponentModel";
-
-    protected static final String MAPPER_PACKAGE = "mapstruct.plus.mapperPackage";
-
-    protected static final String ADAPTER_PACKAGE = "mapstruct.plus.adapterPackage";
-
-    protected static final String ADAPTER_CLASS_NAME = "mapstruct.plus.adapterClassName";
-
-    protected static final String MAP_ADAPTER_CLASS_NAME = "mapstruct.plus.mapAdapterClassName";
 
     private final AutoMapperGenerator mapperGenerator;
 
@@ -356,30 +353,12 @@ public class AutoMapperProcessor extends AbstractProcessor {
     }
 
     private void loadCompilerArgs() {
-        String componentModel = processingEnv.getOptions().get(DEFAULT_COMPONENT_MODEL);
-        if (StrUtil.isNotEmpty(componentModel)) {
-            AutoMapperProperties.setComponentModel(componentModel);
-        }
-        final String mapperPackage = processingEnv.getOptions().get(MAPPER_PACKAGE);
-        if (StrUtil.isNotEmpty(mapperPackage)) {
-            AutoMapperProperties.setMapperPackage(mapperPackage);
-        }
-        final String adapterPackage = processingEnv.getOptions().get(ADAPTER_PACKAGE);
-        if (StrUtil.isNotEmpty(adapterPackage)) {
-            AutoMapperProperties.setAdapterPackage(adapterPackage);
-        }
-        final String adapterClassName = processingEnv.getOptions().get(ADAPTER_CLASS_NAME);
-        if (StrUtil.isNotEmpty(adapterClassName)) {
-            AutoMapperProperties.setAdapterClassName(adapterClassName);
-        }
-        final String mapAdapterClassName = processingEnv.getOptions().get(MAP_ADAPTER_CLASS_NAME);
-        if (StrUtil.isNotEmpty(mapAdapterClassName)) {
-            AutoMapperProperties.setMapAdapterClassName(mapAdapterClassName);
-        }
-    }
-
-    private String getPackageName(Element element) {
-        return String.valueOf(processingEnv.getElementUtils().getPackageOf(element).getQualifiedName());
+        ProcessorOptions.optionConsumers().forEach((key, consumer) -> {
+            final String value = processingEnv.getOptions().get(key);
+            if (StrUtil.isNotEmpty(value)) {
+                consumer.accept(value);
+            }
+        });
     }
 
     private void processAutoMapperAnnotation(final RoundEnvironment roundEnv, final TypeElement annotation) {
@@ -520,21 +499,6 @@ public class AutoMapperProcessor extends AbstractProcessor {
             return null;
         }
         return buildAutoMapperMetadata(autoMapperAnnotation, ele);
-    }
-
-    private boolean hasReverseAutoMapping(Element ele) {
-        TypeElement typeElement = (TypeElement) ele;
-        if (!typeElement.getKind().isClass()) {
-            return false;
-        }
-        return typeElement.getEnclosedElements()
-            .stream().anyMatch(e -> {
-                if (e.getKind() != ElementKind.FIELD) {
-                    return false;
-                }
-                return e.getAnnotation(ReverseAutoMapping.class) != null
-                       || e.getAnnotation(ReverseAutoMappings.class) != null;
-            });
     }
 
     private boolean isTargetFieldMapping(ClassName target, AutoMappingMetadata mappingMetadata) {
