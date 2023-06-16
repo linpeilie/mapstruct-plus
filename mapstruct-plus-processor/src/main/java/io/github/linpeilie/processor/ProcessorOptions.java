@@ -9,6 +9,8 @@ import org.mapstruct.ReportingPolicy;
 
 public class ProcessorOptions {
 
+    public static final String MAPPER_CONFIG_CLASS = "mapstruct.plus.mapperConfigClass";
+
     public static final String DEFAULT_COMPONENT_MODEL = "mapstruct.defaultComponentModel";
 
     public static final String MAPPER_PACKAGE = "mapstruct.plus.mapperPackage";

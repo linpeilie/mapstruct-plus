@@ -23,6 +23,44 @@ public class MapStructPlusConfiguration {
 }
 ```
 
+:::warning
+**当使用该方式配置时，强烈建议，在编译参数中，指定配置类为当前类，以解决IDEA部分编译场景时出现的各种问题，该功能从 1.3.1 开始支持**
+
+配置时，需要在启动参数中添加 `-Amapstruct.plus.mapperConfigClass` 参数，该参数的值为配置类的全路径名称：
+
+```xml
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-compiler-plugin</artifactId>
+  <version>3.8.0</version>
+  <configuration>
+    <source>${maven.compiler.source}</source>
+    <target>${maven.compiler.target}</target>
+    <annotationProcessorPaths>
+      <path>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>${lombok.version}</version>
+      </path>
+      <path>
+        <groupId>io.github.linpeilie</groupId>
+        <artifactId>mapstruct-plus-processor</artifactId>
+        <version>${mapstruct-plus.version}</version>
+      </path>
+      <path>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok-mapstruct-binding</artifactId>
+        <version>0.2.0</version>
+      </path>
+    </annotationProcessorPaths>
+    <compilerArgs>
+      <arg>-Amapstruct.plus.mapperConfigClass=com.tutelary.MapStructPlusConfiguration</arg>
+    </compilerArgs>
+  </configuration>
+</plugin>
+```
+:::
+
 -------------------------------------------------------------------
 
 除此之外，配置属性还支持**增加编译参数**的方式，以 `-Akey=value` 的形式，传递给编译器。
@@ -30,10 +68,6 @@ public class MapStructPlusConfiguration {
 例如，使用 Maven 时，可以在 `maven-compiler-plugin` 插件配置中，使用 `compilerArgs` 属性来配置传递，例如：
 
 **且使用该方式配置优先级更高**，即，当该方式和配置类同时存在时，以该方式配置的属性为准。该功能从 `1.3.0` 开始支持。
-
-:::warning
-**强烈！！！建议使用该方式来配置，因为本地开发时，修改类时，IDEA 会只对修改的类进行部分编译，无法获取到配置类，所以可能会出现与预想编译结果不同的问题，但执行 mvn clean package 又变为正常**。
-:::
 
 示例：
 
@@ -65,8 +99,7 @@ public class MapStructPlusConfiguration {
           </path>
         </annotationProcessorPaths>
         <compilerArgs>
-          <arg>-Amapstruct.plus.mapperPackage=com.tutelary.mapper</arg>
-          <arg>-Amapstruct.plus.adapterClassName=DemoConvertMapperAdapter1</arg>
+          <arg>-Amapstruct.plus.adapterClassName=DemoConvertMapperAdapter</arg>
           <arg>-Amapstruct.plus.adapterPackage=io.github.linpeilie.adapter</arg>
           <arg>-Amapstruct.plus.mapAdapterClassName=DemoMapConvertMapperAdapter</arg>
         </compilerArgs>

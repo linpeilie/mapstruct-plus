@@ -68,6 +68,11 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 
 ## 更新日志
 
+### 1.3.1
+
+- 增加编译参数中指定配置类的功能
+- 更好地适配 IDEA 部分编译场景
+
 ### 1.3.0
 
 - fix: 解决本地开发时 IDEA 编译或者运行时报错等与预期不一致的问题
