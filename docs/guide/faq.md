@@ -136,3 +136,7 @@ dependencies {
     annotationProcessor group: 'org.projectlombok', name: 'lombok-mapstruct-binding', version: '0.2.0'
 }
 ```
+
+## 本地开发时，修改类后启动报错，mvn clean compile 后又恢复正常
+
+该问题是由于 IDEA 部分编译导致没有找到配置类导致的，建议先更新 1.3.0，更换配置方式，详情可以查看[指南 - 配置](/guide/configuration.html)
