@@ -32,8 +32,10 @@ public class MapStructPlusConfiguration {
 **且使用该方式配置优先级更高**，即，当该方式和配置类同时存在时，以该方式配置的属性为准。该功能从 `1.3.0` 开始支持。
 
 :::warning
-**建议使用该方式来配置，因为本地开发时，修改类时，IDEA 会只对修改的类进行部分编译，无法获取到配置类，所以可能会出现与预想编译结果不同的问题，但执行 mvn clean package 又变为正常**。
+**强烈！！！建议使用该方式来配置，因为本地开发时，修改类时，IDEA 会只对修改的类进行部分编译，无法获取到配置类，所以可能会出现与预想编译结果不同的问题，但执行 mvn clean package 又变为正常**。
 :::
+
+示例：
 
 ```xml
 <build>
@@ -92,7 +94,7 @@ public class MapStructPlusConfiguration {
   - `WARN`：打印警告日志
   - `ERROR`：抛出异常
 - **默认值**：`IGNORE`
-- **对应编译参数**：`mapstruct.plus.unmappedSourcePolicy`
+- **对应编译参数**：`-Amapstruct.plus.unmappedSourcePolicy`
 
 ### unmappedTargetPolicy
 
@@ -103,7 +105,7 @@ public class MapStructPlusConfiguration {
   - `WARN`：打印警告日志
   - `ERROR`：抛出异常
 - **默认值**：`IGNORE`
-- **对应编译参数**：`mapstruct.plus.unmappedTargetPolicy`
+- **对应编译参数**：`-Amapstruct.plus.unmappedTargetPolicy`
 
 ### nullValueMappingStrategy
 
@@ -113,7 +115,7 @@ public class MapStructPlusConfiguration {
   - `RETURN_NULL`：返回空值
   - `RETURN_DEFAULT`：返回默认值
 - **默认值**：`RETURN_NULL`
-- **对应编译参数**：`mapstruct.plus.nullValueMappingStrategy`
+- **对应编译参数**：`-Amapstruct.plus.nullValueMappingStrategy`
 
 ### nullValuePropertyMappingStrategy
 
@@ -124,7 +126,7 @@ public class MapStructPlusConfiguration {
   - `SET_TO_DEFAULT`：设置为默认值
   - `IGNORE`：忽略
 - **默认值**：`SET_TO_NULL`
-- **对应编译参数**：`mapstruct.plus.nullValuePropertyMappingStrategy`
+- **对应编译参数**：`-Amapstruct.plus.nullValuePropertyMappingStrategy`
 
 ### builder
 
@@ -137,8 +139,8 @@ public class MapStructPlusConfiguration {
   - `buildMethod`：`build`
   - `disableBuilder`：`true`
 - **分别对应的编译参数**：
-  - `mapstruct.plus.builder.buildMethod`
-  - `mapstruct.plus.builder.disableBuilder`
+  - `-Amapstruct.plus.builder.buildMethod`
+  - `-Amapstruct.plus.builder.disableBuilder`
 
 ### adapterPackage
 
@@ -147,7 +149,7 @@ public class MapStructPlusConfiguration {
 - **说明**：ConvertAdapterClass 和 MapConvertMapperAdapter 的包名
 - **类型**：`String`
 - **默认值**：io.github.linpeilie
-- **对应编译参数**：`mapstruct.plus.adapterPackage`
+- **对应编译参数**：`-Amapstruct.plus.adapterPackage`
 
 ### adapterClassName
 
@@ -156,7 +158,7 @@ public class MapStructPlusConfiguration {
 - **说明**：ConvertAdapterClass 类名
 - **类型**：`String`
 - **默认值**：ConvertMapperAdapter
-- **对应编译参数**：`mapstruct.plus.adapterClassName`
+- **对应编译参数**：`-Amapstruct.plus.adapterClassName`
 
 ### mapAdapterClassName
 
@@ -165,4 +167,4 @@ public class MapStructPlusConfiguration {
 - **说明**：MapConvertMapperAdapter 类名
 - **类型**：`String`
 - **默认值**：MapConvertMapperAdapter
-- **对应编译参数**：`mapstruct.plus.mapAdapterClassName`
+- **对应编译参数**：`-Amapstruct.plus.mapAdapterClassName`
