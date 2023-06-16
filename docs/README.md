@@ -56,23 +56,21 @@ copyright: false
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.2.5</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.2.5'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.3.0'
 ```
 
 ## 更新日志
 
-### 1.2.5
+### 1.3.0
 
-- fix: 解决 MapConvertMapperAdapter 编译警告问题
-- feat: 增加 `nullValueMappingStrategy` 和 `nullValuePropertyMappingStrategy` 配置项
-- feat: 适配 solon
+- fix: 解决本地开发时 IDEA 编译或者运行时报错等与预期不一致的问题
 
 ……
 

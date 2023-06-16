@@ -102,6 +102,9 @@ public class AutoMapperGenerator {
         List<ClassName> usesClassNameList =
             Optional.ofNullable(metadata.getUsesClassNameList()).orElse(new ArrayList<>());
 
+        List<ClassName> importsClassNameList =
+            Optional.ofNullable(metadata.getImportsClassNameList()).orElse(new ArrayList<>());
+
         // config
         CodeBlock configCodeBlock = CodeBlock.builder()
             .add("$T.class", metadata.getMapstructConfigClass())
@@ -117,10 +120,21 @@ public class AutoMapperGenerator {
         }
         CodeBlock usesCodeBlock = usesCodeBuilder.add("}").build();
 
+        // imports
+        final CodeBlock.Builder importsCodeBuilder = CodeBlock.builder().add("{");
+        for (int i = 0; i < importsClassNameList.size(); i++) {
+            importsCodeBuilder.add("$T.class", importsClassNameList.get(i));
+            if (i != importsClassNameList.size() - 1) {
+                importsCodeBuilder.add(",");
+            }
+        }
+        final CodeBlock importsCodeBlock = importsCodeBuilder.add("}").build();
+
         AnnotationSpec.Builder builder =
             AnnotationSpec.builder(ClassName.get(MAPSTRUCT_MAPPER_PACKAGE, MAPSTRUCT_MAPPER_CLASS_NAME))
                 .addMember("config", configCodeBlock)
-                .addMember("uses", usesCodeBlock);
+                .addMember("uses", usesCodeBlock)
+                .addMember("imports", importsCodeBlock);
         return builder.build();
     }
 
