@@ -11,6 +11,8 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
 
     private List<ClassName> usesClassNameList;
 
+    private List<ClassName> importsClassNameList;
+
     private List<AutoMappingMetadata> fieldMappingList;
 
     private List<AutoMappingMetadata> fieldReverseMappingList;
@@ -45,6 +47,14 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
     public AutoMapperMetadata setUsesClassNameList(final List<ClassName> usesClassNameList) {
         this.usesClassNameList = usesClassNameList;
         return this;
+    }
+
+    public List<ClassName> getImportsClassNameList() {
+        return importsClassNameList;
+    }
+
+    public void setImportsClassNameList(final List<ClassName> importsClassNameList) {
+        this.importsClassNameList = importsClassNameList;
     }
 
     public List<AutoMappingMetadata> getFieldMappingList() {

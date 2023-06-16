@@ -420,6 +420,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
             autoMapperMetadata.getTargetClassName(), autoMapperMetadata.getSourceClassName());
         reverseMapperMetadata.setConvertGenerate(autoMapperMetadata.isReverseConvertGenerate());
         reverseMapperMetadata.setUsesClassNameList(autoMapperMetadata.getUsesClassNameList());
+        reverseMapperMetadata.setImportsClassNameList(autoMapperMetadata.getImportsClassNameList());
         reverseMapperMetadata.setMapstructConfigClass(
             ClassName.get(AutoMapperProperties.getConfigPackage(), AutoMapperProperties.getConfigClassName()));
         if (CollectionUtil.isNotEmpty(autoMapperMetadata.getFieldReverseMappingList())) {
@@ -518,6 +519,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
             return null;
         }
         List<ClassName> uses = transToClassNameList(autoMapper::uses);
+        final List<ClassName> importsClassNameList = transToClassNameList(autoMapper::imports);
         List<AutoMappingMetadata> autoMappingMetadataList = buildFieldMappingMetadata((TypeElement) ele);
         autoMappingMetadataList.removeIf(mappingMetadata -> !isTargetFieldMapping(target, mappingMetadata));
 
@@ -527,6 +529,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         AutoMapperMetadata metadata = initAutoMapperMetadata(source, target);
 
         metadata.setUsesClassNameList(uses);
+        metadata.setImportsClassNameList(importsClassNameList);
         metadata.setFieldMappingList(autoMappingMetadataList);
         metadata.setFieldReverseMappingList(reverseMappingMetadataList);
         metadata.setConvertGenerate(autoMapper.convertGenerate());

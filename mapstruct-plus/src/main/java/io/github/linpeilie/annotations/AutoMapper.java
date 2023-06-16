@@ -16,6 +16,8 @@ public @interface AutoMapper {
 
     Class<?>[] uses() default {};
 
+    Class<?>[] imports() default {};
+
     /**
      * 是否生成转换的接口，当只想生成反向接口时，可以指定当前属性为 {@code false}
      *
