@@ -459,7 +459,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         try (final Writer writer = processingEnv.getFiler()
             .createSourceFile(mapperPackage + "." + mapperClassName)
             .openWriter()) {
-            mapperGenerator.write(metadata, writer);
+            mapperGenerator.write(metadata, processingEnv, writer);
         } catch (IOException e) {
             processingEnv.getMessager()
                 .printMessage(ERROR,

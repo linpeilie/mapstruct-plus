@@ -1,5 +1,6 @@
 package io.github.linpeilie.processor.generator;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
@@ -9,7 +10,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
-import io.github.linpeilie.processor.AutoMapperProperties;
+import io.github.linpeilie.annotations.ImmutableEntity;
 import io.github.linpeilie.processor.metadata.AutoMapperMetadata;
 import io.github.linpeilie.processor.metadata.AutoMappingMetadata;
 import java.io.IOException;
@@ -21,17 +22,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 import org.apache.commons.lang3.StringUtils;
-import org.mapstruct.ReportingPolicy;
 
 import static io.github.linpeilie.processor.Constants.*;
 
 public class AutoMapperGenerator {
 
-    public void write(AutoMapperMetadata metadata, Writer writer) {
+    public static final String CONVERT_METHOD_NAME = "convert";
+
+    public void write(AutoMapperMetadata metadata, final ProcessingEnvironment processingEnv, Writer writer) {
         try {
-            JavaFile.builder(metadata.mapperPackage(), createTypeSpec(metadata)).build().writeTo(writer);
+            JavaFile.builder(metadata.mapperPackage(), createTypeSpec(processingEnv, metadata)).build().writeTo(writer);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         } catch (Exception e) {
@@ -39,36 +43,70 @@ public class AutoMapperGenerator {
         }
     }
 
-    private TypeSpec createTypeSpec(AutoMapperMetadata metadata) {
+    private TypeSpec createTypeSpec(ProcessingEnvironment processingEnv, AutoMapperMetadata metadata) {
         ParameterizedTypeName converterName =
             ParameterizedTypeName.get(metadata.getSuperClass(), metadata.getSuperGenerics());
+
+        final ClassName targetClassName = metadata.getTargetClassName();
+
 
         TypeSpec.Builder builder = TypeSpec.interfaceBuilder(metadata.mapperName())
             .addSuperinterface(converterName)
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(buildGeneratedMapperAnnotationSpec(metadata));
+
+        final ParameterSpec source = ParameterSpec.builder(metadata.getSourceClassName(), "source").build();
+        final ParameterSpec target = ParameterSpec.builder(targetClassName, "target")
+            .addAnnotation(AnnotationSpec.builder(ClassName.get("org.mapstruct", "MappingTarget")).build())
+            .build();
         if (metadata.getFieldMappingList() != null && !metadata.getFieldMappingList().isEmpty()) {
-            final ParameterSpec source = ParameterSpec.builder(metadata.getSourceClassName(), "source").build();
-            final ParameterSpec target = ParameterSpec.builder(metadata.getTargetClassName(), "target")
-                .addAnnotation(AnnotationSpec.builder(ClassName.get("org.mapstruct", "MappingTarget")).build())
-                .build();
             builder.addMethod(addConvertMethodSpec(Collections.singletonList(source), metadata.getFieldMappingList(),
-                metadata.getTargetClassName()));
-            builder.addMethod(addConvertMethodSpec(Arrays.asList(source, target), metadata.getFieldMappingList(),
-                metadata.getTargetClassName()));
+                targetClassName));
         }
+
+        boolean targetIsImmutable = classIsImmutable(processingEnv, targetClassName);
+        if (targetIsImmutable) {
+            builder.addMethod(addEmptyConvertMethodForImmutableEntity(source, target, targetClassName));
+        } else {
+            builder.addMethod(addConvertMethodSpec(Arrays.asList(source, target), metadata.getFieldMappingList(),
+                targetClassName));
+        }
+
         return builder.build();
+    }
+
+    private MethodSpec addEmptyConvertMethodForImmutableEntity(ParameterSpec source,
+        ParameterSpec target,
+        ClassName targetClassName) {
+        return MethodSpec.methodBuilder(CONVERT_METHOD_NAME)
+            .addModifiers(Modifier.PUBLIC, Modifier.DEFAULT)
+            .addParameter(source)
+            .addParameter(target)
+            .returns(targetClassName)
+            .addCode("return target;")
+            .build();
+    }
+
+    private boolean classIsImmutable(ProcessingEnvironment processingEnv, ClassName className) {
+        final TypeElement targetElement = processingEnv.getElementUtils()
+            .getTypeElement(className.packageName() + "." + className.simpleName());
+        if (targetElement != null) {
+            return targetElement.getAnnotation(ImmutableEntity.class) != null;
+        }
+        return false;
     }
 
     private MethodSpec addConvertMethodSpec(List<ParameterSpec> parameterSpecs,
                                             List<AutoMappingMetadata> autoMappingMetadataList,
                                             ClassName target) {
-        return MethodSpec.methodBuilder("convert")
+        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder(CONVERT_METHOD_NAME)
             .addParameters(parameterSpecs)
             .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-            .addAnnotations(buildMappingAnnotations(autoMappingMetadataList))
-            .returns(target)
-            .build();
+            .returns(target);
+        if (CollectionUtil.isNotEmpty(autoMappingMetadataList)) {
+            methodSpecBuilder.addAnnotations(buildMappingAnnotations(autoMappingMetadataList));
+        }
+        return methodSpecBuilder.build();
     }
 
     private List<AnnotationSpec> buildMappingAnnotations(final List<AutoMappingMetadata> autoMappingMetadataList) {
