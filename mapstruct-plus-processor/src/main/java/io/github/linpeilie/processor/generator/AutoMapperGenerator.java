@@ -10,7 +10,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
-import io.github.linpeilie.annotations.ImmutableEntity;
+import io.github.linpeilie.annotations.Immutable;
 import io.github.linpeilie.processor.metadata.AutoMapperMetadata;
 import io.github.linpeilie.processor.metadata.AutoMappingMetadata;
 import java.io.IOException;
@@ -91,7 +91,7 @@ public class AutoMapperGenerator {
         final TypeElement targetElement = processingEnv.getElementUtils()
             .getTypeElement(className.packageName() + "." + className.simpleName());
         if (targetElement != null) {
-            return targetElement.getAnnotation(ImmutableEntity.class) != null;
+            return targetElement.getAnnotation(Immutable.class) != null;
         }
         return false;
     }
