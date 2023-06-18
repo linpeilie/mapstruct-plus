@@ -1,6 +1,7 @@
 package io.github.linpeilie.processor;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
@@ -39,10 +40,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
@@ -55,7 +60,6 @@ import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
-import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.MappingConstants;
 
 import static io.github.linpeilie.processor.Constants.AUTO_ENUM_MAPPER_ANNOTATION;
@@ -65,8 +69,18 @@ import static io.github.linpeilie.processor.Constants.AUTO_MAP_MAPPER_ANNOTATION
 import static io.github.linpeilie.processor.Constants.COMPONENT_MODEL_CONFIG_ANNOTATION;
 import static io.github.linpeilie.processor.Constants.MAPPER_ANNOTATION;
 import static io.github.linpeilie.processor.Constants.MAPPER_CONFIG_ANNOTATION;
+import static io.github.linpeilie.processor.ProcessorOptions.ADAPTER_CLASS_NAME;
+import static io.github.linpeilie.processor.ProcessorOptions.ADAPTER_PACKAGE;
+import static io.github.linpeilie.processor.ProcessorOptions.BUILDER_BUILD_METHOD;
+import static io.github.linpeilie.processor.ProcessorOptions.BUILDER_DISABLE_BUILDER;
+import static io.github.linpeilie.processor.ProcessorOptions.MAPPER_CONFIG_CLASS;
+import static io.github.linpeilie.processor.ProcessorOptions.MAPPER_PACKAGE;
+import static io.github.linpeilie.processor.ProcessorOptions.MAP_ADAPTER_CLASS_NAME;
+import static io.github.linpeilie.processor.ProcessorOptions.NULL_VALUE_MAPPING_STRATEGY;
+import static io.github.linpeilie.processor.ProcessorOptions.NULL_VALUE_PROPERTY_MAPPING_STRATEGY;
+import static io.github.linpeilie.processor.ProcessorOptions.UNMAPPED_SOURCE_POLICY;
+import static io.github.linpeilie.processor.ProcessorOptions.UNMAPPED_TARGET_POLICY;
 import static javax.tools.Diagnostic.Kind.ERROR;
-import static io.github.linpeilie.processor.ProcessorOptions.*;
 
 @SupportedAnnotationTypes({AUTO_MAPPER_ANNOTATION, AUTO_MAPPERS_ANNOTATION, AUTO_MAP_MAPPER_ANNOTATION,
                            AUTO_ENUM_MAPPER_ANNOTATION, MAPPER_CONFIG_ANNOTATION, COMPONENT_MODEL_CONFIG_ANNOTATION,
@@ -104,6 +118,10 @@ public class AutoMapperProcessor extends AbstractProcessor {
 
     private final Set<String> mapperSet = new HashSet<>();
 
+    private Messager messager;
+
+    private Filer filer;
+
     public AutoMapperProcessor() {
         this.mapperGenerator = new AutoMapperGenerator();
         this.mapperConfigGenerator = new MapperConfigGenerator();
@@ -138,13 +156,31 @@ public class AutoMapperProcessor extends AbstractProcessor {
     }
 
     @Override
+    public synchronized void init(final ProcessingEnvironment processingEnv) {
+        super.init(processingEnv);
+        messager = processingEnv.getMessager();
+        filer = processingEnv.getFiler();
+    }
+
+    @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
+        try {
+            doProcess(annotations, roundEnv);
+        } catch (Exception e) {
+            messager.printMessage(ERROR, ExceptionUtil.stacktraceToString(e));
+        }
+
+        return false;
+    }
+
+    private void doProcess(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
         boolean hasAutoMapper = annotations.stream().anyMatch(this::isAutoMapperAnnotation);
         final boolean hasAutoMapMapper = annotations.stream().anyMatch(this::isAutoMapMapperAnnotation);
         final boolean hasAutoEnumMapper = annotations.stream().anyMatch(this::isAutoEnumMapperAnnotation);
         final boolean hasAutoMapMappers = annotations.stream().anyMatch(this::isAutoMappersAnnotation);
-        if (!hasAutoMapper && !hasAutoMapMapper && !hasAutoEnumMapper && !hasAutoMapMappers) {
-            return false;
+        final boolean hasMapperConfig = annotations.stream().anyMatch(this::isMapperConfigAnnotation);
+        if (!hasAutoMapper && !hasAutoMapMapper && !hasAutoEnumMapper && !hasAutoMapMappers && !hasMapperConfig) {
+            return;
         }
         // 刷新配置
         refreshProperties(annotations, roundEnv);
@@ -162,49 +198,57 @@ public class AutoMapperProcessor extends AbstractProcessor {
         }
 
         // AutoMapMapper
-        annotations.stream()
-            .filter(this::isAutoMapMapperAnnotation)
-            .findFirst()
-            .ifPresent(annotation -> processAutoMapMapperAnnotation(roundEnv, annotation));
+        final TypeElement autoMapMapperAnnotation =
+            processingEnv.getElementUtils().getTypeElement(AUTO_MAP_MAPPER_ANNOTATION);
+        processAutoMapMapperAnnotation(roundEnv, autoMapMapperAnnotation);
 
         // AutoEnumMapper
-        annotations.stream()
-            .filter(this::isAutoEnumMapperAnnotation)
-            .findFirst()
-            .ifPresent(annotation -> processAutoEnumMapperAnnotation(roundEnv, annotation));
+        final TypeElement autoEnumMapperAnnotation =
+            processingEnv.getElementUtils().getTypeElement(AUTO_ENUM_MAPPER_ANNOTATION);
+        processAutoEnumMapperAnnotation(roundEnv, autoEnumMapperAnnotation);
 
         // AutoMapper
-        annotations.stream()
-            .filter(this::isAutoMapperAnnotation)
-            .findFirst()
-            .ifPresent(annotation -> processAutoMapperAnnotation(roundEnv, annotation));
+        final TypeElement autoMapperAnnotation = processingEnv.getElementUtils().getTypeElement(AUTO_MAPPER_ANNOTATION);
+        processAutoMapperAnnotation(roundEnv, autoMapperAnnotation);
 
         // AutoMappers
-        annotations.stream()
-            .filter(this::isAutoMappersAnnotation)
-            .findFirst()
-            .ifPresent(annotation -> processAutoMappersAnnotation(roundEnv, annotation));
+        final TypeElement autoMappersAnnotation =
+            processingEnv.getElementUtils().getTypeElement(AUTO_MAPPERS_ANNOTATION);
+        processAutoMappersAnnotation(roundEnv, autoMappersAnnotation);
 
         // custom mapper
-        annotations.stream()
-            .filter(this::isMapperAnnotation)
-            .findFirst()
-            .ifPresent(annotation -> processMapperAnnotation(roundEnv, annotation));
+        final TypeElement mapperAnnotation = processingEnv.getElementUtils().getTypeElement(MAPPER_ANNOTATION);
+        processMapperAnnotation(roundEnv, mapperAnnotation);
 
         // 生成类
         generateMapper();
+    }
 
-        return false;
+    private List<TypeElement> getElementAndMergeHistory(final RoundEnvironment roundEnv,
+        TypeElement annotation,
+        BuildCollator buildCollator) {
+        buildCollator.appendNonexistent(roundEnv.getElementsAnnotatedWith(annotation));
+        return buildCollator.getRecords();
     }
 
     private void processMapperAnnotation(final RoundEnvironment roundEnv, final TypeElement annotation) {
-        roundEnv.getElementsAnnotatedWith(annotation)
-            .forEach(element -> customMapperList.add(element.asType()));
+        if (annotation == null) {
+            return;
+        }
+
+        final List<TypeElement> elements = getElementAndMergeHistory(roundEnv, annotation,
+            new BuildCollator(processingEnv, Constants.MAPPERS_FILE_NAME));
+
+        elements.forEach(element -> customMapperList.add(element.asType()));
     }
 
     private void processAutoEnumMapperAnnotation(final RoundEnvironment roundEnv, final TypeElement annotation) {
-        roundEnv.getElementsAnnotatedWith(annotation)
-            .stream()
+        if (annotation == null) {
+            return;
+        }
+        final List<TypeElement> elements = getElementAndMergeHistory(roundEnv, annotation,
+            new BuildCollator(processingEnv, Constants.ENUM_MAPPERS_FILE_NAME));
+        elements.stream()
             .map(this::buildAutoEnumMapperMetadata)
             .filter(Objects::nonNull)
             .forEach(this::writeAutoEnumMapperFile);
@@ -225,6 +269,9 @@ public class AutoMapperProcessor extends AbstractProcessor {
     }
 
     private void addAdapterMethodMetadata(final AutoEnumMapperMetadata autoEnumMapperMetadata) {
+        if (autoEnumMapperMetadata == null) {
+            return;
+        }
         // toValue
         final AdapterEnumMethodMetadata toValueProxyMethod =
             new AdapterEnumMethodMetadata(autoEnumMapperMetadata.getSourceClassName(),
@@ -237,7 +284,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
                 ClassName.get(autoEnumMapperMetadata.mapperPackage(), autoEnumMapperMetadata.mapperName()),
                 autoEnumMapperMetadata.toEnumMethodName(),
                 autoEnumMapperMetadata.getSourceClassName());
-        methodMap.put(
+        methodMap.putIfAbsent(
             autoEnumMapperMetadata.getSourceClassName().simpleName() + toValueProxyMethod.getMapperMethodName(),
             toValueProxyMethod);
         methodMap.put(
@@ -278,37 +325,55 @@ public class AutoMapperProcessor extends AbstractProcessor {
     }
 
     private void processAutoMapMapperAnnotation(final RoundEnvironment roundEnv, final TypeElement annotation) {
-        final List<AutoMapperMetadata> autoMapMapperMetadataList =
-            roundEnv.getElementsAnnotatedWith(annotation).stream().map(ele -> {
-                if (ele.getAnnotation(AutoMapMapper.class) == null) {
-                    return null;
-                }
-                ClassName source = ClassName.get("java.util", "Map");
-                ClassName target = ClassName.get((TypeElement) ele);
-                List<ClassName> uses = Arrays.asList(ClassName.get("io.github.linpeilie.map", "MapObjectConvert"));
+        if (annotation == null) {
+            return;
+        }
 
-                final AutoMapperMetadata autoMapperMetadata = new AutoMapMapperMetadata();
-                autoMapperMetadata.setTargetClassName(target);
-                autoMapperMetadata.setSourceClassName(source);
-                autoMapperMetadata.setUsesClassNameList(uses);
-                autoMapperMetadata.setSuperClass(ClassName.get("io.github.linpeilie", "BaseMapMapper"));
-                autoMapperMetadata.setSuperGenerics(new ClassName[] {target});
-                autoMapperMetadata.setMapstructConfigClass(ClassName.get(AutoMapperProperties.getConfigPackage(),
-                    AutoMapperProperties.getMapConfigClassName()));
-                return autoMapperMetadata;
-            }).filter(Objects::nonNull).collect(Collectors.toList());
-        autoMapMapperMetadataList.forEach(metadata -> {
-            this.writeAutoMapperClassFile(metadata);
-            addAdapterMapMethod(metadata.getSourceClassName(), metadata.getTargetClassName(), metadata.mapperClass(),
-                false);
-            addAdapterMapMethod(ClassName.get("java.lang", "Object"), metadata.getTargetClassName(),
-                metadata.mapperClass(), true);
-        });
+        final List<TypeElement> elements = getElementAndMergeHistory(roundEnv, annotation,
+            new BuildCollator(processingEnv, Constants.AUTO_MAP_MAPPERS_FILE_NAME));
+
+        elements.stream()
+            .map(ele -> buildAutoMapMapperMetadata((TypeElement) ele))
+            .filter(Objects::nonNull)
+            .forEach(metadata -> {
+                this.writeAutoMapperClassFile(metadata);
+                addAdapterMapMethod(metadata);
+            });
+
         adapterMapperGenerator.write(processingEnv, mapMethodMap.values(),
             AutoMapperProperties.getMapAdapterClassName());
 
         mapperConfigGenerator.write(processingEnv, AutoMapperProperties.getMapConfigClassName(),
             AutoMapperProperties.getMapAdapterClassName(), null);
+    }
+
+    private AutoMapperMetadata buildAutoMapMapperMetadata(TypeElement element) {
+        if (element.getAnnotation(AutoMapMapper.class) == null) {
+            return null;
+        }
+        ClassName source = ClassName.get("java.util", "Map");
+        ClassName target = ClassName.get(element);
+        List<ClassName> uses = Arrays.asList(ClassName.get("io.github.linpeilie.map", "MapObjectConvert"));
+
+        final AutoMapperMetadata autoMapperMetadata = new AutoMapMapperMetadata();
+        autoMapperMetadata.setTargetClassName(target);
+        autoMapperMetadata.setSourceClassName(source);
+        autoMapperMetadata.setUsesClassNameList(uses);
+        autoMapperMetadata.setSuperClass(ClassName.get("io.github.linpeilie", "BaseMapMapper"));
+        autoMapperMetadata.setSuperGenerics(new ClassName[] {target});
+        autoMapperMetadata.setMapstructConfigClass(ClassName.get(AutoMapperProperties.getConfigPackage(),
+            AutoMapperProperties.getMapConfigClassName()));
+        return autoMapperMetadata;
+    }
+
+    private void addAdapterMapMethod(AutoMapperMetadata metadata) {
+        if (metadata == null) {
+            return;
+        }
+        addAdapterMapMethod(metadata.getSourceClassName(), metadata.getTargetClassName(), metadata.mapperClass(),
+            false);
+        addAdapterMapMethod(ClassName.get("java.lang", "Object"), metadata.getTargetClassName(),
+            metadata.mapperClass(), true);
     }
 
     private void loadMapperConfig(MapperConfig mapperConfig) {
@@ -336,12 +401,30 @@ public class AutoMapperProcessor extends AbstractProcessor {
     }
 
     private void refreshProperties(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
+        final BuildCollator buildCollator = new BuildCollator(processingEnv, Constants.MAPPER_CONFIG_FILE_NAME);
+
+        // load previous mapper config
+        final List<TypeElement> typeElements = buildCollator.getRecords();
+        if (CollectionUtil.isNotEmpty(typeElements)) {
+            messager.printMessage(Diagnostic.Kind.NOTE,
+                "The previous Mapper Config Class was read , class name : " + typeElements.get(0));
+            loadMapperConfig(typeElements.get(0).getAnnotation(MapperConfig.class));
+        }
+
         // annotation --> MapperConfig
-        annotations.stream()
-            .filter(this::isMapperConfigAnnotation)
-            .findFirst()
-            .flatMap(annotation -> roundEnv.getElementsAnnotatedWith(annotation).stream().findFirst())
-            .ifPresent(element -> loadMapperConfig(element.getAnnotation(MapperConfig.class)));
+        final TypeElement mapperConfigAnnotation =
+            processingEnv.getElementUtils().getTypeElement(MAPPER_CONFIG_ANNOTATION);
+        if (mapperConfigAnnotation != null) {
+            final Optional<? extends Element> mapperConfigOptional =
+                roundEnv.getElementsAnnotatedWith(mapperConfigAnnotation)
+                    .stream()
+                    .findFirst();
+            if (mapperConfigOptional.isPresent()) {
+                loadMapperConfig(mapperConfigOptional.get().getAnnotation(MapperConfig.class));
+                // record
+                buildCollator.writeTypeElements(CollectionUtil.newArrayList((TypeElement) mapperConfigOptional.get()));
+            }
+        }
 
         // special MapperConfig Class
         final String mapperConfigClass = processingEnv.getOptions().get(MAPPER_CONFIG_CLASS);
@@ -376,7 +459,13 @@ public class AutoMapperProcessor extends AbstractProcessor {
     }
 
     private void processAutoMapperAnnotation(final RoundEnvironment roundEnv, final TypeElement annotation) {
-        final List<AutoMapperMetadata> autoMapperMetadataList = roundEnv.getElementsAnnotatedWith(annotation)
+        if (annotation == null) {
+            return;
+        }
+        final List<TypeElement> elements = getElementAndMergeHistory(roundEnv, annotation,
+            new BuildCollator(processingEnv, Constants.AUTO_MAPPER_FILE_NAME));
+
+        final List<AutoMapperMetadata> autoMapperMetadataList = elements
             .stream()
             .map(this::buildAutoMapperMetadata)
             .filter(Objects::nonNull)
@@ -386,7 +475,11 @@ public class AutoMapperProcessor extends AbstractProcessor {
     }
 
     private void processAutoMappersAnnotation(final RoundEnvironment roundEnv, final TypeElement annotation) {
-        final List<AutoMapperMetadata> autoMapperMetadata = roundEnv.getElementsAnnotatedWith(annotation)
+        if (annotation == null) {
+            return;
+        }
+        final List<AutoMapperMetadata> autoMapperMetadata = getElementAndMergeHistory(roundEnv, annotation,
+            new BuildCollator(processingEnv, Constants.AUTO_MAPPERS_FILE_NAME))
             .stream()
             .map(this::buildAutoMapperMetadataByAutoMappers)
             .filter(Objects::nonNull)
@@ -420,7 +513,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
                 return;
             }
             this.writeAutoMapperClassFile(metadata);
-            addAdapterMethod(metadata.getSourceClassName(), metadata.getTargetClassName(), metadata.mapperClass());
+            addAdapterMethod(metadata);
         });
 
         adapterMapperGenerator.write(processingEnv, methodMap.values(), AutoMapperProperties.getAdapterClassName());
@@ -459,7 +552,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         try (final Writer writer = processingEnv.getFiler()
             .createSourceFile(mapperPackage + "." + mapperClassName)
             .openWriter()) {
-            mapperGenerator.write(metadata, writer);
+            mapperGenerator.write(metadata, processingEnv, writer);
         } catch (IOException e) {
             processingEnv.getMessager()
                 .printMessage(ERROR,
@@ -467,15 +560,19 @@ public class AutoMapperProcessor extends AbstractProcessor {
         }
     }
 
-    private void addAdapterMethod(ClassName source, ClassName target, ClassName mapper) {
-        AdapterMethodMetadata adapterMethodMetadata = AdapterMethodMetadata.newInstance(source, target, mapper);
-        methodMap.put(adapterMethodMetadata.getMethodName(), adapterMethodMetadata);
+    private void addAdapterMethod(AutoMapperMetadata metadata) {
+        if (metadata == null) {
+            return;
+        }
+        AdapterMethodMetadata adapterMethodMetadata = AdapterMethodMetadata.newInstance(
+            metadata.getSourceClassName(), metadata.getTargetClassName(), metadata.mapperClass());
+        methodMap.putIfAbsent(adapterMethodMetadata.getMethodName(), adapterMethodMetadata);
     }
 
     private void addAdapterMapMethod(ClassName source, ClassName target, ClassName mapper, boolean objectConverter) {
         final AdapterMapMethodMetadata adapterMapMethodMetadata =
             new AdapterMapMethodMetadata(source, target, mapper, objectConverter);
-        mapMethodMap.put(adapterMapMethodMetadata.getMethodName(), adapterMapMethodMetadata);
+        mapMethodMap.putIfAbsent(adapterMapMethodMetadata.getMethodName(), adapterMapMethodMetadata);
     }
 
     private AutoMapperMetadata initAutoMapperMetadata(ClassName source, ClassName target) {

@@ -6,6 +6,11 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.3.2
+
+- 不可变对象支持，可以使用任意包下的 `Immutable` 标注类型为不可变类
+- 全面适配 IDEA 部分编译问题，使用更加流畅丝滑
+
 ### 1.3.1
 
 - 增加编译参数中指定配置类的功能
