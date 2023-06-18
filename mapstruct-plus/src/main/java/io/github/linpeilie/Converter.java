@@ -1,6 +1,6 @@
 package io.github.linpeilie;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -49,7 +49,7 @@ public class Converter {
 
     public <S, T> List<T> convert(List<S> source, Class<T> targetType) {
         if (source == null || source.size() == 0) {
-            return Collections.emptyList();
+            return new ArrayList<>();
         }
         return source.stream().map(item -> convert(item, targetType)).collect(Collectors.toList());
     }

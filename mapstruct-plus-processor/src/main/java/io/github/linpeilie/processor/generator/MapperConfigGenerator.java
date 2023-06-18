@@ -20,12 +20,6 @@ import static javax.tools.Diagnostic.Kind.ERROR;
 public class MapperConfigGenerator {
 
     public void write(ProcessingEnvironment processingEnv, String mapstructConfigName, String adapterClassName, List<TypeMirror> uses) {
-        final TypeElement typeElement =
-            processingEnv.getElementUtils().getTypeElement(AutoMapperProperties.getConfigPackage() + "." + adapterClassName);
-        if (typeElement != null) {
-            System.out.println("mapperConfig class existed");
-            return;
-        }
         try (final Writer writer = processingEnv.getFiler()
             .createSourceFile(AutoMapperProperties.getConfigPackage() + "." + mapstructConfigName)
             .openWriter()) {
