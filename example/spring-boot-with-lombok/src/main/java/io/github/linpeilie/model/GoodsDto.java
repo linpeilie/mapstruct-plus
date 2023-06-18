@@ -19,4 +19,14 @@ public class GoodsDto {
 
     private int type;
 
+    private String f1;
+
+    private String f2;
+
+    private String f3;
+
+    private String f4;
+
+    private String f5;
+
 }
