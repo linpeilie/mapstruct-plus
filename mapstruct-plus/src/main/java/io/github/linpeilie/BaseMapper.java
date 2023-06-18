@@ -1,6 +1,7 @@
 package io.github.linpeilie;
 
 import cn.hutool.core.collection.CollectionUtil;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +15,7 @@ public interface BaseMapper<S, T> {
 
     default List<T> convert(List<S> sourceList) {
         if (CollectionUtil.isEmpty(sourceList)) {
-            return Collections.emptyList();
+            return new ArrayList<>();
         }
         return sourceList.stream().map(this::convert).collect(Collectors.toList());
     }

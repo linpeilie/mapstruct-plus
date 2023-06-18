@@ -23,12 +23,6 @@ public abstract class AbstractAdapterMapperGenerator {
     public void write(ProcessingEnvironment processingEnv,
         Collection<AbstractAdapterMethodMetadata> adapterMethods,
         String adapterClassName) {
-        final TypeElement typeElement =
-            processingEnv.getElementUtils().getTypeElement(adapterPackage() + "." + adapterClassName);
-        if (typeElement != null) {
-            System.out.println("adapter class existed");
-            return;
-        }
         // write Adapter
         try (final Writer writer = processingEnv.getFiler()
             .createSourceFile(adapterPackage() + "." + adapterClassName)

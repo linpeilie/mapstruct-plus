@@ -514,3 +514,17 @@ public class CarDtoToCarMapperImpl implements CarDtoToCarMapper {
 
 如果还是不理解，这里可以认为，该注解就是本该应用在目标类中的 `@AutoMapping` 注解，原封不动拷贝到当前类，再修改注解名称即可。
 
+## 不可变类型设计
+
+> since 1.3.2
+
+当一个类型是不可变类型时，之前默认的规则，生成的 `T convert(S source, @MappingTarget T target)` 可能会存在问题。
+
+所以，可以使用任意包下的 `Immutable` 注解，标识一个类为不可变类型，
+当为不可变类型时，`@MappingTarget` 没有意义，上面的方法最终生成如下：
+
+```java
+public T convert(S source, @MappingTarget T target) {
+    return target;
+}
+```
