@@ -6,6 +6,10 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.3.3
+
+- fixbug: 修复 win JDK8 编译报错问题
+
 ### 1.3.2
 
 - 不可变对象支持，可以使用任意包下的 `Immutable` 标注类型为不可变类

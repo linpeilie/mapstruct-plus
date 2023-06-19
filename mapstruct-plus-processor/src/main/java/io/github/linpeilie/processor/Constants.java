@@ -35,7 +35,7 @@ public class Constants {
 
     public static final String MAPSTRUCT_MAPPER_CLASS_NAME = "Mapper";
 
-    public static final String MAPSTRUCT_PLUS_META_INF = "META-INF" + File.separator + "mps";
+    public static final String MAPSTRUCT_PLUS_META_INF = "META-INF/mps/";
 
     public static final String MAPPER_CONFIG_FILE_NAME = "config";
 
