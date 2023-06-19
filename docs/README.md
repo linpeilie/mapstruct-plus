@@ -56,17 +56,21 @@ copyright: false
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.3.2</version>
+    <version>1.3.3</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.3.2'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.3.3'
 ```
 
 ## 更新日志
+
+### 1.3.3
+
+- fixbug: 修复 win JDK8 编译报错问题
 
 ### 1.3.2
 
