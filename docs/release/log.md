@@ -6,6 +6,10 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.3.4
+
+……什么都没更新，腾讯云maven源同步的jar有问题，只能重新发个新包
+
 ### 1.3.3
 
 - fixbug: 修复 win JDK8 编译报错问题
