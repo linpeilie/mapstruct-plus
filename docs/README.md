@@ -56,17 +56,21 @@ copyright: false
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.3.3</version>
+    <version>1.3.4</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.3.3'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.3.4'
 ```
 
 ## 更新日志
+
+### 1.3.4
+
+……什么都没更新，腾讯云maven源同步的jar有问题，只能重新发个新包
 
 ### 1.3.3
 
