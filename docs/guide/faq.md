@@ -6,6 +6,11 @@ category:
 description: MapStructPlus MapStructPlus常见问题 faq
 ---
 
+## 下载不到依赖
+
+- 近期阿里maven源一直没有同步最新的依赖包，建议换成腾讯maven源，参考[使用腾讯云镜像源加速maven](https://mirrors.tencent.com/help/maven.html)
+- 1.3.3 腾讯源同步的jar包是错误的，升级为最新版本
+
 ## 生成的转换接口与转换类在哪里查看
 
 在编译后的 target/generated-sources 目录下，如果没有该目录，则需要配置 IDEA 展示排除的文件（Show Excluded Files）
