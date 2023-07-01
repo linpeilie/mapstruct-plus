@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.CLASS)
 public @interface AutoMapping {
 
@@ -27,6 +27,10 @@ public @interface AutoMapping {
     String numberFormat() default "";
 
     String expression() default "";
+
+    String defaultExpression() default "";
+
+    String conditionExpression() default "";
 
     boolean ignore() default false;
 
