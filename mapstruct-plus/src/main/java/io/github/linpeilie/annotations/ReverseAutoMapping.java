@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
  *
  * @author linpl
  */
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.CLASS)
 public @interface ReverseAutoMapping {
 
@@ -53,6 +53,10 @@ public @interface ReverseAutoMapping {
     String numberFormat() default "";
 
     String expression() default "";
+
+    String defaultExpression() default "";
+
+    String conditionExpression() default "";
 
     boolean ignore() default false;
 

@@ -16,6 +16,10 @@ public class AutoMappingMetadata {
 
     private String expression = "";
 
+    private String defaultExpression = "";
+
+    private String conditionExpression = "";
+
     private boolean ignore = false;
 
     private String defaultValue = "";
@@ -82,5 +86,21 @@ public class AutoMappingMetadata {
 
     public void setDefaultValue(final String defaultValue) {
         this.defaultValue = defaultValue;
+    }
+
+    public String getDefaultExpression() {
+        return defaultExpression;
+    }
+
+    public void setDefaultExpression(final String defaultExpression) {
+        this.defaultExpression = defaultExpression;
+    }
+
+    public String getConditionExpression() {
+        return conditionExpression;
+    }
+
+    public void setConditionExpression(final String conditionExpression) {
+        this.conditionExpression = conditionExpression;
     }
 }
