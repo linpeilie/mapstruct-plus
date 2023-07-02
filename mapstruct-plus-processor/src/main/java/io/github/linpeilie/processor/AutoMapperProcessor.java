@@ -654,7 +654,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
 
     private List<AutoMappingMetadata> buildFieldReverseMappingMetadata(final TypeElement ele) {
         List<AutoMappingMetadata> list = new ArrayList<>();
-        if (!ele.getKind().isClass()) {
+        if (!ele.getKind().isClass() && !ele.getKind().isInterface()) {
             return list;
         }
         for (Element field : ele.getEnclosedElements()) {
@@ -718,7 +718,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
     private List<AutoMappingMetadata> buildFieldMappingMetadata(final TypeElement autoMapperEle) {
         List<AutoMappingMetadata> list = new ArrayList<>();
 
-        if (!autoMapperEle.getKind().isClass()) {
+        if (!autoMapperEle.getKind().isClass() && !autoMapperEle.getKind().isInterface()) {
             return list;
         }
 
