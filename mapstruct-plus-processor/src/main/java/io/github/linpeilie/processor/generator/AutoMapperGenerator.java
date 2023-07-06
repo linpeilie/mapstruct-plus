@@ -130,11 +130,17 @@ public class AutoMapperGenerator {
                 builder.addMember("defaultValue",
                     CodeBlock.builder().add("$S", autoMappingMetadata.getDefaultValue()).build());
             }
-            if (StringUtils.isNoneEmpty(autoMappingMetadata.getExpression())) {
+            if (StringUtils.isNotEmpty(autoMappingMetadata.getExpression())) {
                 builder.addMember("expression",
                     CodeBlock.builder().add("$S", autoMappingMetadata.getExpression()).build());
             } else {
                 builder.addMember("source", CodeBlock.builder().add("$S", autoMappingMetadata.getSource()).build());
+            }
+            if (StringUtils.isNotEmpty(autoMappingMetadata.getDefaultExpression())) {
+                builder.addMember("defaultExpression",CodeBlock.builder().add("$S", autoMappingMetadata.getDefaultExpression()).build());
+            }
+            if (StringUtils.isNotEmpty(autoMappingMetadata.getConditionExpression())) {
+                builder.addMember("conditionExpression", CodeBlock.builder().add("$S", autoMappingMetadata.getConditionExpression()).build());
             }
             return builder.build();
         }).collect(Collectors.toList());
