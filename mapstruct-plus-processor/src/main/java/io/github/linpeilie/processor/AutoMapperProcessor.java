@@ -2,6 +2,7 @@ package io.github.linpeilie.processor;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
@@ -653,11 +654,11 @@ public class AutoMapperProcessor extends AbstractProcessor {
 
     private List<AutoMappingMetadata> buildFieldReverseMappingMetadata(final TypeElement ele) {
         List<AutoMappingMetadata> list = new ArrayList<>();
-        if (!ele.getKind().isClass()) {
+        if (!ele.getKind().isClass() && !ele.getKind().isInterface()) {
             return list;
         }
         for (Element field : ele.getEnclosedElements()) {
-            if (field.getKind() != ElementKind.FIELD) {
+            if (field.getKind() != ElementKind.FIELD && field.getKind() != ElementKind.METHOD) {
                 continue;
             }
             ReverseAutoMapping reverseAutoMapping = field.getAnnotation(ReverseAutoMapping.class);
@@ -698,6 +699,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
         metadata.setDefaultValue(reverseAutoMapping.defaultValue());
         metadata.setIgnore(reverseAutoMapping.ignore());
         metadata.setExpression(reverseAutoMapping.expression());
+        metadata.setDefaultExpression(reverseAutoMapping.defaultExpression());
+        metadata.setConditionExpression(reverseAutoMapping.conditionExpression());
         metadata.setDateFormat(reverseAutoMapping.dateFormat());
         metadata.setNumberFormat(reverseAutoMapping.numberFormat());
         return metadata;
@@ -715,12 +718,12 @@ public class AutoMapperProcessor extends AbstractProcessor {
     private List<AutoMappingMetadata> buildFieldMappingMetadata(final TypeElement autoMapperEle) {
         List<AutoMappingMetadata> list = new ArrayList<>();
 
-        if (!autoMapperEle.getKind().isClass()) {
+        if (!autoMapperEle.getKind().isClass() && !autoMapperEle.getKind().isInterface()) {
             return list;
         }
 
         for (Element ele : autoMapperEle.getEnclosedElements()) {
-            if (ele.getKind() != ElementKind.FIELD) {
+            if (ele.getKind() != ElementKind.FIELD && ele.getKind() != ElementKind.METHOD) {
                 continue;
             }
             AutoMapping autoMapping = ele.getAnnotation(AutoMapping.class);
@@ -746,20 +749,28 @@ public class AutoMapperProcessor extends AbstractProcessor {
         }
 
         AutoMappingMetadata metadata = new AutoMappingMetadata();
+        String elementName = ele.getSimpleName().toString();
+
+        if (ele.getKind() == ElementKind.METHOD) {
+            elementName = ObjectUtil.defaultIfBlank(StrUtil.getGeneralField(elementName), elementName);
+        }
+
         if (StrUtil.isNotEmpty(autoMapping.source())) {
             metadata.setSource(autoMapping.source());
         } else {
-            metadata.setSource(ele.getSimpleName().toString());
+            metadata.setSource(elementName);
         }
         if (StrUtil.isNotEmpty(autoMapping.target())) {
             metadata.setTarget(autoMapping.target());
         } else {
-            metadata.setTarget(ele.getSimpleName().toString());
+            metadata.setTarget(elementName);
         }
         metadata.setTargetClass(targetClass);
         metadata.setDefaultValue(autoMapping.defaultValue());
         metadata.setIgnore(autoMapping.ignore());
         metadata.setExpression(autoMapping.expression());
+        metadata.setDefaultExpression(autoMapping.defaultExpression());
+        metadata.setConditionExpression(autoMapping.conditionExpression());
         metadata.setDateFormat(autoMapping.dateFormat());
         metadata.setNumberFormat(autoMapping.numberFormat());
         return metadata;

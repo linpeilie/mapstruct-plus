@@ -16,6 +16,8 @@ export default hopeTheme({
 
   logo: "/logo.svg",
 
+  footer: "备案号：<a href=\"https://beian.miit.gov.cn\">苏ICP备2023020373号-1</a>",
+
   repo: "linpeilie/mapstruct-plus",
   docsDir: 'docs',
   docsBranch: 'main',
