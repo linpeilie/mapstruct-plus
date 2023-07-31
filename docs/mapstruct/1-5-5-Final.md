@@ -1,5 +1,5 @@
 ---
-title: MapStruct 1.5.3.Final
+title: MapStruct 1.5.5.Final
 order: 1
 description: MapStruct中文文档 MapStruct MapStructPlus chinese document
 category:
@@ -9,10 +9,9 @@ tag:
 - Mapstruct中文
 ---
 
-这是 MapStruct 的参考文档，MapStruct 是一个基于注解处理器（annotation processor）的类转换器，它具有类型安全、高性能、没有其他依赖的特点。
+## 前言
 
-
-这是 MapStruct 的参考文档，MapStruct 是一个基于注解处理器（annotation processor）的类转换器，它具有类型安全、高性能、没有其他依赖的特点。
+这是 MapStruct 的参考文档，MapStruct 是一个基于注解处理器（annotation processor）的类转换器，它具有类型安全、高性能、没有其他依赖实现对象转换的特点。
 
 ## 1 介绍
 
@@ -48,7 +47,7 @@ MapStruct 是一个基于 JSR 269 的 Java 注释处理器，因此可以在命�
 ```xml
 ...
 <properties>
-    <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
+    <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
 </properties>
 ...
 <dependencies>
@@ -122,7 +121,7 @@ dependencies {
 <javac
     srcdir="src/main/java"
     destdir="target/classes"
-    classpath="path/to/mapstruct-1.5.3.Final.jar">
+    classpath="path/to/mapstruct-1.5.5.Final.jar">
     <compilerarg line="-processorpath path/to/mapstruct-processor-1.5.3.Final.jar"/>
     <compilerarg line="-s target/generated-sources"/>
 </javac>
@@ -346,7 +345,7 @@ MapStruct 的基本理念就是让生成的代码，尽可能地看起来像是�
 
 对于元素类型相同的 `Collection` 集合，在执行映射时，会创建一个新的集合，并拷贝源对象的集合数据。对于元素类型不同的 `Collection` 集合，每个元素会单独映射，再添加到目标集合中。（详情可以参考[集合映射](#集合映射))
 
-MapStruct 会对源类型和目标类型中所有公开（public)属性进行映射，包括定义在父类中的属性。
+MapStruct 会对源类型和目标类型中所有公开（public）属性进行映射，包括定义在父类中的属性。
 
 ### 3.2 Mapping 组合（实验性）
 
