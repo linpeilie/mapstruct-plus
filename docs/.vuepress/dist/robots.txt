@@ -1,5 +1,0 @@
-
-User-agent:*
-Disallow:
-
-Sitemap: https://easii.gitee.io/mapstruct-plus/sitemap.xml
