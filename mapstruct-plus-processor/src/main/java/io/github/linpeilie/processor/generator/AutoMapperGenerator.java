@@ -90,7 +90,7 @@ public class AutoMapperGenerator {
 
     private boolean classIsImmutable(ProcessingEnvironment processingEnv, ClassName className) {
         final TypeElement targetElement = processingEnv.getElementUtils()
-            .getTypeElement(className.packageName() + "." + className.simpleName());
+            .getTypeElement(className.reflectionName().replaceAll("\\$", "."));
         final List<? extends AnnotationMirror> annotationMirrors = targetElement.getAnnotationMirrors();
         for (AnnotationMirror annotationMirror : annotationMirrors) {
             if (annotationMirror.getAnnotationType().asElement().getSimpleName().contentEquals("Immutable")) {
