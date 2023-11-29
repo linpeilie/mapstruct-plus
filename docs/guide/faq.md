@@ -24,6 +24,7 @@ description: MapStructPlus MapStructPlus常见问题 faq
 4. 在 /target/generated-sources 目录下，查看是否生成转换接口。
 5. 如果没有生成，联系作者
 6. 如果已经生成，需要确认 SpringBoot 能否扫描到生成接口所在的包！
+7. 检测是否依赖 `spring-boot-devtools`，该工具会修改类的 `ClassLoader`！导致匹配类失败，不止该框架，该工具还会引发其他莫名奇妙的问题！去掉该依赖即可。
 
 ## 生成的转换接口及实现类的目录规则
 
