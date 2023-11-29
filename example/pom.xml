@@ -9,10 +9,10 @@
     <packaging>pom</packaging>
     <version>1.0.0</version>
     <modules>
-        <module>quick-start</module>
-        <module>spring-boot</module>
-        <module>spring-boot-with-lombok</module>
-<!--        <module>spring-boot-3</module>-->
+<!--        <module>quick-start</module>-->
+<!--        <module>spring-boot</module>-->
+<!--        <module>spring-boot-with-lombok</module>-->
+        <module>spring-boot-3</module>
     </modules>
 
     <properties>
