@@ -24,7 +24,7 @@ description: MapStructPlus 依赖安装 install
     <dependency>
         <groupId>io.github.linpeilie</groupId>
         <artifactId>mapstruct-plus</artifactId>
-        <version>{mapstruct-plus.version}</version>
+        <version>${mapstruct-plus.version}</version>
     </dependency>
 </dependencies>
 <build>
