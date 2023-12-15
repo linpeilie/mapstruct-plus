@@ -22,7 +22,7 @@ public class Car {
 
 当一个属性与它的目标实体对应物具有相同的名称时，将会被隐式映射。
 
-除此之外，MapstructPlus 会根据当前的默认规则，生成 `CarDto` 转换为 `Car` 的接口 `CarDtoToCarMapper` 及实现类 `CarDtoToCarMapperImpl`。如果不想生成该转换逻辑的话，可以通过注解的 `reverseConvertGenerate` 属性来配置。
+除此之外，MapStructPlus 会根据当前的默认规则，生成 `CarDto` 转换为 `Car` 的接口 `CarDtoToCarMapper` 及实现类 `CarDtoToCarMapperImpl`。如果不想生成该转换逻辑的话，可以通过注解的 `reverseConvertGenerate` 属性来配置。
 
 ## 自定义对象的属性自动转换
 
@@ -34,10 +34,8 @@ public class Car {
 
 - 汽车模型
 
-::: code-tabs#java
-
-@tab Car
-
+:::: code-group
+::: code-group-item Car
 ```java
 @AutoMapper(target = CarDto.class)
 @Data
@@ -45,24 +43,21 @@ public class Car {
     private SeatConfiguration seatConfiguration;
 }
 ```
-
-@tab CarDto
-
+:::
+::: code-group-item CarDto
 ```java 
 @Data
 public class CarDto {
     private SeatConfigurationDto seatConfiguration;
 }
 ```
-
 :::
+::::
 
 - 座椅模型
 
-::: code-tabs#java
-
-@tab SeatConfiguration
-
+:::: code-group
+::: code-group-item SeatConfiguration
 ```java
 @Data
 @AutoMapper(target = SeatConfigurationDto.class)
@@ -70,17 +65,16 @@ public class SeatConfiguration {
     // fields
 } 
 ```
-
-@tab SeatConfigurationDto
-
+:::
+::: code-group-item SeatConfigurationDto
 ```java
 @Data
 public class SeatConfigurationDto {
     // fields
 } 
 ```
-
 :::
+::::
 
 在上面的例子中，首先会生成 `CarToCarDtoMapper` 和 `SeatConfigurationToSeatConfigurationDtoMapper` 两个转换接口，并且在转换 `Car` 时，会自动使用 `SeatConfigurationToSeatConfigurationDtoMapper` 来对其中的座椅属性来进行转换。
 
@@ -171,10 +165,8 @@ public class Car {
 
 例如：
 
-::: code-tabs#java
-
-@tab Goods
-
+:::: code-group
+::: code-group-item Goods
 ```java 
 @Data
 @AutoMapper(target = GoodsVo.class, reverseConvertGenerate = false)
@@ -185,9 +177,8 @@ public class Goods {
 
 }
 ```
-
-@tab GoodsVo
-
+:::
+::: code-group-item GoodsVo
 ```java 
 @Data
 public class GoodsVo {
@@ -196,8 +187,8 @@ public class GoodsVo {
 
 }
 ```
-
 :::
+::::
 
 ### 指定时间格式转换
 
@@ -205,10 +196,8 @@ public class GoodsVo {
 
 例如：
 
-::: code-tabs#java
-
-@tab Order
-
+:::: code-group
+::: code-group-item Order
 ```java
 @Data
 @AutoMapper(target = OrderEntity.class)
@@ -225,9 +214,8 @@ public class Order {
 
 }
 ```
-
-@tab OrderEntity
-
+:::
+::: code-group-item OrderEntity
 ```java
 @Data
 @AutoMapper(target = Order.class)
@@ -244,8 +232,8 @@ public class OrderEntity {
 
 }
 ```
-
 :::
+::::
 
 ### 指定数字格式转换
 
@@ -255,10 +243,8 @@ public class OrderEntity {
 
 例如：
 
-::: code-tabs#java
-
-@tab Order
-
+:::: code-group
+::: code-group-item Order
 ```java 
 @Data
 @AutoMapper(target = OrderEntity.class)
@@ -272,9 +258,8 @@ public class Order {
     
 }
 ```
-
-@tab OrderEntity
-
+:::
+::: code-group-item OrderEntity
 ```java 
 @Data
 @AutoMapper(target = Order.class)
@@ -288,8 +273,8 @@ public class OrderEntity {
     
 }
 ```
-
 :::
+::::
 
 ### 忽略指定属性的转换
 
@@ -361,10 +346,8 @@ since `1.2.3`
 
 例如：
 
-::: code-tabs#java
-
-@tab Car
-
+:::: code-group
+::: code-group-item Car
 ```java
 @AutoMapper(target = CarDto.class)
 @Data
@@ -372,17 +355,16 @@ public class Car {
     private Tyre tyre;
 }
 ```
-
-@tab CarDto
-
+:::
+::: code-group-item CarDto
 ```java
 @Data
 public class CarDto {
     private TyreDTO tyre;
 }
 ```
-
 :::
+::::
 
 这里定义 `Tyre` 和 `TyreDTO` 之间的转换接口：
 
@@ -399,10 +381,8 @@ public interface TyreMapper {
  
 生成的 `Car` 与 `CarDto` 转换接口的实现类如下：
 
-::: code-tabs#java
-
-@tab CarToCarDtoMapperImpl
-
+:::: code-group
+::: CarToCarDtoMapperImpl
 ```java
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
@@ -440,9 +420,8 @@ public class CarToCarDtoMapperImpl implements CarToCarDtoMapper {
     }
 }
 ```
-
-@tab CarDtoToCarMapperImpl
-
+:::
+::: CarDtoToCarMapperImpl
 ```java
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
@@ -481,7 +460,7 @@ public class CarDtoToCarMapperImpl implements CarDtoToCarMapper {
 }
 ```
 :::
-
+::::
 
 ## 反向属性映射配置
 
@@ -510,7 +489,7 @@ public class CarDtoToCarMapperImpl implements CarDtoToCarMapper {
 
 可能会有人这里有疑问，为什么这里的配置像是反的？如果没有，可以直接跳过。
 
-框架设计的时候，所有的属性转换配置，都是基于要转换的类型，该类转换为目标类，想要应用的效果。这里的 `source` 也应该是来源类中的属性。
+框架设计的时候，所有的属性转换配置，都是基于要转换的类型，最终想要的效果是将该类转换为目标类。这里的 `source` 也应该是来源类中的属性。
 
 如果还是不理解，这里可以认为，该注解就是本该应用在目标类中的 `@AutoMapping` 注解，原封不动拷贝到当前类，再修改注解名称即可。
 

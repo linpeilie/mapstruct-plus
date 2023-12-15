@@ -23,49 +23,6 @@ public class MapStructPlusConfiguration {
 }
 ```
 
-:::info
-
-1.3.2 已彻底适配 IDEA 部分编译，无需再添加如下配置。
-
-~~当使用该方式配置时，强烈建议，在编译参数中，指定配置类为当前类，以解决IDEA部分编译场景时出现的各种问题，该功能从 1.3.1 开始支持
-
-配置时，需要在启动参数中添加 `-Amapstruct.plus.mapperConfigClass` 参数，该参数的值为配置类的全路径名称~~：
-
-```xml
-<plugin>
-  <groupId>org.apache.maven.plugins</groupId>
-  <artifactId>maven-compiler-plugin</artifactId>
-  <version>3.8.0</version>
-  <configuration>
-    <source>${maven.compiler.source}</source>
-    <target>${maven.compiler.target}</target>
-    <annotationProcessorPaths>
-      <path>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>${lombok.version}</version>
-      </path>
-      <path>
-        <groupId>io.github.linpeilie</groupId>
-        <artifactId>mapstruct-plus-processor</artifactId>
-        <version>${mapstruct-plus.version}</version>
-      </path>
-      <path>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok-mapstruct-binding</artifactId>
-        <version>0.2.0</version>
-      </path>
-    </annotationProcessorPaths>
-    <compilerArgs>
-      <arg>-Amapstruct.plus.mapperConfigClass=com.tutelary.MapStructPlusConfiguration</arg>
-    </compilerArgs>
-  </configuration>
-</plugin>
-```
-:::
-
--------------------------------------------------------------------
-
 除此之外，配置属性还支持**增加编译参数**的方式，以 `-Akey=value` 的形式，传递给编译器。
 
 例如，使用 Maven 时，可以在 `maven-compiler-plugin` 插件配置中，使用 `compilerArgs` 属性来配置传递，例如：
