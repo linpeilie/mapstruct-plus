@@ -1,26 +1,19 @@
 {
-  "name": "mapstruct-plus",
+  "name": "vuepress-theme-reco-demo",
   "version": "2.0.0",
-  "description": "mapstruct-plus-document",
+  "description": "Demo for vuepress-theme-reco@2.x.",
+  "repository": "git@github.com:recoluan/vuepress-theme-reco-demo.git",
+  "author": "reco_luan <recoluan@outlook.com>",
   "license": "MIT",
-  "type": "module",
   "scripts": {
     "dev": "vuepress dev docs",
+    "start": "vuepress dev docs",
     "build": "vuepress build docs",
-    "docs:build": "vuepress build docs",
-    "docs:clean-dev": "vuepress dev docs --clean-cache",
-    "docs:dev": "vuepress dev docs",
-    "docs:update-package": "npx vp-update"
+    "docs:clean-dev": "vuepress dev docs --clean-cache"
   },
-  "devDependencies": {
-    "@vuepress/client": "2.0.0-beta.61",
-    "@vuepress/plugin-google-analytics": "^2.0.0-beta.61",
-    "@vuepress/plugin-search": "^2.0.0-beta.61",
-    "@vuepress/plugin-shiki": "^2.0.0-beta.61",
-    "vue": "^3.2.47",
-    "vuepress": "2.0.0-beta.61",
-    "vuepress-plugin-china-search-console": "^2.1.5",
-    "vuepress-plugin-components": "^2.0.0-beta.197",
-    "vuepress-theme-hope": "2.0.0-beta.185"
+  "dependencies": {
+    "vue": "3.3.11",
+    "vuepress": "2.0.0-rc.0",
+    "vuepress-theme-reco": "2.0.0-rc.1"
   }
 }

@@ -1,18 +1,18 @@
 ---
-title: 一个类与多个类之间转换
+title: Class converted with multiple class
 order: 4
 category:
-- 指南
+- Guide
 description: MapStructPlus 一个类与多个类之间转换 multiple class convert
 ---
 
-MapStructPlus 除了支持一个类与单个目标类型进行转换，还支持一个类与多个目标类型进行转换。
+MapStructPlus supports conversion of a single class to multiple target types as well as a single class to a single target type.
 
-## 配置多个类转换
+## Configure multiplee class conversions
 
-当想要配置一个类与多个类进行转换时，可以通过 `@AutoMappers` 来配置，该注解支持配置多个 `@AutoMapper`
+When you want to configure a class to convert to multiple classes, you can do so through `@AutoMappers`, which supports configure multiple `@AutoMapper`
 
-例如：
+eg：
 
 ```java 
 @Data
@@ -25,15 +25,16 @@ public class User {
 }
 ```
 
-## 配置指定类转换的规则
+## Configures the rules for the specified class transformation
 
-当配置多个类转换时，同一属性针对不同的类有不一样的转换规则。
+When configuring multiple class conversions, the same property has different conversion rules for different classes.
 
-针对这个问题，首先可以使用 `@AutoMappings` 指定多个转换规则，并且在使用 `@AutoMapping` 注解时，配置 `targetClass` 属性，指定当前规则的应用目标转换类。
+To solve this problem, you can first specify multiple transformation rules using `@AutoMappings` and,
+when using the `@AutoMapping` annotation, configure the `targetClass` attribute to specify the application target transformation class for the current rule.
 
-如果在配置 `@AutoMapping` 注解时，没有指定 `targetClass` 时，则当前规则，会应用于与所有类转换。
+If `targetClass` is not specified when the `@AutoMapping` annotation is configured, the current rule applies to all  class conversions.
 
-例如：
+eg：
 
 ```java 
 @Data

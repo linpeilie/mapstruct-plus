@@ -55,7 +55,8 @@ description: MapStructPlus MapStructPlus常见问题 faq
 
 ### lombok 1.18.16 之前：
 
-#### Maven
+:::: code-group
+::: code-group-item Maven
 
 ```xml
 
@@ -86,7 +87,9 @@ description: MapStructPlus MapStructPlus常见问题 faq
 </build>
 ```
 
-#### Gradle
+:::
+
+::: code-group-item Gradle
 
 ```groovy
 dependencies {
@@ -95,9 +98,13 @@ dependencies {
 }
 ```
 
+:::
+::::
+
 ### lombok 1.18.16 及以后：
 
-#### Maven
+:::: code-group
+::: code-group-item Maven
 
 ```xml
 
@@ -132,8 +139,8 @@ dependencies {
     </plugins>
 </build>
 ```
-
-#### Gradle
+:::
+::: code-group-item Gradle
 
 ```groovy
 dependencies {
@@ -142,6 +149,9 @@ dependencies {
     annotationProcessor group: 'org.projectlombok', name: 'lombok-mapstruct-binding', version: '0.2.0'
 }
 ```
+
+:::
+::::
 
 ## 本地开发时，修改类后启动报错，mvn clean compile 后又恢复正常
 
