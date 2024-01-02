@@ -11,8 +11,8 @@ bannerBrand:
   description: Probably the simplest and most powerful Java Bean transformation tool
   tagline: MapStructPlus is an enhancement tool of MapStruct. On the basis of MapStruct, it realizes the function of automatically generating Mapper interface, and strengthens some functions, making Java type conversion more convenient and elegant.
   buttons:
-    - { text: Quick Start, link: '/en/introduction/quick-start' }
-    - { text: 'FAQ', link: '/en/guide/faq', type: 'plain' }
+    - { text: Quick Start, link: 'en/introduction/quick-start' }
+    - { text: 'FAQ', link: 'en/guide/faq', type: 'plain' }
   socialLinks:
     - { icon: 'LogoGithub', link: 'https://github.com/vuepress-reco/vuepress-theme-reco' }
 isShowTitleInHome: true
