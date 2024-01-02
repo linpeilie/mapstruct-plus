@@ -4,6 +4,7 @@ import recoTheme from "vuepress-theme-reco";
 import { themeConfig } from './config/index'
 
 export default defineUserConfig({
+  base: '/mapstruct-plus',
   locales: {
     '/': {
       lang: '中文',
