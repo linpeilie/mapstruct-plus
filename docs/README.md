@@ -1,17 +1,23 @@
 ---
 home: true
-icon: home
-title: 主页
-description: MapStructPlus MapStruct Home 首页
-heroText: MapstructPlus
-tagline: 可能是最简单最强大的Java Bean转换工具
-actions:
-  - text: 快速开始 💡
-    link: /introduction/quick-start/
-    type: primary
-  - text: 常见问题
-    link: /guide/faq
-
+modules:
+  - BannerBrand
+  - Features
+  - MdContent
+  - Footer
+bannerBrand:
+  bgImage: '/bg.svg'
+  title: MapStructPlus
+  description: 可能是最简单最强大的Java Bean转换工具
+  tagline: Mapstruct Plus 是 Mapstruct 的增强工具，在 Mapstruct 的基础上，实现了自动生成 Mapper 接口的功能，并强化了部分功能，使 Java 类型转换更加便捷、优雅。
+  buttons:
+    - { text: 快速开始, link: '/introduction/quick-start' }
+    - { text: '常见问题', link: '/guide/faq', type: 'plain' }
+  socialLinks:
+    - { icon: 'LogoGithub', link: 'https://github.com/vuepress-reco/vuepress-theme-reco' }
+isShowTitleInHome: true
+actionText: About
+actionLink: /views/other/about
 features:
   - title: 快速
     icon: launch
@@ -36,8 +42,8 @@ features:
   - title: Map转对象
     icon: type
     details: 更强大的Map转对象功能
-
-copyright: false
+footer:
+  startYear: 2023
 ---
 
 ## 国内站点
@@ -56,17 +62,22 @@ copyright: false
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.3.4</version>
+    <version>1.3.5</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.3.4'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.3.5'
 ```
 
 ## 更新日志
+
+### 1.3.5
+
+- AutoMapping、ReverseAutoMapping 支持配置在方法上面；
+- AutoMapping、ReverseAutoMapping 支持 defaultExpression 和 conditionExpression 属性
 
 ### 1.3.4
 

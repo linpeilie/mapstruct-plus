@@ -1,30 +1,30 @@
 ---
-title: 安装
+title: Install
 order: 2
 category:
-- 介绍 
+- Introduction
 tag:
-- 安装
+- Install
 description: MapStructPlus 依赖安装 install
 ---
 
 ::: warning
-由于其已经内嵌 Mapstruct，为了防止不同版本之间的差异，请不要再引入 Mapstruct 相关依赖
+Because it is already embedded with MapStruct, do not introduce MapStruct related dependencies to prevent differences between versions.
 :::
 
-## 非 SpringBoot 环境
+## Non-SpringBoot environment
 
 ### Maven
 
 ```xml
 <properties>
-    <mapstruct-plus.version>最新版本</mapstruct-plus.version>
+    <mapstruct-plus.version>latest version</mapstruct-plus.version>
 </properties>
 <dependencies>
     <dependency>
         <groupId>io.github.linpeilie</groupId>
         <artifactId>mapstruct-plus</artifactId>
-        <version>${mapstruct-plus.version}</version>
+        <version>{mapstruct-plus.version}</version>
     </dependency>
 </dependencies>
 <build>
@@ -34,8 +34,8 @@ description: MapStructPlus 依赖安装 install
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.8.1</version>
             <configuration>
-                <source>1.8</source>    <!-- 这里根据自己的需要进行切换 -->
-                <target>1.8</target>    <!-- 这里根据自己的需要进行切换 -->
+                <source>1.8</source>    <!-- Here to switch according to their need -->
+                <target>1.8</target>    <!-- Here to switch according to their need -->
                 <annotationProcessorPaths>
                     <path>
                         <groupId>io.github.linpeilie</groupId>
@@ -53,19 +53,19 @@ description: MapStructPlus 依赖安装 install
 
 ```groovy
 dependencies {
-    implementation 'io.github.linpeilie:mapstruct-plus:最新版本'
+    implementation 'io.github.linpeilie:mapstruct-plus:latest version'
     
-    annotationProcessor 'io.github.linpeilie：mapstruct-plus-processor:最新版本'
+    annotationProcessor 'io.github.linpeilie：mapstruct-plus-processor:latest version'
 }
 ```
 
-## SpringBoot 环境
+## SpringBoot environment
 
 ### Maven
 
 ```xml
 <properties>
-    <mapstruct-plus.version>最新版本</mapstruct-plus.version>
+    <mapstruct-plus.version>latest version</mapstruct-plus.version>
 </properties>
 <dependencies>
     <dependency>
@@ -81,8 +81,8 @@ dependencies {
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.8.1</version>
             <configuration>
-                <source>1.8</source>    <!-- 这里根据自己的需要进行切换 -->
-                <target>1.8</target>    <!-- 这里根据自己的需要进行切换 -->
+                <source>1.8</source>    <!-- Here to switch according to their need -->
+                <target>1.8</target>    <!-- Here to switch according to their need -->
                 <annotationProcessorPaths>
                     <path>
                         <groupId>io.github.linpeilie</groupId>
@@ -100,8 +100,9 @@ dependencies {
 
 ```groovy
 dependencies {
-    implementation 'io.github.linpeilie:mapstruct-plus-spring-boot-starter:最新版本'
+    implementation 'io.github.linpeilie:mapstruct-plus-spring-boot-starter:latest version'
     
-    annotationProcessor 'io.github.linpeilie:mapstruct-plus-processor:最新版本'
+    annotationProcessor 'io.github.linpeilie:mapstruct-plus-processor:latest version'
 }
 ```
+
