@@ -621,7 +621,24 @@ public class AutoMapperProcessor extends AbstractProcessor {
         if (target.reflectionName().contentEquals(mappingMetadata.getTargetClass().reflectionName())) {
             return true;
         }
-        return false;
+        TypeElement targetTypeElement = classNameToTypeElement(target);
+        Optional<TypeElement> superClass = getSuperClass(targetTypeElement);
+        return superClass.filter(typeElement -> isTargetFieldMapping(ClassName.get(typeElement), mappingMetadata))
+            .isPresent();
+    }
+
+    private Optional<TypeElement> getSuperClass(TypeElement ele) {
+        TypeMirror superclass = ele.getSuperclass();
+        if (superclass == null) {
+            return Optional.empty();
+        }
+        if ("java.lang.Object".equals(superclass.toString())) {
+            return Optional.empty();
+        }
+        if (ele.getQualifiedName().contentEquals(superclass.toString())) {
+            return Optional.empty();
+        }
+        return Optional.of((TypeElement) processingEnv.getTypeUtils().asElement(superclass));
     }
 
     private AutoMapperMetadata buildAutoMapperMetadata(final AutoMapper autoMapper, final Element ele) {
@@ -672,6 +689,11 @@ public class AutoMapperProcessor extends AbstractProcessor {
                 }
             }
         }
+
+        // super class
+        getSuperClass(ele)
+            .ifPresent(superClass -> list.addAll(buildFieldReverseMappingMetadata(superClass)));
+
         list.removeIf(Objects::isNull);
         return list;
     }
@@ -738,6 +760,10 @@ public class AutoMapperProcessor extends AbstractProcessor {
             }
         }
 
+        // add super class AutoMappings
+        getSuperClass(autoMapperEle)
+            .ifPresent(superClass -> list.addAll(buildFieldMappingMetadata(superClass)));
+
         list.removeIf(Objects::isNull);
         return list;
     }
@@ -799,6 +825,11 @@ public class AutoMapperProcessor extends AbstractProcessor {
         return typeMirrors.stream()
             .map(typeMirror -> (ClassName) ClassName.get(typeMirror))
             .collect(Collectors.toList());
+    }
+
+    private TypeElement classNameToTypeElement(ClassName className) {
+        String classNameString = className.toString();
+        return processingEnv.getElementUtils().getTypeElement(classNameString);
     }
 
     @Override
