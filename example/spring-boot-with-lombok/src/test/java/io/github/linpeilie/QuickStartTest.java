@@ -2,13 +2,17 @@ package io.github.linpeilie;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Assert;
+import io.github.linpeilie.model.Car;
 import io.github.linpeilie.model.Goods;
 import io.github.linpeilie.model.GoodsDto;
 import io.github.linpeilie.model.GoodsStateEnum;
 import io.github.linpeilie.model.GoodsVo;
+import io.github.linpeilie.model.InnerClassTarget;
 import io.github.linpeilie.model.MapModelA;
 import io.github.linpeilie.model.Order;
 import io.github.linpeilie.model.OrderVO;
+import io.github.linpeilie.model.SDto;
+import io.github.linpeilie.model.SVO;
 import io.github.linpeilie.model.Sku;
 import io.github.linpeilie.model.SysMenu;
 import io.github.linpeilie.model.SysMenuVo;
@@ -226,6 +230,36 @@ public class QuickStartTest {
         goodsDto1.setState(1);
         final Goods goods1 = converter.convert(goodsDto1, Goods.class);
         System.out.println(goods1);
+    }
+
+    @Test
+    public void innerClassTest() {
+        Car.InnerClass innerClass = new Car.InnerClass();
+        innerClass.setF("1111");
+        InnerClassTarget innerClassTarget = converter.convert(innerClass, InnerClassTarget.class);
+        Assert.equals(innerClassTarget.getF(), "1111");
+        System.out.println(innerClassTarget);
+
+        Car.InnerClass innerClass1 = converter.convert(innerClassTarget, Car.InnerClass.class);
+        Assert.equals(innerClass1.getF(), "1111");
+        System.out.println(innerClass1);
+    }
+
+    @Test
+    public void extendTest() {
+        SDto sDto = new SDto();
+        sDto.setId(111111L);
+        sDto.setSuccess(true);
+
+        SVO svo = converter.convert(sDto, SVO.class);
+        Assert.equals(svo.getId(), sDto.getId());
+        Assert.equals(svo.getSuccess(), 1);
+        System.out.println(svo);
+
+        SDto sDto1 = converter.convert(svo, SDto.class);
+        Assert.equals(sDto1.getId(), sDto.getId());
+        Assert.equals(sDto1.getSuccess(), sDto.getSuccess());
+        System.out.println(sDto1);
     }
 
 }
