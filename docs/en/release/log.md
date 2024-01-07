@@ -6,6 +6,13 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.3.6
+
+- Compatible with internal class conversion.
+- The targetClass in the AutoMapping annotation supports configuring the parent class.
+- AutoMapperConfig and AutoMapMapperConfig package and class name generated automatically by the framework support configuration.
+- Supports AutoMapping annotations configured in the parent class.
+
 ### 1.3.5
 
 - AutoMapping、ReverseAutoMapping 支持配置在方法上面；

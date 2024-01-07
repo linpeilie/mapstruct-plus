@@ -62,35 +62,30 @@ footer:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.3.5</version>
+    <version>1.3.6</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.3.5'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.3.6'
 ```
 
 ## 更新日志
+
+### 1.3.6
+
+- 兼容内部类转换
+- feature : AutoMapping 注解中的 targetClass 支持配置父类
+- [issue#I8QPRO](https://gitee.com/easii/mapstruct-plus/issues/I8QPRO) : 框架自动生成的 AutoMapperConfig 和 AutoMapMapper 包和类名支持配置
+- [issue#I8T7EF](https://gitee.com/easii/mapstruct-plus/issues/I8T7EF) : 支持在父类中配置的 AutoMapping 注解
+
 
 ### 1.3.5
 
 - AutoMapping、ReverseAutoMapping 支持配置在方法上面；
 - AutoMapping、ReverseAutoMapping 支持 defaultExpression 和 conditionExpression 属性
-
-### 1.3.4
-
-……什么都没更新，腾讯云maven源同步的jar有问题，只能重新发个新包
-
-### 1.3.3
-
-- fixbug: 修复 win JDK8 编译报错问题
-
-### 1.3.2
-
-- 不可变对象支持，可以使用任意包下的 `Immutable` 标注类型为不可变类
-- 全面适配 IDEA 部分编译问题，使用更加流畅丝滑
 
 ……
 

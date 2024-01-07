@@ -6,6 +6,13 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.3.6
+
+- 兼容内部类转换
+- feature : AutoMapping 注解中的 targetClass 支持配置父类
+- [issue#I8QPRO](https://gitee.com/easii/mapstruct-plus/issues/I8QPRO) : 框架自动生成的 AutoMapperConfig 和 AutoMapMapper 包和类名支持配置
+- [issue#I8T7EF](https://gitee.com/easii/mapstruct-plus/issues/I8T7EF) : 支持在父类中配置的 AutoMapping 注解 
+
 ### 1.3.5
 
 - AutoMapping、ReverseAutoMapping 支持配置在方法上面；
