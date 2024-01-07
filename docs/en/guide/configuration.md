@@ -164,3 +164,30 @@ eg:
 - **Type**：`String`
 - **Default**：MapConvertMapperAdapter
 - **Compile Parameter**：`-Amapstruct.plus.mapAdapterClassName`
+
+### autoConfigPackage
+
+> since `1.3.6`
+
+- **Description**：The package path of the automatically generated configuration class --- `AutoMapperConfig`/`AutoMapMapperConfig` --- from the MapStructPlus framework.
+- **Type**：`String`
+- **Default**：io.github.linpeilie
+- **Compile Parameter**：`-Amapstruct.plus.autoConfigPackage`
+
+### autoMapperConfigClassName
+
+> since `1.3.6`
+
+- **Description**：MapStructPlus framework automatically generates the name of the configuration class(transformation between configuration objects)
+- **Type**：`String`
+- **Default**：AutoMapperConfig
+- **Compile Parameter**：`-Amapstruct.plus.autoMapperConfigClassName`
+
+### autoMapMapperConfigClassName
+
+> since `1.3.6`
+
+- **Description**：MapStructPlus framework automatically generates the name of the configuration class(which configures the transformation between the Map and the object)
+- **Type**：`String`
+- **Default**：AutoMapMapperConfig
+- **Compile Parameter**：`-Amapstruct.plus.autoMapMapperConfigClassName`

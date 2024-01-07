@@ -33,6 +33,12 @@ public class ProcessorOptions {
 
     public static final String MAP_ADAPTER_CLASS_NAME = "mapstruct.plus.mapAdapterClassName";
 
+    public static final String AUTO_CONFIG_PACKAGE = "mapstruct.plus.autoConfigPackage";
+
+    public static final String AUTO_MAPPER_CONFIG_CLASS_NAME = "mapstruct.plus.autoMapperConfigClassName";
+
+    public static final String AUTO_MAP_MAPPER_CONFIG_CLASS_NAME = "mapstruct.plus.autoMapMapperConfigClassName";
+
     public static Map<String, Consumer<String>> optionConsumers() {
         final Map<String, Consumer<String>> consumerMap = new HashMap<>();
 
@@ -53,6 +59,9 @@ public class ProcessorOptions {
         consumerMap.put(ADAPTER_PACKAGE, AutoMapperProperties::setAdapterPackage);
         consumerMap.put(ADAPTER_CLASS_NAME, AutoMapperProperties::setAdapterClassName);
         consumerMap.put(MAP_ADAPTER_CLASS_NAME, AutoMapperProperties::setMapAdapterClassName);
+        consumerMap.put(AUTO_CONFIG_PACKAGE, AutoMapperProperties::setAutoConfigPackage);
+        consumerMap.put(AUTO_MAPPER_CONFIG_CLASS_NAME, AutoMapperProperties::setAutoMapperConfigClassName);
+        consumerMap.put(AUTO_MAP_MAPPER_CONFIG_CLASS_NAME, AutoMapperProperties::setAutoMapMapperConfigClassName);
         return consumerMap;
     }
 

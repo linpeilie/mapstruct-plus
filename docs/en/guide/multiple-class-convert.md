@@ -34,6 +34,12 @@ when using the `@AutoMapping` annotation, configure the `targetClass` attribute 
 
 If `targetClass` is not specified when the `@AutoMapping` annotation is configured, the current rule applies to all  class conversions.
 
+:::info
+`targetClass` also supports the configuration parent class, which applies to this rule when the target class is a subclass of the configured `targetClass`.
+
+> This feature is supported from 1.3.6
+:::
+
 eg：
 
 ```java 

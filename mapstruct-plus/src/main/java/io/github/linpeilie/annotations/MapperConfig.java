@@ -74,4 +74,28 @@ public @interface MapperConfig {
      */
     String mapAdapterClassName() default "";
 
+    /**
+     * MapStructPlus 所生成的配置类(AutoMapperConfig/AutoMapMapperConfig)包路径
+     * <br>
+     * 默认包路径为 io.github.linpeilie
+     * @return AutoMapperConfig / AutoMapMapperConfig 包路径
+     */
+    String autoConfigPackage() default "";
+
+    /**
+     * MapStructPlus 所生成的配置类转换的配置类名
+     * <br>
+     * 默认类名为 AutoMapperConfig
+     * @return  AutoMapperConfig 类名
+     */
+    String autoMapperConfigClassName() default "";
+
+    /**
+     * MapStructPlus 所生成的配置 Map 与对象转换的配置类名
+     * <br>
+     * 默认类名为 AutoMapMapperConfig
+     * @return  AutoMapMapperConfig 类名
+     */
+    String autoMapMapperConfigClassName() default "";
+
 }

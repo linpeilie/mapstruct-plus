@@ -33,6 +33,13 @@ public class User {
 
 如果在配置 `@AutoMapping` 注解时，没有指定 `targetClass` 时，则当前规则，会应用于与所有类转换。
 
+:::info
+`targetClass` 同时支持配置父类，当目标类是所配置的 `targetClass` 的子类时，即可应用于该规则。
+
+> 该特性从 1.3.6 开始支持
+:::
+
+
 例如：
 
 ```java 
