@@ -399,6 +399,15 @@ public class AutoMapperProcessor extends AbstractProcessor {
         if (StrUtil.isNotEmpty(mapperConfig.mapAdapterClassName())) {
             AutoMapperProperties.setMapAdapterClassName(mapperConfig.mapAdapterClassName());
         }
+        if (StrUtil.isNotEmpty(mapperConfig.autoConfigPackage())) {
+            AutoMapperProperties.setAutoConfigPackage(mapperConfig.autoConfigPackage());
+        }
+        if (StrUtil.isNotEmpty(mapperConfig.autoMapperConfigClassName())) {
+            AutoMapperProperties.setAutoMapperConfigClassName(mapperConfig.autoMapperConfigClassName());
+        }
+        if (StrUtil.isNotEmpty(mapperConfig.autoMapMapperConfigClassName())) {
+            AutoMapperProperties.setAutoMapMapperConfigClassName(mapperConfig.autoMapMapperConfigClassName());
+        }
     }
 
     private void refreshProperties(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
