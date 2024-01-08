@@ -27,7 +27,7 @@ export default defineUserConfig({
   plugins: [
     umamiAnalyticsPlugin({
         id: '50be7a94-e1d7-4d49-a8db-67b17acaa0b3',
-        src: 'http://114.115.147.1:3000/script.js'
+        src: 'https://114.115.147.1/script.js'
     })
   ]
 });
