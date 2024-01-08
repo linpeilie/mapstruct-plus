@@ -58,31 +58,29 @@ fotter:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.3.5</version>
+    <version>1.3.6</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.3.5'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.3.6'
 ```
 
 ## Change Log
+
+### 1.3.6
+
+- Compatible with internal class conversion.
+- The targetClass in the AutoMapping annotation supports configuring the parent class.
+- AutoMapperConfig and AutoMapMapperConfig package and class name generated automatically by the framework support configuration.
+- Supports AutoMapping annotations configured in the parent class.
 
 ### 1.3.5
 
 - `@AutoMapping`、`@ReversedAutoMapping` support is configured on top of methods.
 - `@AutoMapping`、`@ReverseAutoMapping` support the defaultExpression and conditionExpression properties
-
-### 1.3.3
-
-- fixbug: fixed compilation error on win jdk8
-
-### 1.3.2
-
-- Support Immutable object, you can use the `@Immutable` annotation type under any package as an immutable class
-- fully adapt the IDEA part of the compilation problem, use more smooth silky
 
 ……
 

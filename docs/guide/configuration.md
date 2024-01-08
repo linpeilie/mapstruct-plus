@@ -161,3 +161,30 @@ public class MapStructPlusConfiguration {
 - **类型**：`String`
 - **默认值**：MapConvertMapperAdapter
 - **对应编译参数**：`-Amapstruct.plus.mapAdapterClassName`
+
+### autoConfigPackage
+
+> since `1.3.6`
+
+- **说明**：MapStructPlus 框架自动生成的配置类 --- `AutoMapperConfig`/`AutoMapMapperConfig` 所在的包路径
+- **类型**：`String`
+- **默认值**：io.github.linpeilie
+- **对应编译参数**：`-Amapstruct.plus.autoConfigPackage`
+
+### autoMapperConfigClassName
+
+> since `1.3.6`
+
+- **说明**：MapStructPlus 框架自动生成的的配置类（配置对象之间的转换）类名
+- **类型**：`String`
+- **默认值**：AutoMapperConfig
+- **对应编译参数**：`-Amapstruct.plus.autoMapperConfigClassName`
+
+### autoMapMapperConfigClassName
+
+> since `1.3.6`
+
+- **说明**：MapStructPlus 框架自动生成的配置类（配置Map与对象之间的转换）类名
+- **类型**：`String`
+- **默认值**：AutoMapMapperConfig
+- **对应编译参数**：`-Amapstruct.plus.autoMapMapperConfigClassName`

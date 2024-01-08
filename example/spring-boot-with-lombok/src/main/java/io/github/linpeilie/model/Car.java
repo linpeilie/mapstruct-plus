@@ -17,4 +17,9 @@ public class Car {
     @AutoMapping(target = "wheels", ignore = true)
     private Wheels wheels;
 
+    @Data
+    public static class InnerClass {
+        private String f;
+    }
+
 }

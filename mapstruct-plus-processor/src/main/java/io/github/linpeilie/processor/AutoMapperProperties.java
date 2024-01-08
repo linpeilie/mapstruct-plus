@@ -31,6 +31,12 @@ public class AutoMapperProperties {
 
     private static String mapAdapterClassName = DEFAULT_MAP_ADAPTER_CLASS_NAME;
 
+    private static String autoConfigPackage = DEFAULT_BASE_PACKAGE;
+
+    private static String autoMapperConfigClassName = AUTO_MAPPER_CONFIG_CLASS_NAME;
+
+    private static String autoMapMapperConfigClassName = AUTO_MAP_MAPPER_CONFIG_CLASS_NAME;
+
     public static String getMapperPackage() {
         return mapperPackage;
     }
@@ -60,15 +66,27 @@ public class AutoMapperProperties {
     }
 
     public static String getConfigPackage() {
-        return DEFAULT_BASE_PACKAGE;
+        return autoConfigPackage;
+    }
+
+    public static void setAutoConfigPackage(String autoConfigPackage) {
+        AutoMapperProperties.autoConfigPackage = autoConfigPackage;
     }
 
     public static String getConfigClassName() {
-        return AUTO_MAPPER_CONFIG_CLASS_NAME;
+        return autoMapperConfigClassName;
+    }
+
+    public static void setAutoMapperConfigClassName(String autoMapperConfigClassName) {
+        AutoMapperProperties.autoMapperConfigClassName = autoMapperConfigClassName;
     }
 
     public static String getMapConfigClassName() {
-        return AUTO_MAP_MAPPER_CONFIG_CLASS_NAME;
+        return autoMapMapperConfigClassName;
+    }
+
+    public static void setAutoMapMapperConfigClassName(String autoMapMapperConfigClassName) {
+        AutoMapperProperties.autoMapMapperConfigClassName = autoMapMapperConfigClassName;
     }
 
     public static String getComponentModel() {

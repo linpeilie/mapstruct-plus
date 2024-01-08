@@ -26,6 +26,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.tools.Diagnostic;
 import org.apache.commons.lang3.StringUtils;
 
 import static io.github.linpeilie.processor.Constants.*;
@@ -90,7 +91,7 @@ public class AutoMapperGenerator {
 
     private boolean classIsImmutable(ProcessingEnvironment processingEnv, ClassName className) {
         final TypeElement targetElement = processingEnv.getElementUtils()
-            .getTypeElement(className.packageName() + "." + className.simpleName());
+            .getTypeElement(className.reflectionName().replaceAll("\\$", "."));
         final List<? extends AnnotationMirror> annotationMirrors = targetElement.getAnnotationMirrors();
         for (AnnotationMirror annotationMirror : annotationMirrors) {
             if (annotationMirror.getAnnotationType().asElement().getSimpleName().contentEquals("Immutable")) {
