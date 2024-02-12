@@ -1,6 +1,7 @@
 package io.github.linpeilie.processor.generator;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
@@ -142,6 +143,18 @@ public class AutoMapperGenerator {
             }
             if (StringUtils.isNotEmpty(autoMappingMetadata.getConditionExpression())) {
                 builder.addMember("conditionExpression", CodeBlock.builder().add("$S", autoMappingMetadata.getConditionExpression()).build());
+            }
+            if (ArrayUtil.isNotEmpty(autoMappingMetadata.getQualifiedByName())) {
+                builder.addMember("qualifiedByName", CodeBlock.builder().add("$L",
+                        "{" + ArrayUtil.join(autoMappingMetadata.getQualifiedByName(), ",", "\"", "\"") + "}").build());
+            }
+            if (ArrayUtil.isNotEmpty(autoMappingMetadata.getConditionQualifiedByName())) {
+                builder.addMember("conditionQualifiedByName", CodeBlock.builder().add("$L",
+                        "{" + ArrayUtil.join(autoMappingMetadata.getConditionQualifiedByName(), ",", "\"", "\"") + "}").build());
+            }
+            if (ArrayUtil.isNotEmpty(autoMappingMetadata.getDependsOn())) {
+                builder.addMember("dependsOn", CodeBlock.builder().add("$L",
+                        "{" + ArrayUtil.join(autoMappingMetadata.getDependsOn(), ",", "\"", "\"") + "}").build());
             }
             return builder.build();
         }).collect(Collectors.toList());

@@ -734,6 +734,9 @@ public class AutoMapperProcessor extends AbstractProcessor {
         metadata.setConditionExpression(reverseAutoMapping.conditionExpression());
         metadata.setDateFormat(reverseAutoMapping.dateFormat());
         metadata.setNumberFormat(reverseAutoMapping.numberFormat());
+        metadata.setQualifiedByName(reverseAutoMapping.qualifiedByName());
+        metadata.setConditionQualifiedByName(reverseAutoMapping.conditionQualifiedByName());
+        metadata.setDependsOn(reverseAutoMapping.dependsOn());
         return metadata;
     }
 
@@ -808,6 +811,9 @@ public class AutoMapperProcessor extends AbstractProcessor {
         metadata.setConditionExpression(autoMapping.conditionExpression());
         metadata.setDateFormat(autoMapping.dateFormat());
         metadata.setNumberFormat(autoMapping.numberFormat());
+        metadata.setQualifiedByName(autoMapping.qualifiedByName());
+        metadata.setConditionQualifiedByName(autoMapping.conditionQualifiedByName());
+        metadata.setDependsOn(autoMapping.dependsOn());
         return metadata;
     }
 
