@@ -28,8 +28,10 @@ public class DefaultAdapterMapperGenerator extends AbstractAdapterMapperGenerato
 
     @Override
     protected CodeBlock proxyMethodTarget(final AbstractAdapterMethodMetadata adapterMethodMetadata) {
-        return CodeBlock.of("return ($T.getMapper($T.class)).$N($N);",
-            ClassName.get("org.mapstruct.factory", "Mappers"), adapterMethodMetadata.getMapper(),
-            adapterMethodMetadata.getMapperMethodName(), "param");
+        return !adapterMethodMetadata.isCycleAvoiding() ?
+            CodeBlock.of("return ($T.getMapper($T.class)).$N($N);", ClassName.get("org.mapstruct.factory", "Mappers"),
+                adapterMethodMetadata.getMapper(), adapterMethodMetadata.getMapperMethodName(), "param") :
+            CodeBlock.of("return ($T.getMapper($T.class)).$N($N, $N);", ClassName.get("org.mapstruct.factory", "Mappers"),
+                adapterMethodMetadata.getMapper(), adapterMethodMetadata.getMapperMethodName(), "param", "context");
     }
 }

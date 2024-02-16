@@ -69,6 +69,12 @@ public @interface MapperConfig {
     String adapterClassName() default "";
 
     /**
+     * 默认类名为：CycleAvoidingConvertMapperAdapter
+     * @return CycleAvoidingConvertAdapterClass 类名
+     */
+    String cycleAvoidingAdapterClassName() default "";
+
+    /**
      * 默认类名为：MapConvertMapperAdapter
      * @return MapConvertAdapterClass 类名
      */
@@ -89,6 +95,14 @@ public @interface MapperConfig {
      * @return  AutoMapperConfig 类名
      */
     String autoMapperConfigClassName() default "";
+
+    /**
+     * MapStructPlus 所生成的配置 CycleAvoiding 类转换的配置类名
+     * <br>
+     * 默认类名为 AutoCycleAvoidingMapperConfig
+     * @return  AutoCycleAvoidingMapperConfig 类名
+     */
+    String autoCycleAvoidingMapperConfigClassName() default "";
 
     /**
      * MapStructPlus 所生成的配置 Map 与对象转换的配置类名

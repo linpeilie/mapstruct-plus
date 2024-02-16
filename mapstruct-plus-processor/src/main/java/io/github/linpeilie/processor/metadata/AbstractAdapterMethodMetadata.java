@@ -8,11 +8,14 @@ public abstract class AbstractAdapterMethodMetadata {
     public AbstractAdapterMethodMetadata(final TypeName source, ClassName mapper) {
         this.source = source;
         this.mapper = mapper;
+        this.cycleAvoiding = false;
     }
 
     protected final TypeName source;
 
     protected final ClassName mapper;
+
+    protected boolean cycleAvoiding;
 
     public abstract String getMethodName();
 
@@ -26,6 +29,10 @@ public abstract class AbstractAdapterMethodMetadata {
 
     public ClassName getMapper() {
         return mapper;
+    }
+
+    public boolean isCycleAvoiding() {
+        return cycleAvoiding;
     }
 
     public boolean isStatic() {

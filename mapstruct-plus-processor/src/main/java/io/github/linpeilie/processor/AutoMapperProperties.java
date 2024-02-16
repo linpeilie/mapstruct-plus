@@ -29,11 +29,15 @@ public class AutoMapperProperties {
 
     private static String adapterClassName = DEFAULT_ADAPTER_CLASS_NAME;
 
+    private static String cycleAvoidingAdapterClassName = DEFAULT_CYCLE_AVOIDING_ADAPTER_CLASS_NAME;
+
     private static String mapAdapterClassName = DEFAULT_MAP_ADAPTER_CLASS_NAME;
 
     private static String autoConfigPackage = DEFAULT_BASE_PACKAGE;
 
     private static String autoMapperConfigClassName = AUTO_MAPPER_CONFIG_CLASS_NAME;
+
+    private static String autoCycleAvoidingMapperConfigClassName = AUTO_CYCLE_AVOIDING_MAPPER_CONFIG_CLASS_NAME;
 
     private static String autoMapMapperConfigClassName = AUTO_MAP_MAPPER_CONFIG_CLASS_NAME;
 
@@ -55,6 +59,14 @@ public class AutoMapperProperties {
 
     public static void setAdapterClassName(final String adapterClassName) {
         AutoMapperProperties.adapterClassName = adapterClassName;
+    }
+
+    public static String getCycleAvoidingAdapterClassName() {
+        return cycleAvoidingAdapterClassName;
+    }
+
+    public static void setCycleAvoidingAdapterClassName(final String cycleAvoidingAdapterClassName) {
+        AutoMapperProperties.cycleAvoidingAdapterClassName = cycleAvoidingAdapterClassName;
     }
 
     public static String getMapAdapterClassName() {
@@ -79,6 +91,14 @@ public class AutoMapperProperties {
 
     public static void setAutoMapperConfigClassName(String autoMapperConfigClassName) {
         AutoMapperProperties.autoMapperConfigClassName = autoMapperConfigClassName;
+    }
+
+    public static String getCycleAvoidingConfigClassName() {
+        return autoCycleAvoidingMapperConfigClassName;
+    }
+
+    public static void setAutoCycleAvoidingMapperConfigClassName(String autoCycleAvoidingMapperConfigClassName) {
+        AutoMapperProperties.autoCycleAvoidingMapperConfigClassName = autoCycleAvoidingMapperConfigClassName;
     }
 
     public static String getMapConfigClassName() {

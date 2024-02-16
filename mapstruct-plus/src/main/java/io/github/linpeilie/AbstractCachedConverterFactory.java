@@ -6,6 +6,8 @@ public abstract class AbstractCachedConverterFactory implements ConverterFactory
 
     private final ConcurrentHashMap<String, BaseMapper> mapperMap = new ConcurrentHashMap<>();
 
+    private final ConcurrentHashMap<String, BaseCycleAvoidingMapper> cycleAvoidingMapperMap = new ConcurrentHashMap<>();
+
     private final ConcurrentHashMap<String, BaseMapMapper> mapMapperMap = new ConcurrentHashMap<>();
 
     @Override
@@ -20,6 +22,23 @@ public abstract class AbstractCachedConverterFactory implements ConverterFactory
         final BaseMapper mapper = findMapper(source, target);
         if (mapper != null) {
             mapperMap.put(key, mapper);
+            return mapper;
+        }
+        return null;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <S, T> BaseCycleAvoidingMapper<S, T> getCycleAvoidingMapper(final Class<S> sourceType, final Class<T> targetType) {
+        final Class<?> source = wrapperClass(sourceType);
+        final Class<?> target = wrapperClass(targetType);
+        final String key = key(source, target);
+        if (cycleAvoidingMapperMap.containsKey(key)) {
+            return cycleAvoidingMapperMap.get(key);
+        }
+        final BaseCycleAvoidingMapper mapper = findCycleAvoidingMapper(source, target);
+        if (mapper != null) {
+            cycleAvoidingMapperMap.put(key, mapper);
             return mapper;
         }
         return null;
@@ -45,6 +64,8 @@ public abstract class AbstractCachedConverterFactory implements ConverterFactory
     }
 
     protected abstract <S, T> BaseMapper findMapper(final Class<S> source, final Class<T> target);
+
+    protected abstract <S, T> BaseCycleAvoidingMapper findCycleAvoidingMapper(final Class<S> source, final Class<T> target);
 
     protected abstract <S> BaseMapMapper findMapMapper(final Class<?> source);
 

@@ -4,15 +4,16 @@ import com.squareup.javapoet.ClassName;
 
 public class AdapterMethodMetadata extends AbstractAdapterMethodMetadata {
 
-    private AdapterMethodMetadata(final ClassName source, final ClassName target, ClassName mapper) {
+    private AdapterMethodMetadata(final ClassName source, final ClassName target, ClassName mapper, boolean cycleAvoiding) {
         super(source, mapper);
         this.target = target;
+        this.cycleAvoiding = cycleAvoiding;
     }
 
     private final ClassName target;
 
-    public static AdapterMethodMetadata newInstance(ClassName source, ClassName target, ClassName mapper) {
-        return new AdapterMethodMetadata(source, target, mapper);
+    public static AdapterMethodMetadata newInstance(ClassName source, ClassName target, ClassName mapper, boolean cycleAvoiding) {
+        return new AdapterMethodMetadata(source, target, mapper, cycleAvoiding);
     }
 
     @Override

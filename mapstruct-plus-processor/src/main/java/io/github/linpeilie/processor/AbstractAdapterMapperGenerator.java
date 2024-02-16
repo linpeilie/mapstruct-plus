@@ -1,5 +1,7 @@
 package io.github.linpeilie.processor;
 
+import cn.hutool.core.collection.ListUtil;
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
@@ -8,10 +10,14 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import io.github.linpeilie.CycleAvoidingMappingContext;
 import io.github.linpeilie.processor.metadata.AbstractAdapterMethodMetadata;
+import org.mapstruct.Context;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
+import java.util.List;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -56,14 +62,23 @@ public abstract class AbstractAdapterMapperGenerator {
     }
 
     protected MethodSpec buildProxyMethod(AbstractAdapterMethodMetadata adapterMethodMetadata) {
-        CodeBlock targetCode = adapterMethodMetadata.isStatic() ? CodeBlock.of("return $T.$N($N);",
-            adapterMethodMetadata.getMapper(), adapterMethodMetadata.getMapperMethodName(),
-            "param") : proxyMethodTarget(adapterMethodMetadata);
-        ParameterSpec parameterSpec = ParameterSpec.builder(
+        CodeBlock targetCode = adapterMethodMetadata.isStatic() ?
+            (!adapterMethodMetadata.isCycleAvoiding() ?
+                CodeBlock.of("return $T.$N($N);", adapterMethodMetadata.getMapper(), adapterMethodMetadata.getMapperMethodName(), "param") :
+                CodeBlock.of("return $T.$N($N, $N);", adapterMethodMetadata.getMapper(), adapterMethodMetadata.getMapperMethodName(), "param", "context")) :
+            proxyMethodTarget(adapterMethodMetadata);
+        ParameterSpec param = ParameterSpec.builder(
             wrapperTypeName(adapterMethodMetadata.getSource()), "param").build();
+        List<ParameterSpec> parameterSpecs = ListUtil.toList(param);
+        if (adapterMethodMetadata.isCycleAvoiding()) {
+            ParameterSpec context = ParameterSpec.builder(ClassName.get(CycleAvoidingMappingContext.class), "context")
+                .addAnnotation(AnnotationSpec.builder(ClassName.get(Context.class)).build())
+                .build();
+            parameterSpecs.add(context);
+        }
         return MethodSpec.methodBuilder(adapterMethodMetadata.getMethodName())
             .addModifiers(Modifier.PUBLIC)
-            .addParameter(parameterSpec)
+            .addParameters(parameterSpecs)
             .returns(adapterMethodMetadata.getReturn())
             .addCode(targetCode)
             .build();

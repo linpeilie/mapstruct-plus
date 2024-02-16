@@ -11,9 +11,13 @@ public class Constants {
 
     public static final String DEFAULT_ADAPTER_CLASS_NAME = "ConvertMapperAdapter";
 
+    public static final String DEFAULT_CYCLE_AVOIDING_ADAPTER_CLASS_NAME = "CycleAvoidingConvertMapperAdapter";
+
     public static final String DEFAULT_MAP_ADAPTER_CLASS_NAME = "MapConvertMapperAdapter";
 
     public static final String AUTO_MAPPER_CONFIG_CLASS_NAME = "AutoMapperConfig";
+
+    public static final String AUTO_CYCLE_AVOIDING_MAPPER_CONFIG_CLASS_NAME = "AutoCycleAvoidingMapperConfig";
 
     public static final String AUTO_MAP_MAPPER_CONFIG_CLASS_NAME = "AutoMapMapperConfig";
 

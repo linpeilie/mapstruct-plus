@@ -48,11 +48,11 @@ public abstract class IocAdapterMapperGenerator extends AbstractAdapterMapperGen
 
     @Override
     protected CodeBlock proxyMethodTarget(AbstractAdapterMethodMetadata adapterMethodMetadata) {
-        return CodeBlock.builder()
-            .add("return $N.$N($N);", firstWordToLower(adapterMethodMetadata.getMapper().simpleName()),
-                adapterMethodMetadata.getMapperMethodName(),
-                "param")
-            .build();
+        return !adapterMethodMetadata.isCycleAvoiding() ?
+            CodeBlock.builder().add("return $N.$N($N);", firstWordToLower(adapterMethodMetadata.getMapper().simpleName()),
+                adapterMethodMetadata.getMapperMethodName(), "param").build() :
+            CodeBlock.builder().add("return $N.$N($N, $N);", firstWordToLower(adapterMethodMetadata.getMapper().simpleName()),
+                adapterMethodMetadata.getMapperMethodName(), "param", "context").build();
     }
 
 }

@@ -10,7 +10,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
-import io.github.linpeilie.annotations.Immutable;
+import io.github.linpeilie.CycleAvoidingMappingContext;
 import io.github.linpeilie.processor.metadata.AutoMapperMetadata;
 import io.github.linpeilie.processor.metadata.AutoMappingMetadata;
 import java.io.IOException;
@@ -26,8 +26,9 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic;
+
 import org.apache.commons.lang3.StringUtils;
+import org.mapstruct.Context;
 
 import static io.github.linpeilie.processor.Constants.*;
 
@@ -61,29 +62,29 @@ public class AutoMapperGenerator {
         final ParameterSpec target = ParameterSpec.builder(targetClassName, "target")
             .addAnnotation(AnnotationSpec.builder(ClassName.get("org.mapstruct", "MappingTarget")).build())
             .build();
+        final ParameterSpec context = ParameterSpec.builder(ClassName.get(CycleAvoidingMappingContext.class), "context")
+            .addAnnotation(AnnotationSpec.builder(ClassName.get(Context.class)).build())
+            .build();
+        List<ParameterSpec> parameterSpecs = !metadata.isCycleAvoiding() ? Arrays.asList(source) : Arrays.asList(source, context);
         if (metadata.getFieldMappingList() != null && !metadata.getFieldMappingList().isEmpty()) {
-            builder.addMethod(addConvertMethodSpec(Collections.singletonList(source), metadata.getFieldMappingList(),
-                targetClassName));
+            builder.addMethod(addConvertMethodSpec(parameterSpecs, metadata.getFieldMappingList(), targetClassName));
         }
 
+        parameterSpecs = !metadata.isCycleAvoiding() ? Arrays.asList(source, target) : Arrays.asList(source, target, context);
         boolean targetIsImmutable = classIsImmutable(processingEnv, targetClassName);
         if (targetIsImmutable) {
-            builder.addMethod(addEmptyConvertMethodForImmutableEntity(source, target, targetClassName));
+            builder.addMethod(addEmptyConvertMethodForImmutableEntity(parameterSpecs, targetClassName));
         } else {
-            builder.addMethod(addConvertMethodSpec(Arrays.asList(source, target), metadata.getFieldMappingList(),
-                targetClassName));
+            builder.addMethod(addConvertMethodSpec(parameterSpecs, metadata.getFieldMappingList(), targetClassName));
         }
 
         return builder.build();
     }
 
-    private MethodSpec addEmptyConvertMethodForImmutableEntity(ParameterSpec source,
-        ParameterSpec target,
-        ClassName targetClassName) {
+    private MethodSpec addEmptyConvertMethodForImmutableEntity(List<ParameterSpec> parameterSpecs, ClassName targetClassName) {
         return MethodSpec.methodBuilder(CONVERT_METHOD_NAME)
             .addModifiers(Modifier.PUBLIC, Modifier.DEFAULT)
-            .addParameter(source)
-            .addParameter(target)
+            .addParameters(parameterSpecs)
             .returns(targetClassName)
             .addCode("return target;")
             .build();
