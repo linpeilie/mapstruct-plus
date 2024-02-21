@@ -1,6 +1,7 @@
 package io.github.linpeilie.model;
 
 import io.github.linpeilie.annotations.AutoMapper;
+import io.github.linpeilie.annotations.AutoMapping;
 import java.util.List;
 import lombok.Data;
 
@@ -11,5 +12,7 @@ public class EmployeeDto {
     private String employeeName;
     private EmployeeDto reportsTo;
     private List<EmployeeDto> team;
+    @AutoMapping(target = "a")
+    private B b;
 
 }
