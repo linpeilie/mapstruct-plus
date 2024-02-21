@@ -1,14 +1,15 @@
 package io.github.linpeilie.processor.generator;
 
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.*;
+import io.github.linpeilie.CycleAvoidingMappingContext;
 import io.github.linpeilie.processor.metadata.AutoEnumMapperMetadata;
+import org.mapstruct.Context;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
+import java.util.Arrays;
+import java.util.List;
 import javax.lang.model.element.Modifier;
 
 public class AutoEnumMapperGenerator {
@@ -50,8 +51,13 @@ public class AutoEnumMapperGenerator {
         }
         builder.add("}");
         builder.add("return e." + metadata.getGetter() + "();");
+        final ParameterSpec e = ParameterSpec.builder(metadata.getSourceClassName(), "e").build();
+        final ParameterSpec context = ParameterSpec.builder(ClassName.get(CycleAvoidingMappingContext.class), "context")
+            .addAnnotation(AnnotationSpec.builder(ClassName.get(Context.class)).build())
+            .build();
+        List<ParameterSpec> parameterSpecs = !metadata.isCycleAvoiding() ? Arrays.asList(e) : Arrays.asList(e, context);
         return MethodSpec.methodBuilder(metadata.toValueMethodName())
-            .addParameter(ParameterSpec.builder(metadata.getSourceClassName(), "e").build())
+            .addParameters(parameterSpecs)
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
             .addCode(builder.build())
             .returns(metadata.getReturnType())
@@ -59,8 +65,13 @@ public class AutoEnumMapperGenerator {
     }
 
     private MethodSpec buildToEnumMethod(final AutoEnumMapperMetadata metadata) {
+        final ParameterSpec value = ParameterSpec.builder(metadata.getReturnType(), "value").build();
+        final ParameterSpec context = ParameterSpec.builder(ClassName.get(CycleAvoidingMappingContext.class), "context")
+            .addAnnotation(AnnotationSpec.builder(ClassName.get(Context.class)).build())
+            .build();
+        List<ParameterSpec> parameterSpecs = !metadata.isCycleAvoiding() ? Arrays.asList(value) : Arrays.asList(value, context);
         final MethodSpec.Builder builder = MethodSpec.methodBuilder(metadata.toEnumMethodName())
-            .addParameter(ParameterSpec.builder(metadata.getReturnType(), "value").build())
+            .addParameters(parameterSpecs)
             .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
         if (!metadata.getReturnType().isPrimitive()) {
             builder.addCode(CodeBlock.builder().add("if(value == null) { return null; }").build());

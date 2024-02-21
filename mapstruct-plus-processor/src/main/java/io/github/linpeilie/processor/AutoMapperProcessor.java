@@ -206,7 +206,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
         // AutoEnumMapper
         final TypeElement autoEnumMapperAnnotation =
             processingEnv.getElementUtils().getTypeElement(AUTO_ENUM_MAPPER_ANNOTATION);
-        processAutoEnumMapperAnnotation(roundEnv, autoEnumMapperAnnotation);
+        processAutoEnumMapperAnnotation(roundEnv, autoEnumMapperAnnotation, false);
+        processAutoEnumMapperAnnotation(roundEnv, autoEnumMapperAnnotation, true);
 
         // AutoMapper
         final TypeElement autoMapperAnnotation = processingEnv.getElementUtils().getTypeElement(AUTO_MAPPER_ANNOTATION);
@@ -245,14 +246,14 @@ public class AutoMapperProcessor extends AbstractProcessor {
         elements.forEach(element -> customMapperList.add(element.asType()));
     }
 
-    private void processAutoEnumMapperAnnotation(final RoundEnvironment roundEnv, final TypeElement annotation) {
+    private void processAutoEnumMapperAnnotation(final RoundEnvironment roundEnv, final TypeElement annotation, boolean cycleAvoiding) {
         if (annotation == null) {
             return;
         }
         final List<TypeElement> elements = getElementAndMergeHistory(roundEnv, annotation,
             new BuildCollator(processingEnv, Constants.ENUM_MAPPERS_FILE_NAME));
         elements.stream()
-            .map(this::buildAutoEnumMapperMetadata)
+            .map(element -> buildAutoEnumMapperMetadata(element, cycleAvoiding))
             .filter(Objects::nonNull)
             .forEach(this::writeAutoEnumMapperFile);
     }
@@ -280,22 +281,22 @@ public class AutoMapperProcessor extends AbstractProcessor {
             new AdapterEnumMethodMetadata(autoEnumMapperMetadata.getSourceClassName(),
                 ClassName.get(autoEnumMapperMetadata.mapperPackage(), autoEnumMapperMetadata.mapperName()),
                 autoEnumMapperMetadata.toValueMethodName(),
-                autoEnumMapperMetadata.getReturnType());
+                autoEnumMapperMetadata.getReturnType(), autoEnumMapperMetadata.isCycleAvoiding());
         // toEnum
         final AdapterEnumMethodMetadata toEnumProxyMethod =
             new AdapterEnumMethodMetadata(autoEnumMapperMetadata.getReturnType(),
                 ClassName.get(autoEnumMapperMetadata.mapperPackage(), autoEnumMapperMetadata.mapperName()),
                 autoEnumMapperMetadata.toEnumMethodName(),
-                autoEnumMapperMetadata.getSourceClassName());
+                autoEnumMapperMetadata.getSourceClassName(), autoEnumMapperMetadata.isCycleAvoiding());
         methodMap.putIfAbsent(
-            autoEnumMapperMetadata.getSourceClassName().simpleName() + toValueProxyMethod.getMapperMethodName(),
+            autoEnumMapperMetadata.mapperName() + "." + toValueProxyMethod.getMapperMethodName(),
             toValueProxyMethod);
         methodMap.put(
-            autoEnumMapperMetadata.getSourceClassName().simpleName() + toEnumProxyMethod.getMapperMethodName(),
+            autoEnumMapperMetadata.mapperName() + "." + toEnumProxyMethod.getMapperMethodName(),
             toEnumProxyMethod);
     }
 
-    private AutoEnumMapperMetadata buildAutoEnumMapperMetadata(final Element element) {
+    private AutoEnumMapperMetadata buildAutoEnumMapperMetadata(final Element element, boolean cycleAvoiding) {
         final AutoEnumMapper autoEnumMapper = element.getAnnotation(AutoEnumMapper.class);
         final ClassName enumClassName = ClassName.get((TypeElement) element);
         final String enumCodeFieldName = autoEnumMapper.value();
@@ -323,6 +324,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         autoEnumMapperMetadata.setSourceClassName(enumClassName);
         autoEnumMapperMetadata.setGetter(getter);
         autoEnumMapperMetadata.setReturnType(returnType);
+        autoEnumMapperMetadata.setCycleAvoiding(cycleAvoiding);
 
         return autoEnumMapperMetadata;
     }
@@ -531,7 +533,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
                 return;
             }
             this.writeAutoMapperClassFile(metadata);
-            addAdapterMethod(metadata);
+//            addAdapterMethod(metadata);
         });
 
         List<AbstractAdapterMethodMetadata> methodList = methodMap.values().stream()

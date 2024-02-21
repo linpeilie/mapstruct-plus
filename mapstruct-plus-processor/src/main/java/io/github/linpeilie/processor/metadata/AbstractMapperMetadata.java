@@ -8,6 +8,8 @@ public abstract class AbstractMapperMetadata {
 
     protected ClassName sourceClassName;
 
+    protected boolean cycleAvoiding;
+
     public String mapperPackage() {
         return StringUtils.isNotEmpty(AutoMapperProperties.getMapperPackage())
                ? AutoMapperProperties.getMapperPackage() : sourceClassName.packageName();
@@ -25,6 +27,14 @@ public abstract class AbstractMapperMetadata {
 
     public void setSourceClassName(final ClassName sourceClassName) {
         this.sourceClassName = sourceClassName;
+    }
+
+    public boolean isCycleAvoiding() {
+        return cycleAvoiding;
+    }
+
+    public void setCycleAvoiding(boolean cycleAvoiding) {
+        this.cycleAvoiding = cycleAvoiding;
     }
 
 }

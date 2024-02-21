@@ -12,10 +12,12 @@ public class AdapterEnumMethodMetadata extends AbstractAdapterMethodMetadata {
     public AdapterEnumMethodMetadata(final TypeName source,
         final ClassName mapper,
         final String proxyTargetMethodName,
-        final TypeName returnType) {
+        final TypeName returnType,
+        boolean cycleAvoiding) {
         super(source, mapper);
         this.proxyTargetMethodName = proxyTargetMethodName;
         this.returnType = returnType;
+        this.cycleAvoiding = cycleAvoiding;
     }
 
     @Override
