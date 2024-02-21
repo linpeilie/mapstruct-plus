@@ -2,23 +2,8 @@ package io.github.linpeilie;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Assert;
-import io.github.linpeilie.model.Car;
-import io.github.linpeilie.model.Goods;
-import io.github.linpeilie.model.GoodsDto;
-import io.github.linpeilie.model.GoodsStateEnum;
-import io.github.linpeilie.model.GoodsVo;
-import io.github.linpeilie.model.InnerClassTarget;
-import io.github.linpeilie.model.MapModelA;
-import io.github.linpeilie.model.Order;
-import io.github.linpeilie.model.OrderVO;
-import io.github.linpeilie.model.SDto;
-import io.github.linpeilie.model.SVO;
-import io.github.linpeilie.model.Sku;
-import io.github.linpeilie.model.SysMenu;
-import io.github.linpeilie.model.SysMenuVo;
-import io.github.linpeilie.model.User;
-import io.github.linpeilie.model.UserDto;
-import io.github.linpeilie.model.UserVO;
+import io.github.linpeilie.model.*;
+
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,6 +19,8 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 public class QuickStartTest {
@@ -260,6 +247,52 @@ public class QuickStartTest {
         Assert.equals(sDto1.getId(), sDto.getId());
         Assert.equals(sDto1.getSuccess(), sDto.getSuccess());
         System.out.println(sDto1);
+    }
+
+    @Test
+    public void cycleMappingTest() {
+
+        EmployeeDto teamLeaderDto = new EmployeeDto();
+        teamLeaderDto.setEmployeeName( "Group Leader" );
+        teamLeaderDto.setReportsTo( null );
+
+        EmployeeDto memberDto1 = new EmployeeDto();
+        memberDto1.setEmployeeName( "Member1" );
+        memberDto1.setReportsTo( teamLeaderDto );
+        EmployeeDto memberDto2 = new EmployeeDto();
+        memberDto2.setEmployeeName( "Member2" );
+        memberDto2.setReportsTo( teamLeaderDto );
+        teamLeaderDto.setTeam( Arrays.asList( memberDto1, memberDto2 ) );
+
+        Employee teamLead = converter.convert( teamLeaderDto, Employee.class, true );
+
+        assertThat( teamLead ).isNotNull();
+        assertThat( teamLead.getReportsTo() ).isNull();
+        List<Employee> team = teamLead.getTeam();
+        assertThat( team ).hasSize( 2 );
+        assertThat( team ).extracting( "reportsTo" ).containsExactly( teamLead, teamLead );
+
+
+
+        Employee teamLeader = new Employee();
+        teamLeader.setName( "Group Leader" );
+        teamLeader.setReportsTo( null );
+
+        Employee member1 = new Employee();
+        member1.setName( "Member1" );
+        member1.setReportsTo( teamLeader );
+        Employee member2 = new Employee();
+        member2.setName( "Member2" );
+        member2.setReportsTo( teamLeader );
+        teamLeader.setTeam( Arrays.asList( member1, member2 ) );
+
+        EmployeeDto teamLeadDto = converter.convert( teamLeader, EmployeeDto.class, true );
+
+        assertThat( teamLeadDto ).isNotNull();
+        assertThat( teamLeadDto.getReportsTo() ).isNull();
+        List<EmployeeDto> teamDto = teamLeadDto.getTeam();
+        assertThat( teamDto ).hasSize( 2 );
+        assertThat( teamDto ).extracting( "reportsTo" ).containsExactly( teamLeadDto, teamLeadDto );
     }
 
 }
