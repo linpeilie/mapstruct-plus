@@ -290,6 +290,12 @@ public class QuickStartTest {
         memberDto2.setReportsTo(teamLeaderDto);
         teamLeaderDto.setTeam(Arrays.asList(memberDto1, memberDto2));
 
+        B b = new B();
+        C c = new C();
+        c.setId(99L);
+        b.setCreateBy(c);
+        teamLeaderDto.setB(b);
+
         Employee teamLead = converter.convert(teamLeaderDto, Employee.class, true);
 
         Assert.notNull(teamLead);
@@ -298,6 +304,7 @@ public class QuickStartTest {
         Assert.equals(team.size(), 2);
         Assert.equals(team.get(0).getReportsTo(), teamLead);
         Assert.equals(team.get(1).getReportsTo(), teamLead);
+        Assert.equals(teamLead.getA().getCreateBy(), 99L);
 
 
         Employee teamLeader = new Employee();
@@ -312,6 +319,10 @@ public class QuickStartTest {
         member2.setReportsTo(teamLeader);
         teamLeader.setTeam(Arrays.asList(member1, member2));
 
+        A a = new A();
+        a.setCreateBy(99L);
+        teamLeader.setA(a);
+
         EmployeeDto teamLeadDto = converter.convert(teamLeader, EmployeeDto.class, true);
 
         Assert.notNull(teamLeadDto);
@@ -320,6 +331,7 @@ public class QuickStartTest {
         Assert.equals(teamDto.size(), 2);
         Assert.equals(teamDto.get(0).getReportsTo(), teamLeadDto);
         Assert.equals(teamDto.get(1).getReportsTo(), teamLeadDto);
+        Assert.equals(teamLeadDto.getB().getCreateBy().getId(), 99L);
     }
 
 }
