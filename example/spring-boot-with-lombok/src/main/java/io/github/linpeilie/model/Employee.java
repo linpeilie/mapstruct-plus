@@ -23,7 +23,8 @@ public class Employee {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Employee> team;
-    @AutoMapping(target = "b")
+
+    @AutoMapping(target = "b.createBy.id", source = "a.createBy")
     private A a;
 
 }

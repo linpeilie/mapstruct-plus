@@ -20,8 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @SpringBootTest
 public class QuickStartTest {
 
@@ -250,49 +248,78 @@ public class QuickStartTest {
     }
 
     @Test
+    public void OneToManyTest() {
+
+        Product product = new Product();
+        product.setId(1L);
+        product.setName("Product");
+
+        ProductProperty productProperty1 = new ProductProperty();
+        productProperty1.setId(1L);
+        productProperty1.setName("ProductProperty1");
+        productProperty1.setProduct(product);
+
+        ProductProperty productProperty2 = new ProductProperty();
+        productProperty2.setId(2L);
+        productProperty2.setName("ProductProperty2");
+        productProperty2.setProduct(product);
+
+        product.setProductProperties(Arrays.asList(productProperty1, productProperty2));
+
+        ProductDto productDto = converter.convert(product, ProductDto.class, true);
+
+        Assert.equals(productDto.getProductProperties().size(), 2);
+        Assert.equals(productDto.getProductProperties().get(0).getId(), 1L);
+        Assert.equals(productDto.getProductProperties().get(1).getId(), 2L);
+        Assert.equals(productDto.getProductProperties().get(0).getProduct(), productDto);
+        Assert.equals(productDto.getProductProperties().get(1).getProduct(), productDto);
+    }
+
+    @Test
     public void cycleMappingTest() {
 
         EmployeeDto teamLeaderDto = new EmployeeDto();
-        teamLeaderDto.setEmployeeName( "Group Leader" );
-        teamLeaderDto.setReportsTo( null );
+        teamLeaderDto.setEmployeeName("Group Leader");
+        teamLeaderDto.setReportsTo(null);
 
         EmployeeDto memberDto1 = new EmployeeDto();
-        memberDto1.setEmployeeName( "Member1" );
-        memberDto1.setReportsTo( teamLeaderDto );
+        memberDto1.setEmployeeName("Member1");
+        memberDto1.setReportsTo(teamLeaderDto);
         EmployeeDto memberDto2 = new EmployeeDto();
-        memberDto2.setEmployeeName( "Member2" );
-        memberDto2.setReportsTo( teamLeaderDto );
-        teamLeaderDto.setTeam( Arrays.asList( memberDto1, memberDto2 ) );
+        memberDto2.setEmployeeName("Member2");
+        memberDto2.setReportsTo(teamLeaderDto);
+        teamLeaderDto.setTeam(Arrays.asList(memberDto1, memberDto2));
 
-        Employee teamLead = converter.convert( teamLeaderDto, Employee.class, true );
+        Employee teamLead = converter.convert(teamLeaderDto, Employee.class, true);
 
-        assertThat( teamLead ).isNotNull();
-        assertThat( teamLead.getReportsTo() ).isNull();
+        Assert.notNull(teamLead);
+        Assert.isNull(teamLead.getReportsTo());
         List<Employee> team = teamLead.getTeam();
-        assertThat( team ).hasSize( 2 );
-        assertThat( team ).extracting( "reportsTo" ).containsExactly( teamLead, teamLead );
-
+        Assert.equals(team.size(), 2);
+        Assert.equals(team.get(0).getReportsTo(), teamLead);
+        Assert.equals(team.get(1).getReportsTo(), teamLead);
 
 
         Employee teamLeader = new Employee();
-        teamLeader.setName( "Group Leader" );
-        teamLeader.setReportsTo( null );
+        teamLeader.setName("Group Leader");
+        teamLeader.setReportsTo(null);
 
         Employee member1 = new Employee();
-        member1.setName( "Member1" );
-        member1.setReportsTo( teamLeader );
+        member1.setName("Member1");
+        member1.setReportsTo(teamLeader);
         Employee member2 = new Employee();
-        member2.setName( "Member2" );
-        member2.setReportsTo( teamLeader );
-        teamLeader.setTeam( Arrays.asList( member1, member2 ) );
+        member2.setName("Member2");
+        member2.setReportsTo(teamLeader);
+        teamLeader.setTeam(Arrays.asList(member1, member2));
 
-        EmployeeDto teamLeadDto = converter.convert( teamLeader, EmployeeDto.class, true );
+        EmployeeDto teamLeadDto = converter.convert(teamLeader, EmployeeDto.class, true);
 
-        assertThat( teamLeadDto ).isNotNull();
-        assertThat( teamLeadDto.getReportsTo() ).isNull();
+        Assert.notNull(teamLeadDto);
+        Assert.isNull(teamLeadDto.getReportsTo());
         List<EmployeeDto> teamDto = teamLeadDto.getTeam();
-        assertThat( teamDto ).hasSize( 2 );
-        assertThat( teamDto ).extracting( "reportsTo" ).containsExactly( teamLeadDto, teamLeadDto );
+        Assert.equals(teamDto.size(), 2);
+        Assert.equals(teamDto.get(0).getReportsTo(), teamLeadDto);
+        Assert.equals(teamDto.get(1).getReportsTo(), teamLeadDto);
     }
 
 }
