@@ -31,7 +31,7 @@ public abstract class IocAdapterMapperGenerator extends AbstractAdapterMapperGen
             .forEach(mapper -> adapterBuilder.addField(buildMapperField(mapper)));
 
         adapterMethods.forEach(adapterMethod -> adapterBuilder
-            .addMethod(buildProxyMethod(adapterMethod)));
+            .addMethods(buildProxyMethod(adapterMethod)));
 
         return adapterBuilder.build();
     }
@@ -55,4 +55,12 @@ public abstract class IocAdapterMapperGenerator extends AbstractAdapterMapperGen
             .build();
     }
 
+    @Override
+    protected CodeBlock cycleAvoidingMethodTarget(AbstractAdapterMethodMetadata adapterMethodMetadata) {
+        return CodeBlock.builder()
+            .add("return $N.$N($N, $N);", firstWordToLower(adapterMethodMetadata.getMapper().simpleName()),
+                adapterMethodMetadata.cycleAvoidingMethodName(),
+                "param", "context")
+            .build();
+    }
 }

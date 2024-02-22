@@ -27,6 +27,8 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
 
     private boolean reverseConvertGenerate;
 
+    private boolean cycles;
+
     public String mapperName() {
         return sourceClassName.simpleName() + "To" + targetClassName.simpleName() + "Mapper";
     }
@@ -112,5 +114,13 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
 
     public void setConvertGenerate(final boolean convertGenerate) {
         this.convertGenerate = convertGenerate;
+    }
+
+    public boolean isCycles() {
+        return cycles;
+    }
+
+    public void setCycles(boolean cycles) {
+        this.cycles = cycles;
     }
 }

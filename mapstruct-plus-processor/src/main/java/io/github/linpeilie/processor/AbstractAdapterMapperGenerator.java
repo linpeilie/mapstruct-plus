@@ -11,7 +11,10 @@ import com.squareup.javapoet.TypeSpec;
 import io.github.linpeilie.processor.metadata.AbstractAdapterMethodMetadata;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -48,19 +51,31 @@ public abstract class AbstractAdapterMapperGenerator {
             return source;
         }
         if ("java.util.Map".contentEquals(source.toString())) {
-            return ParameterizedTypeName.get((ClassName) source,
-                ClassName.get("java.lang", "String"),
+            return ParameterizedTypeName.get((ClassName) source, ClassName.get("java.lang", "String"),
                 ClassName.get("java.lang", "Object"));
         }
         return source;
     }
 
-    protected MethodSpec buildProxyMethod(AbstractAdapterMethodMetadata adapterMethodMetadata) {
-        CodeBlock targetCode = adapterMethodMetadata.isStatic() ? CodeBlock.of("return $T.$N($N);",
-            adapterMethodMetadata.getMapper(), adapterMethodMetadata.getMapperMethodName(),
-            "param") : proxyMethodTarget(adapterMethodMetadata);
-        ParameterSpec parameterSpec = ParameterSpec.builder(
-            wrapperTypeName(adapterMethodMetadata.getSource()), "param").build();
+    protected List<MethodSpec> buildProxyMethod(AbstractAdapterMethodMetadata adapterMethodMetadata) {
+        List<MethodSpec> methodSpecs = new ArrayList<>();
+
+        if (adapterMethodMetadata.needCycleAvoiding()) {
+            methodSpecs.add(buildCycleAvoidingProxyMethod(adapterMethodMetadata));
+        } else {
+            methodSpecs.add(buildDefaultProxyMethod(adapterMethodMetadata));
+        }
+
+        return methodSpecs;
+    }
+
+    protected MethodSpec buildDefaultProxyMethod(AbstractAdapterMethodMetadata adapterMethodMetadata) {
+        CodeBlock targetCode = adapterMethodMetadata.isStatic()
+                               ? CodeBlock.of("return $T.$N($N);", adapterMethodMetadata.getMapper(),
+            adapterMethodMetadata.getMapperMethodName(), "param")
+                               : proxyMethodTarget(adapterMethodMetadata);
+        ParameterSpec parameterSpec =
+            ParameterSpec.builder(wrapperTypeName(adapterMethodMetadata.getSource()), "param").build();
         return MethodSpec.methodBuilder(adapterMethodMetadata.getMethodName())
             .addModifiers(Modifier.PUBLIC)
             .addParameter(parameterSpec)
@@ -69,6 +84,29 @@ public abstract class AbstractAdapterMapperGenerator {
             .build();
     }
 
+    protected MethodSpec buildCycleAvoidingProxyMethod(AbstractAdapterMethodMetadata adapterMethodMetadata) {
+        CodeBlock targetCode = adapterMethodMetadata.isStatic()
+                               ? CodeBlock.of("return $T.$N($N, $N);", adapterMethodMetadata.getMapper(),
+            adapterMethodMetadata.getMapperMethodName(), "param", "context")
+                               : cycleAvoidingMethodTarget(adapterMethodMetadata);
+        ParameterSpec parameterSpec =
+            ParameterSpec.builder(wrapperTypeName(adapterMethodMetadata.getSource()), "param").build();
+        ParameterSpec contextParameterSpec =
+            ParameterSpec.builder(
+                ClassName.get("io.github.linpeilie", "CycleAvoidingMappingContext"),
+                    "context")
+                .build();
+        return MethodSpec.methodBuilder(adapterMethodMetadata.getMethodName())
+            .addModifiers(Modifier.PUBLIC)
+            .addParameter(parameterSpec)
+            .addParameter(contextParameterSpec)
+            .returns(adapterMethodMetadata.getReturn())
+            .addCode(targetCode)
+            .build();
+    }
+
     protected abstract CodeBlock proxyMethodTarget(AbstractAdapterMethodMetadata adapterMethodMetadata);
+
+    protected abstract CodeBlock cycleAvoidingMethodTarget(AbstractAdapterMethodMetadata adapterMethodMetadata);
 
 }

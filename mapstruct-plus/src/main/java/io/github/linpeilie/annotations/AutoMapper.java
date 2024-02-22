@@ -32,4 +32,11 @@ public @interface AutoMapper {
      */
     boolean reverseConvertGenerate() default true;
 
+    /**
+     * 是否有循环依赖对象
+     *
+     * @return true: 有循环依赖对象 false: 没有循环依赖对象
+     */
+    boolean cycles() default false;
+
 }

@@ -1,6 +1,7 @@
 package io.github.linpeilie;
 
 import cn.hutool.core.collection.CollectionUtil;
+import io.github.linpeilie.annotations.DoIgnore;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,8 +10,10 @@ import org.mapstruct.MappingTarget;
 
 public interface BaseMapper<S, T> {
 
+    @DoIgnore
     T convert(S source);
 
+    @DoIgnore
     T convert(S source, @MappingTarget T target);
 
     default List<T> convert(List<S> sourceList) {

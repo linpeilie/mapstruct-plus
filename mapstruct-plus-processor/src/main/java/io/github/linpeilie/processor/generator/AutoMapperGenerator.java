@@ -10,7 +10,6 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
-import io.github.linpeilie.annotations.Immutable;
 import io.github.linpeilie.processor.metadata.AutoMapperMetadata;
 import io.github.linpeilie.processor.metadata.AutoMappingMetadata;
 import java.io.IOException;
@@ -26,7 +25,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic;
 import org.apache.commons.lang3.StringUtils;
 
 import static io.github.linpeilie.processor.Constants.*;
@@ -34,6 +32,8 @@ import static io.github.linpeilie.processor.Constants.*;
 public class AutoMapperGenerator {
 
     public static final String CONVERT_METHOD_NAME = "convert";
+
+    public static final String CONVERT_WITH_CYCLE_METHOD_NAME = "convertWithCycle";
 
     public void write(AutoMapperMetadata metadata, final ProcessingEnvironment processingEnv, Writer writer) {
         try {
@@ -63,15 +63,15 @@ public class AutoMapperGenerator {
             .build();
         if (metadata.getFieldMappingList() != null && !metadata.getFieldMappingList().isEmpty()) {
             builder.addMethod(addConvertMethodSpec(Collections.singletonList(source), metadata.getFieldMappingList(),
-                targetClassName));
+                targetClassName, metadata.isCycles()));
         }
 
         boolean targetIsImmutable = classIsImmutable(processingEnv, targetClassName);
         if (targetIsImmutable) {
-            builder.addMethod(addEmptyConvertMethodForImmutableEntity(source, target, targetClassName));
+            builder.addMethod(addEmptyConvertMethodForImmutableEntity(source, target, targetClassName, metadata.isCycles()));
         } else {
             builder.addMethod(addConvertMethodSpec(Arrays.asList(source, target), metadata.getFieldMappingList(),
-                targetClassName));
+                targetClassName, metadata.isCycles()));
         }
 
         return builder.build();
@@ -79,8 +79,9 @@ public class AutoMapperGenerator {
 
     private MethodSpec addEmptyConvertMethodForImmutableEntity(ParameterSpec source,
         ParameterSpec target,
-        ClassName targetClassName) {
-        return MethodSpec.methodBuilder(CONVERT_METHOD_NAME)
+        ClassName targetClassName, boolean cycles) {
+        String methodName = cycles ? CONVERT_WITH_CYCLE_METHOD_NAME : CONVERT_METHOD_NAME;
+        return MethodSpec.methodBuilder(methodName)
             .addModifiers(Modifier.PUBLIC, Modifier.DEFAULT)
             .addParameter(source)
             .addParameter(target)
@@ -103,8 +104,9 @@ public class AutoMapperGenerator {
 
     private MethodSpec addConvertMethodSpec(List<ParameterSpec> parameterSpecs,
                                             List<AutoMappingMetadata> autoMappingMetadataList,
-                                            ClassName target) {
-        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder(CONVERT_METHOD_NAME)
+                                            ClassName target, boolean cycles) {
+        String methodName = cycles ? CONVERT_WITH_CYCLE_METHOD_NAME : CONVERT_METHOD_NAME;
+        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder(methodName)
             .addParameters(parameterSpecs)
             .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
             .returns(target);

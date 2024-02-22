@@ -540,6 +540,12 @@ public class AutoMapperProcessor extends AbstractProcessor {
         reverseMapperMetadata.setImportsClassNameList(autoMapperMetadata.getImportsClassNameList());
         reverseMapperMetadata.setMapstructConfigClass(
             ClassName.get(AutoMapperProperties.getConfigPackage(), AutoMapperProperties.getConfigClassName()));
+        reverseMapperMetadata.setCycles(autoMapperMetadata.isCycles());
+        if (reverseMapperMetadata.isCycles()) {
+            reverseMapperMetadata.setSuperClass(ClassName.get("io.github.linpeilie", "BaseCycleAvoidingMapper"));
+        } else {
+            reverseMapperMetadata.setSuperClass(ClassName.get("io.github.linpeilie", "BaseMapper"));
+        }
         if (CollectionUtil.isNotEmpty(autoMapperMetadata.getFieldReverseMappingList())) {
             reverseMapperMetadata.setFieldMappingList(autoMapperMetadata.getFieldReverseMappingList());
         } else {
@@ -575,7 +581,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
             return;
         }
         AdapterMethodMetadata adapterMethodMetadata = AdapterMethodMetadata.newInstance(
-            metadata.getSourceClassName(), metadata.getTargetClassName(), metadata.mapperClass());
+            metadata.getSourceClassName(), metadata.getTargetClassName(), metadata.mapperClass(),
+            metadata.isCycles());
         methodMap.putIfAbsent(adapterMethodMetadata.getMethodName(), adapterMethodMetadata);
     }
 
@@ -590,7 +597,6 @@ public class AutoMapperProcessor extends AbstractProcessor {
 
         metadata.setSourceClassName(source);
         metadata.setTargetClassName(target);
-        metadata.setSuperClass(ClassName.get("io.github.linpeilie", "BaseMapper"));
         metadata.setSuperGenerics(new ClassName[] {source, target});
         metadata.setMapstructConfigClass(
             ClassName.get(AutoMapperProperties.getConfigPackage(), AutoMapperProperties.getConfigClassName()));
@@ -672,6 +678,12 @@ public class AutoMapperProcessor extends AbstractProcessor {
         metadata.setFieldReverseMappingList(reverseMappingMetadataList);
         metadata.setConvertGenerate(autoMapper.convertGenerate());
         metadata.setReverseConvertGenerate(autoMapper.reverseConvertGenerate());
+        metadata.setCycles(autoMapper.cycles());
+        if (metadata.isCycles()) {
+            metadata.setSuperClass(ClassName.get("io.github.linpeilie", "BaseCycleAvoidingMapper"));
+        } else {
+            metadata.setSuperClass(ClassName.get("io.github.linpeilie", "BaseMapper"));
+        }
 
         addMapper(metadata);
 

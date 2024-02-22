@@ -17,7 +17,7 @@ public class DefaultAdapterMapperGenerator extends AbstractAdapterMapperGenerato
                 ClassName.get(adapterPackage(), adapterClassName))
             .addModifiers(Modifier.PUBLIC);
 
-        adapterMethods.forEach(adapterMethod -> adapterBuilder.addMethod(buildProxyMethod(adapterMethod)));
+        adapterMethods.forEach(adapterMethod -> adapterBuilder.addMethods(buildProxyMethod(adapterMethod)));
 
         return adapterBuilder.build();
     }
@@ -31,5 +31,12 @@ public class DefaultAdapterMapperGenerator extends AbstractAdapterMapperGenerato
         return CodeBlock.of("return ($T.getMapper($T.class)).$N($N);",
             ClassName.get("org.mapstruct.factory", "Mappers"), adapterMethodMetadata.getMapper(),
             adapterMethodMetadata.getMapperMethodName(), "param");
+    }
+
+    @Override
+    protected CodeBlock cycleAvoidingMethodTarget(AbstractAdapterMethodMetadata adapterMethodMetadata) {
+        return CodeBlock.of("return ($T.getMapper($T.class)).$N($N, $N);",
+            ClassName.get("org.mapstruct.factory", "Mappers"), adapterMethodMetadata.getMapper(),
+            adapterMethodMetadata.cycleAvoidingMethodName(), "param", "context");
     }
 }
