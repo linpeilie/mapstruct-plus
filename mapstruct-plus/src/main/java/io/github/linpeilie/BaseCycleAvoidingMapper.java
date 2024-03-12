@@ -3,34 +3,42 @@ package io.github.linpeilie;
 import cn.hutool.core.collection.CollectionUtil;
 import io.github.linpeilie.annotations.DoIgnore;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.mapstruct.Context;
 import org.mapstruct.MappingTarget;
 
 public interface BaseCycleAvoidingMapper<S, T> extends BaseMapper<S, T> {
 
     @DoIgnore
-    T convertWithCycle(S source, @Context CycleAvoidingMappingContext context);
+    T convert(S source, @Context CycleAvoidingMappingContext context);
 
     @DoIgnore
-    T convertWithCycle(S source, @MappingTarget T target, @Context CycleAvoidingMappingContext context);
+    T convert(S source, @MappingTarget T target, @Context CycleAvoidingMappingContext context);
 
-    List<T> convertWithCycle(List<S> sourceList, @Context CycleAvoidingMappingContext context);
-
-    @Override
     @DoIgnore
-    default List<T> convert(List<S> sourceList) {
-        return convertWithCycle(sourceList, new CycleAvoidingMappingContext());
+    default List<T> convert(List<S> sourceList, @Context CycleAvoidingMappingContext context) {
+        return sourceList.stream()
+            .map(item -> convert(item, context))
+            .collect(Collectors.toList());
     }
 
     @Override
     @DoIgnore
     default T convert(S source) {
-        return convertWithCycle(source, new CycleAvoidingMappingContext());
+        return convert(source, new CycleAvoidingMappingContext());
     }
 
     @Override
     @DoIgnore
-    default T convert(S source, T target) {
-        return convertWithCycle(source, new CycleAvoidingMappingContext());
+    default T convert(S source, @MappingTarget T target) {
+        return convert(source, new CycleAvoidingMappingContext());
     }
+
+
+    @Override
+    @DoIgnore
+    default List<T> convert(List<S> sourceList) {
+        return convert(sourceList, new CycleAvoidingMappingContext());
+    }
+
 }

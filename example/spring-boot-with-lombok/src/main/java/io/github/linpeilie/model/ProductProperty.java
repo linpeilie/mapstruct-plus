@@ -1,10 +1,12 @@
 package io.github.linpeilie.model;
 
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Data
+@AutoMapper(target = ProductPropertyDto.class, cycles = true)
 public class ProductProperty {
 
     private Long id;

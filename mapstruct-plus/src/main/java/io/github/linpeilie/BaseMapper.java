@@ -16,6 +16,7 @@ public interface BaseMapper<S, T> {
     @DoIgnore
     T convert(S source, @MappingTarget T target);
 
+    @DoIgnore
     default List<T> convert(List<S> sourceList) {
         if (CollectionUtil.isEmpty(sourceList)) {
             return new ArrayList<>();

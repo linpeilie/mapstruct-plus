@@ -28,12 +28,6 @@ public class SpringAdapterMapperGenerator extends IocAdapterMapperGenerator {
             .build();
     }
 
-    private AnnotationSpec lazy() {
-        return AnnotationSpec
-            .builder(ClassName.get("org.springframework.context.annotation", "Lazy"))
-            .build();
-    }
-
     @Override
     protected AnnotationSpec componentAnnotation() {
         return component();
@@ -41,7 +35,7 @@ public class SpringAdapterMapperGenerator extends IocAdapterMapperGenerator {
 
     @Override
     protected List<AnnotationSpec> injectAnnotations() {
-        return CollectionUtil.newArrayList(autowired(), lazy());
+        return CollectionUtil.newArrayList(autowired());
     }
 
 }

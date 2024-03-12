@@ -1,6 +1,7 @@
 package io.github.linpeilie.processor.metadata;
 
 import com.squareup.javapoet.ClassName;
+import io.github.linpeilie.processor.utils.ClassUtil;
 
 public class AdapterMethodMetadata extends AbstractAdapterMethodMetadata {
 
@@ -19,9 +20,9 @@ public class AdapterMethodMetadata extends AbstractAdapterMethodMetadata {
 
     @Override
     public String getMethodName() {
-        final String sourceName = source.toString().replace(".", "_");
-        return sourceName.substring(0, 1).toLowerCase() + sourceName.substring(1) + "To" +
-               target.simpleName();
+        String source = ClassUtil.simplifyQualifiedName(this.source.toString());
+        source = source.substring(0, 1).toLowerCase() + source.substring(1);
+        return source + "To" + target.simpleName();
     }
 
     public ClassName getTarget() {

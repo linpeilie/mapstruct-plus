@@ -38,7 +38,7 @@ public class BuildCollator {
         Filer filer = processingEnv.getFiler();
         try {
             FileObject fileObject = filer.getResource(StandardLocation.CLASS_OUTPUT, "",
-                Constants.MAPSTRUCT_PLUS_META_INF + fileName);
+                 ContextConstants.MetaInf.folder + fileName);
             this.collatorFile = new File(fileObject.getName());
             if (collatorFile.exists()) {
                 records = FileUtil.readUtf8Lines(collatorFile)
