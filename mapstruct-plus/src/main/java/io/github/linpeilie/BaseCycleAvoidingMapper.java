@@ -1,6 +1,5 @@
 package io.github.linpeilie;
 
-import cn.hutool.core.collection.CollectionUtil;
 import io.github.linpeilie.annotations.DoIgnore;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,9 +1,5 @@
 package io.github.linpeilie.processor;
 
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.exceptions.ExceptionUtil;
-import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import io.github.linpeilie.ComponentModelConstant;
@@ -31,6 +27,10 @@ import io.github.linpeilie.processor.metadata.AutoEnumMapperMetadata;
 import io.github.linpeilie.processor.metadata.AutoMapMapperMetadata;
 import io.github.linpeilie.processor.metadata.AutoMapperMetadata;
 import io.github.linpeilie.processor.metadata.AutoMappingMetadata;
+import io.github.linpeilie.processor.utils.ExceptionUtils;
+import io.github.linpeilie.processor.utils.ObjectUtils;
+import io.github.linpeilie.utils.CollectionUtils;
+import io.github.linpeilie.utils.StrUtil;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -149,7 +149,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         try {
             doProcess(annotations, roundEnv);
         } catch (Exception e) {
-            messager.printMessage(ERROR, ExceptionUtil.stacktraceToString(e));
+            messager.printMessage(ERROR, ExceptionUtils.getStackTrace(e));
         }
 
         return false;
@@ -398,7 +398,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
 
         // load previous mapper config
         final List<TypeElement> typeElements = buildCollator.getRecords();
-        if (CollectionUtil.isNotEmpty(typeElements)) {
+        if (CollectionUtils.isNotEmpty(typeElements)) {
             messager.printMessage(Diagnostic.Kind.NOTE,
                 "The previous Mapper Config Class was read , class name : " + typeElements.get(0));
             loadMapperConfig(typeElements.get(0).getAnnotation(MapperConfig.class));
@@ -413,7 +413,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
             if (mapperConfigOptional.isPresent()) {
                 loadMapperConfig(mapperConfigOptional.get().getAnnotation(MapperConfig.class));
                 // record
-                buildCollator.writeTypeElements(CollectionUtil.newArrayList((TypeElement) mapperConfigOptional.get()));
+                buildCollator.writeTypeElements(Collections.singletonList((TypeElement) mapperConfigOptional.get()));
             }
         }
 
@@ -483,7 +483,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
             if (!autoMapperMetadata.isReverseConvertGenerate()) {
                 return;
             }
-            boolean defineReverseMapping = CollectionUtil.isNotEmpty(autoMapperMetadata.getFieldReverseMappingList());
+            boolean defineReverseMapping = CollectionUtils.isNotEmpty(autoMapperMetadata.getFieldReverseMappingList());
             final AutoMapperMetadata reverseMapperMetadata = reverseMapper(autoMapperMetadata);
             if (defineReverseMapping) {
                 addMapper(reverseMapperMetadata);
@@ -544,7 +544,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
             reverseMapperMetadata.setSuperClass(
                 ClassName.get(ContextConstants.BaseMapper.packageName, ContextConstants.BaseMapper.className));
         }
-        if (CollectionUtil.isNotEmpty(autoMapperMetadata.getFieldReverseMappingList())) {
+        if (CollectionUtils.isNotEmpty(autoMapperMetadata.getFieldReverseMappingList())) {
             reverseMapperMetadata.setFieldMappingList(autoMapperMetadata.getFieldReverseMappingList());
         } else {
             // 需要继承的属性
@@ -799,7 +799,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         String elementName = ele.getSimpleName().toString();
 
         if (ele.getKind() == ElementKind.METHOD) {
-            elementName = ObjectUtil.defaultIfBlank(StrUtil.getGeneralField(elementName), elementName);
+            elementName = ObjectUtils.defaultIfNull(StrUtil.getGeneralField(elementName), elementName);
         }
 
         if (StrUtil.isNotEmpty(autoMapping.source())) {

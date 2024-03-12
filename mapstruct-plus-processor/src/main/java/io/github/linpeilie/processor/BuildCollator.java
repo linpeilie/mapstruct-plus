@@ -1,7 +1,7 @@
 package io.github.linpeilie.processor;
 
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.io.FileUtil;
+import io.github.linpeilie.processor.utils.FileUtils;
+import io.github.linpeilie.utils.CollectionUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -41,7 +41,7 @@ public class BuildCollator {
                  ContextConstants.MetaInf.folder + fileName);
             this.collatorFile = new File(fileObject.getName());
             if (collatorFile.exists()) {
-                records = FileUtil.readUtf8Lines(collatorFile)
+                records = FileUtils.readUtf8Lines(collatorFile)
                     .stream()
                     .map(line -> processingEnv.getElementUtils().getTypeElement(line))
                     .filter(Objects::nonNull)
@@ -62,7 +62,7 @@ public class BuildCollator {
     }
 
     private void write(Collection<String> lines) {
-        if (CollectionUtil.isEmpty(lines)) {
+        if (CollectionUtils.isEmpty(lines)) {
             return;
         }
 
@@ -71,8 +71,8 @@ public class BuildCollator {
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
 
-        FileUtil.mkParentDirs(collatorFile);
-        FileUtil.writeUtf8Lines(lines, collatorFile);
+        FileUtils.mkParentDirs(collatorFile);
+        FileUtils.writeUtf8Lines(lines, collatorFile);
     }
 
     private List<String> loadRecords() {
@@ -87,7 +87,7 @@ public class BuildCollator {
 
     public void consumeRecords(Consumer<TypeElement> consumer) {
         final List<TypeElement> typeElements = getRecords();
-        if (CollectionUtil.isNotEmpty(typeElements)) {
+        if (CollectionUtils.isNotEmpty(typeElements)) {
             typeElements.forEach(consumer);
         }
     }

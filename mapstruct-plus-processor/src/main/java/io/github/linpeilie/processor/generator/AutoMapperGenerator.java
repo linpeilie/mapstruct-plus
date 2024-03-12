@@ -1,7 +1,5 @@
 package io.github.linpeilie.processor.generator;
 
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.StrUtil;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -13,6 +11,8 @@ import com.squareup.javapoet.TypeSpec;
 import io.github.linpeilie.processor.ContextConstants;
 import io.github.linpeilie.processor.metadata.AutoMapperMetadata;
 import io.github.linpeilie.processor.metadata.AutoMappingMetadata;
+import io.github.linpeilie.utils.CollectionUtils;
+import io.github.linpeilie.utils.StrUtil;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
@@ -25,7 +25,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import org.apache.commons.lang3.StringUtils;
 
 public class AutoMapperGenerator {
 
@@ -58,10 +57,9 @@ public class AutoMapperGenerator {
             ParameterSpec.builder(ClassName.get("io.github.linpeilie", "CycleAvoidingMappingContext"), "context")
                 .addAnnotation(ClassName.get("org.mapstruct", "Context"))
                 .build();
-
         if (metadata.getFieldMappingList() != null && !metadata.getFieldMappingList().isEmpty()) {
             builder.addMethod(addConvertMethodSpec(
-                metadata.isCycles() ? CollectionUtil.newArrayList(source, context) : Collections.singletonList(source),
+                metadata.isCycles() ? CollectionUtils.newArrayList(source, context) : Collections.singletonList(source),
                 metadata.getFieldMappingList(),
                 targetClassName,
                 CONVERT_METHOD_NAME));
@@ -71,14 +69,14 @@ public class AutoMapperGenerator {
         if (targetIsImmutable) {
             builder.addMethod(
                 addEmptyConvertMethodForImmutableEntity(
-                    metadata.isCycles() ? CollectionUtil.newArrayList(source, target,
-                        context) : CollectionUtil.newArrayList(source, target),
+                    metadata.isCycles() ? CollectionUtils.newArrayList(source, target,
+                        context) : CollectionUtils.newArrayList(source, target),
                     targetClassName,
                     CONVERT_METHOD_NAME));
         } else if (metadata.getFieldMappingList() != null && !metadata.getFieldMappingList().isEmpty()) {
             builder.addMethod(addConvertMethodSpec(
-                metadata.isCycles() ? CollectionUtil.newArrayList(source, target,
-                    context) : CollectionUtil.newArrayList(source, target),
+                metadata.isCycles() ? CollectionUtils.newArrayList(source, target,
+                    context) : CollectionUtils.newArrayList(source, target),
                 metadata.getFieldMappingList(),
                 targetClassName,
                 CONVERT_METHOD_NAME));
@@ -117,7 +115,7 @@ public class AutoMapperGenerator {
             .addParameters(parameterSpecs)
             .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
             .returns(target);
-        if (CollectionUtil.isNotEmpty(autoMappingMetadataList)) {
+        if (CollectionUtils.isNotEmpty(autoMappingMetadataList)) {
             methodSpecBuilder.addAnnotations(buildMappingAnnotations(autoMappingMetadataList));
         }
         return methodSpecBuilder.build();
@@ -140,17 +138,17 @@ public class AutoMapperGenerator {
                 builder.addMember("defaultValue",
                     CodeBlock.builder().add("$S", autoMappingMetadata.getDefaultValue()).build());
             }
-            if (StringUtils.isNotEmpty(autoMappingMetadata.getExpression())) {
+            if (StrUtil.isNotEmpty(autoMappingMetadata.getExpression())) {
                 builder.addMember("expression",
                     CodeBlock.builder().add("$S", autoMappingMetadata.getExpression()).build());
             } else {
                 builder.addMember("source", CodeBlock.builder().add("$S", autoMappingMetadata.getSource()).build());
             }
-            if (StringUtils.isNotEmpty(autoMappingMetadata.getDefaultExpression())) {
+            if (StrUtil.isNotEmpty(autoMappingMetadata.getDefaultExpression())) {
                 builder.addMember("defaultExpression",
                     CodeBlock.builder().add("$S", autoMappingMetadata.getDefaultExpression()).build());
             }
-            if (StringUtils.isNotEmpty(autoMappingMetadata.getConditionExpression())) {
+            if (StrUtil.isNotEmpty(autoMappingMetadata.getConditionExpression())) {
                 builder.addMember("conditionExpression",
                     CodeBlock.builder().add("$S", autoMappingMetadata.getConditionExpression()).build());
             }

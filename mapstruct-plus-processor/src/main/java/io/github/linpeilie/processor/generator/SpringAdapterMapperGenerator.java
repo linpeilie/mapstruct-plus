@@ -1,18 +1,9 @@
 package io.github.linpeilie.processor.generator;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.TypeSpec;
-import io.github.linpeilie.processor.AbstractAdapterMapperGenerator;
-import io.github.linpeilie.processor.metadata.AbstractAdapterMethodMetadata;
-import java.util.Collection;
+import io.github.linpeilie.utils.CollectionUtils;
 import java.util.List;
-import javax.lang.model.element.Modifier;
 
 public class SpringAdapterMapperGenerator extends IocAdapterMapperGenerator {
 
@@ -35,7 +26,7 @@ public class SpringAdapterMapperGenerator extends IocAdapterMapperGenerator {
 
     @Override
     protected List<AnnotationSpec> injectAnnotations() {
-        return CollectionUtil.newArrayList(autowired());
+        return CollectionUtils.newArrayList(autowired());
     }
 
 }
