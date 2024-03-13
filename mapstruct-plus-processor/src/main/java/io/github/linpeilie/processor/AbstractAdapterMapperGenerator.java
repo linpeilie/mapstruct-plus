@@ -125,7 +125,8 @@ public abstract class AbstractAdapterMapperGenerator {
                 PARAM__PARAMETER_NAME
             ).build();
             MethodSpec methodSpecForList =
-                buildDefaultProxyMethod(adapterMethodMetadata, listParameter, ClassName.get("java.util", "List"),
+                buildDefaultProxyMethod(adapterMethodMetadata, listParameter,
+                    ParameterizedTypeName.get(ClassName.get("java.util", "List"), adapterMethodMetadata.getReturn()),
                     annotation);
             methodSpecs.add(methodSpecForList);
         }
