@@ -322,6 +322,10 @@ public class AutoMapperProcessor extends AbstractProcessor {
                 addAdapterMapMethod(metadata);
             });
 
+        if (mapMethodMap.isEmpty()) {
+            return;
+        }
+
         adapterMapperGenerator.write(processingEnv,
             mapMethodMap.values(),
             AutoMapperProperties.getMapAdapterClassName(),
@@ -502,6 +506,10 @@ public class AutoMapperProcessor extends AbstractProcessor {
             this.writeAutoMapperClassFile(metadata);
             addAdapterMethod(metadata);
         });
+
+        if (methodMap.isEmpty()) {
+            return;
+        }
 
         adapterMapperGenerator.write(processingEnv,
             methodMap.values(),
