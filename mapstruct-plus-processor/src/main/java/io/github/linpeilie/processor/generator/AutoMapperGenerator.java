@@ -11,6 +11,7 @@ import com.squareup.javapoet.TypeSpec;
 import io.github.linpeilie.processor.ContextConstants;
 import io.github.linpeilie.processor.metadata.AutoMapperMetadata;
 import io.github.linpeilie.processor.metadata.AutoMappingMetadata;
+import io.github.linpeilie.utils.ArrayUtil;
 import io.github.linpeilie.utils.CollectionUtils;
 import io.github.linpeilie.utils.StrUtil;
 import java.io.IOException;
@@ -114,6 +115,7 @@ public class AutoMapperGenerator {
         final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder(methodName)
             .addParameters(parameterSpecs)
             .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+            .addAnnotation(ClassName.get(ContextConstants.DoIgnore.packageName, ContextConstants.DoIgnore.className))
             .returns(target);
         if (CollectionUtils.isNotEmpty(autoMappingMetadataList)) {
             methodSpecBuilder.addAnnotations(buildMappingAnnotations(autoMappingMetadataList));

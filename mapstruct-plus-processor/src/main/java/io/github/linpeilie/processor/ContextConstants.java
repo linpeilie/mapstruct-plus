@@ -104,4 +104,9 @@ public interface ContextConstants {
         String className = "MapObjectConvert";
     }
 
+    interface DoIgnore {
+        String packageName = "io.github.linpeilie.annotations";
+        String className = "DoIgnore";
+    }
+
 }

@@ -189,7 +189,7 @@ public abstract class AbstractAdapterMapperGenerator {
 
         // default impl
         List<MethodSpec> defaultMethods = buildDefaultProxyMethod(adapterMethodMetadata,
-            ClassName.get("io.github.linpeilie.annotations", "DoIgnore"));
+            ClassName.get(ContextConstants.DoIgnore.packageName, ContextConstants.DoIgnore.className));
         List<MethodSpec> methodSpecs = new ArrayList<>(defaultMethods);
 
         ParameterSpec parameterSpec =
