@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-@AutoMapper(target = EmployeeDto.class, cycles = true)
+@AutoMapper(target = EmployeeDto.class, cycleAvoiding = true)
 public class Employee {
 
     private String name;

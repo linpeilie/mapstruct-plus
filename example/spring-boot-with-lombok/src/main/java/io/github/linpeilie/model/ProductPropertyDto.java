@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Data
-@AutoMapper(target = ProductProperty.class, cycles = true)
+@AutoMapper(target = ProductProperty.class, cycleAvoiding = true)
 public class ProductPropertyDto {
 
     private Long id;

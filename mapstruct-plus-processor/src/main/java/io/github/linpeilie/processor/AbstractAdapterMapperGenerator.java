@@ -32,8 +32,8 @@ public abstract class AbstractAdapterMapperGenerator {
     public void write(ProcessingEnvironment processingEnv,
         Collection<AbstractAdapterMethodMetadata> adapterMethods,
         String adapterClassName,
-        boolean cycle) {
-        write(processingEnv, createAdapterTypeSpec(adapterClassName, adapterMethods, cycle));
+        boolean cycleAvoiding) {
+        write(processingEnv, createAdapterTypeSpec(adapterClassName, adapterMethods, cycleAvoiding));
     }
 
     private void write(ProcessingEnvironment processingEnv, TypeSpec typeSpec) {
@@ -55,17 +55,17 @@ public abstract class AbstractAdapterMapperGenerator {
 
     protected TypeSpec createAdapterTypeSpec(String adapterClassName,
         Collection<AbstractAdapterMethodMetadata> adapterMethods,
-        boolean cycle) {
+        boolean cycleAvoiding) {
         List<MethodSpec> methods = adapterMethods.stream()
-            .filter(method -> !cycle || method.needCycleAvoiding())
-            .map(method -> buildProxyMethod(method, cycle))
+            .filter(method -> !cycleAvoiding || method.needCycleAvoiding())
+            .map(method -> buildProxyMethod(method, cycleAvoiding))
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
         if (methods.isEmpty()) {
             return null;
         }
         return createTypeSpec(methods, adapterClassName,
-            cycle ? ClassName.get(adapterPackage(), AutoMapperProperties.getAdapterClassName()) : null);
+            cycleAvoiding ? ClassName.get(adapterPackage(), AutoMapperProperties.getAdapterClassName()) : null);
     }
 
     protected TypeSpec createTypeSpec(List<MethodSpec> methods, String adapterClassName, ClassName superClass) {
@@ -97,9 +97,9 @@ public abstract class AbstractAdapterMapperGenerator {
         return source;
     }
 
-    private List<MethodSpec> buildProxyMethod(AbstractAdapterMethodMetadata adapterMethod, boolean cycle) {
+    private List<MethodSpec> buildProxyMethod(AbstractAdapterMethodMetadata adapterMethod, boolean cycleAvoiding) {
         List<MethodSpec> methodSpecs = new ArrayList<>();
-        if (cycle) {
+        if (cycleAvoiding) {
             methodSpecs.addAll(buildCycleAvoidingProxyMethod(adapterMethod));
         } else {
             methodSpecs.addAll(buildDefaultProxyMethod(adapterMethod, null));

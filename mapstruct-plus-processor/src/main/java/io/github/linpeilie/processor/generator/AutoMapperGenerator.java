@@ -59,7 +59,7 @@ public class AutoMapperGenerator {
                 .build();
         if (metadata.getFieldMappingList() != null && !metadata.getFieldMappingList().isEmpty()) {
             builder.addMethod(addConvertMethodSpec(
-                metadata.isCycles() ? CollectionUtils.newArrayList(source, context) : Collections.singletonList(source),
+                metadata.isCycleAvoiding() ? CollectionUtils.newArrayList(source, context) : Collections.singletonList(source),
                 metadata.getFieldMappingList(),
                 targetClassName,
                 CONVERT_METHOD_NAME));
@@ -69,13 +69,13 @@ public class AutoMapperGenerator {
         if (targetIsImmutable) {
             builder.addMethod(
                 addEmptyConvertMethodForImmutableEntity(
-                    metadata.isCycles() ? CollectionUtils.newArrayList(source, target,
+                    metadata.isCycleAvoiding() ? CollectionUtils.newArrayList(source, target,
                         context) : CollectionUtils.newArrayList(source, target),
                     targetClassName,
                     CONVERT_METHOD_NAME));
         } else if (metadata.getFieldMappingList() != null && !metadata.getFieldMappingList().isEmpty()) {
             builder.addMethod(addConvertMethodSpec(
-                metadata.isCycles() ? CollectionUtils.newArrayList(source, target,
+                metadata.isCycleAvoiding() ? CollectionUtils.newArrayList(source, target,
                     context) : CollectionUtils.newArrayList(source, target),
                 metadata.getFieldMappingList(),
                 targetClassName,

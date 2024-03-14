@@ -540,12 +540,12 @@ public class AutoMapperProcessor extends AbstractProcessor {
         AutoMapperMetadata reverseMapperMetadata =
             initAutoMapperMetadata(autoMapperMetadata.getTargetClassName(),
                 autoMapperMetadata.getSourceClassName(),
-                autoMapperMetadata.isCycles());
+                autoMapperMetadata.isCycleAvoiding());
         reverseMapperMetadata.setConvertGenerate(autoMapperMetadata.isReverseConvertGenerate());
         reverseMapperMetadata.setUsesClassNameList(autoMapperMetadata.getUsesClassNameList());
         reverseMapperMetadata.setImportsClassNameList(autoMapperMetadata.getImportsClassNameList());
-        reverseMapperMetadata.setCycles(autoMapperMetadata.isCycles());
-        if (reverseMapperMetadata.isCycles()) {
+        reverseMapperMetadata.setCycleAvoiding(autoMapperMetadata.isCycleAvoiding());
+        if (reverseMapperMetadata.isCycleAvoiding()) {
             reverseMapperMetadata.setSuperClass(ClassName.get(ContextConstants.BaseCycleAvoidingMapper.packageName,
                 ContextConstants.BaseCycleAvoidingMapper.className));
         } else {
@@ -588,7 +588,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         }
         AdapterMethodMetadata adapterMethodMetadata =
             AdapterMethodMetadata.newInstance(metadata.getSourceClassName(), metadata.getTargetClassName(),
-                metadata.mapperClass(), metadata.isCycles());
+                metadata.mapperClass(), metadata.isCycleAvoiding());
         methodMap.putIfAbsent(adapterMethodMetadata.getMethodName(), adapterMethodMetadata);
     }
 
@@ -598,14 +598,14 @@ public class AutoMapperProcessor extends AbstractProcessor {
         mapMethodMap.putIfAbsent(adapterMapMethodMetadata.getMethodName(), adapterMapMethodMetadata);
     }
 
-    private AutoMapperMetadata initAutoMapperMetadata(ClassName source, ClassName target, boolean cycles) {
+    private AutoMapperMetadata initAutoMapperMetadata(ClassName source, ClassName target, boolean cycleAvoiding) {
         AutoMapperMetadata metadata = new AutoMapperMetadata();
 
         metadata.setSourceClassName(source);
         metadata.setTargetClassName(target);
         metadata.setSuperGenerics(new ClassName[] {source, target});
         ClassName mapStructConfigClass;
-        if (cycles) {
+        if (cycleAvoiding) {
             mapStructConfigClass = ClassName.get(AutoMapperProperties.getConfigPackage(),
                 AutoMapperProperties.getCycleAvoidingConfigClassName());
         } else {
@@ -680,7 +680,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         List<AutoMappingMetadata> reverseMappingMetadataList = buildFieldReverseMappingMetadata((TypeElement) ele);
         reverseMappingMetadataList.removeIf(mappingMetadata -> !isTargetFieldMapping(target, mappingMetadata));
 
-        AutoMapperMetadata metadata = initAutoMapperMetadata(source, target, autoMapper.cycles());
+        AutoMapperMetadata metadata = initAutoMapperMetadata(source, target, autoMapper.cycleAvoiding());
 
         metadata.setUsesClassNameList(uses);
         metadata.setImportsClassNameList(importsClassNameList);
@@ -688,8 +688,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
         metadata.setFieldReverseMappingList(reverseMappingMetadataList);
         metadata.setConvertGenerate(autoMapper.convertGenerate());
         metadata.setReverseConvertGenerate(autoMapper.reverseConvertGenerate());
-        metadata.setCycles(autoMapper.cycles());
-        if (metadata.isCycles()) {
+        metadata.setCycleAvoiding(autoMapper.cycleAvoiding());
+        if (metadata.isCycleAvoiding()) {
             metadata.setSuperClass(ClassName.get(ContextConstants.BaseCycleAvoidingMapper.packageName,
                 ContextConstants.BaseCycleAvoidingMapper.className));
         } else {
