@@ -1,17 +1,14 @@
 package io.github.linpeilie.processor;
 
-import org.mapstruct.Builder;
 import org.mapstruct.NullValueMappingStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
-
-import static io.github.linpeilie.processor.Constants.*;
 
 public class AutoMapperProperties {
 
     private static String mapperPackage;
 
-    private static String componentModel = DEFAULT_COMPONENT_MODEL;
+    private static String componentModel = ContextConstants.ComponentModelConfig.defaultComponentModel;
 
     private static ReportingPolicy unmappedSourcePolicy = ReportingPolicy.IGNORE;
 
@@ -25,17 +22,19 @@ public class AutoMapperProperties {
 
     private static boolean disableBuilder = true;
 
-    private static String adapterPackage = DEFAULT_BASE_PACKAGE;
+    private static String adapterPackage = ContextConstants.ConvertAdapter.packageName;
 
-    private static String adapterClassName = DEFAULT_ADAPTER_CLASS_NAME;
+    private static String adapterClassName = ContextConstants.ConvertAdapter.convertMapperAdapterClassName;
 
-    private static String mapAdapterClassName = DEFAULT_MAP_ADAPTER_CLASS_NAME;
+    private static String mapAdapterClassName = ContextConstants.ConvertAdapter.mapConvertMapperAdapterClassName;
 
-    private static String autoConfigPackage = DEFAULT_BASE_PACKAGE;
+    private static String autoConfigPackage = ContextConstants.AutoConfig.packageName;
 
-    private static String autoMapperConfigClassName = AUTO_MAPPER_CONFIG_CLASS_NAME;
+    private static String autoMapperConfigClassName = ContextConstants.AutoConfig.autoMapperConfigClassName;
 
-    private static String autoMapMapperConfigClassName = AUTO_MAP_MAPPER_CONFIG_CLASS_NAME;
+    private static String autoMapMapperConfigClassName = ContextConstants.AutoConfig.autoMapMapperConfigClassName;
+
+    /* ******************** getter/setter ******************** */
 
     public static String getMapperPackage() {
         return mapperPackage;
@@ -51,6 +50,10 @@ public class AutoMapperProperties {
 
     public static String getAdapterClassName() {
         return adapterClassName;
+    }
+
+    public static String getCycleAvoidingAdapterClassName() {
+        return getAdapterClassName() + "ForCycleAvoiding";
     }
 
     public static void setAdapterClassName(final String adapterClassName) {
@@ -75,6 +78,10 @@ public class AutoMapperProperties {
 
     public static String getConfigClassName() {
         return autoMapperConfigClassName;
+    }
+
+    public static String getCycleAvoidingConfigClassName() {
+        return getConfigClassName() + "ForCycleAvoiding";
     }
 
     public static void setAutoMapperConfigClassName(String autoMapperConfigClassName) {

@@ -24,6 +24,12 @@ public class AutoMappingMetadata {
 
     private String defaultValue = "";
 
+    String[] qualifiedByName = {};
+
+    String[] conditionQualifiedByName = {};
+
+    String[] dependsOn = {};
+
     public ClassName getTargetClass() {
         return targetClass;
     }
@@ -102,5 +108,29 @@ public class AutoMappingMetadata {
 
     public void setConditionExpression(final String conditionExpression) {
         this.conditionExpression = conditionExpression;
+    }
+
+    public String[] getQualifiedByName() {
+        return qualifiedByName;
+    }
+
+    public void setQualifiedByName(String[] qualifiedByName) {
+        this.qualifiedByName = qualifiedByName;
+    }
+
+    public String[] getConditionQualifiedByName() {
+        return conditionQualifiedByName;
+    }
+
+    public void setConditionQualifiedByName(String[] conditionQualifiedByName) {
+        this.conditionQualifiedByName = conditionQualifiedByName;
+    }
+
+    public String[] getDependsOn() {
+        return dependsOn;
+    }
+
+    public void setDependsOn(String[] dependsOn) {
+        this.dependsOn = dependsOn;
     }
 }

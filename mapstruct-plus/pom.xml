@@ -24,8 +24,8 @@
             <artifactId>mapstruct</artifactId>
         </dependency>
         <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-core</artifactId>
+            <groupId>io.github.linpeilie</groupId>
+            <artifactId>mapstruct-plus-object-convert</artifactId>
         </dependency>
     </dependencies>
 

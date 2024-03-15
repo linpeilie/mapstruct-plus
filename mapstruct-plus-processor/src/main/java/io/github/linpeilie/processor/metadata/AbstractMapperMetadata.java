@@ -2,14 +2,14 @@ package io.github.linpeilie.processor.metadata;
 
 import com.squareup.javapoet.ClassName;
 import io.github.linpeilie.processor.AutoMapperProperties;
-import org.apache.commons.lang3.StringUtils;
+import io.github.linpeilie.utils.StrUtil;
 
 public abstract class AbstractMapperMetadata {
 
     protected ClassName sourceClassName;
 
     public String mapperPackage() {
-        return StringUtils.isNotEmpty(AutoMapperProperties.getMapperPackage())
+        return StrUtil.isNotEmpty(AutoMapperProperties.getMapperPackage())
                ? AutoMapperProperties.getMapperPackage() : sourceClassName.packageName();
     }
 

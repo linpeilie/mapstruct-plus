@@ -40,4 +40,10 @@ public @interface AutoMapping {
      */
     String defaultValue() default "";
 
+    String[] qualifiedByName() default {};
+
+    String[] conditionQualifiedByName() default {};
+
+    String[] dependsOn() default {};
+
 }

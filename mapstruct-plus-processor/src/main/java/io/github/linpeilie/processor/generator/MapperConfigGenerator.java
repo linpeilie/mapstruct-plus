@@ -1,18 +1,17 @@
 package io.github.linpeilie.processor.generator;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 import io.github.linpeilie.processor.AutoMapperProperties;
+import io.github.linpeilie.utils.CollectionUtils;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import static javax.tools.Diagnostic.Kind.ERROR;
@@ -44,7 +43,7 @@ public class MapperConfigGenerator {
     private AnnotationSpec buildMapperConfigAnnotationSpec(final String adapterClassName, final List<TypeMirror> uses) {
         CodeBlock.Builder usesCodeBuilder = CodeBlock.builder().add("{");
         usesCodeBuilder.add("$T.class", ClassName.get(AutoMapperProperties.getAdapterPackage(), adapterClassName));
-        if (CollectionUtil.isNotEmpty(uses)) {
+        if (CollectionUtils.isNotEmpty(uses)) {
             uses.forEach(use -> {
                 usesCodeBuilder.add(", $T.class", use);
             });

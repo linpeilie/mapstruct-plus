@@ -48,11 +48,35 @@ public class Converter {
     }
 
     public <S, T> List<T> convert(List<S> source, Class<T> targetType) {
-        if (source == null || source.size() == 0) {
+        if (source == null || source.isEmpty()) {
             return new ArrayList<>();
         }
         return source.stream().map(item -> convert(item, targetType)).collect(Collectors.toList());
     }
+
+
+    @SuppressWarnings("unchecked")
+    public <S, T> T convert(S source, Class<T> target, CycleAvoidingMappingContext context) {
+        if (source == null) {
+            return null;
+        }
+        BaseCycleAvoidingMapper<S, T> mapper =
+            (BaseCycleAvoidingMapper<S, T>) converterFactory.getCycleAvoidingMapper(source.getClass(), target);
+        if (mapper != null) {
+            return mapper.convert(source, context);
+        }
+        throw new ConvertException("cannot find converter from " + source.getClass().getSimpleName() + " to " +
+                                   target.getSimpleName());
+    }
+
+    public <S, T> List<T> convert(List<S> source, Class<T> targetType, CycleAvoidingMappingContext context) {
+        if (source == null || source.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return source.stream().map(item -> convert(item, targetType, context)).collect(Collectors.toList());
+    }
+
+
 
     public <T> T convert(Map<String, Object> map, Class<T> target) {
         if (map == null || map.isEmpty()) {

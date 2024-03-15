@@ -1,13 +1,13 @@
 package io.github.linpeilie.processor.metadata;
 
 import io.github.linpeilie.processor.AutoMapperProperties;
-import org.apache.commons.lang3.StringUtils;
+import io.github.linpeilie.utils.StrUtil;
 
 public class AutoMapMapperMetadata extends AutoMapperMetadata {
 
     @Override
     public String mapperPackage() {
-        return StringUtils.isNotEmpty(AutoMapperProperties.getMapperPackage())
-               ? AutoMapperProperties.getMapperPackage() : getTargetClassName().packageName();
+        return StrUtil.isNotEmpty(
+            AutoMapperProperties.getMapperPackage()) ? AutoMapperProperties.getMapperPackage() : getTargetClassName().packageName();
     }
 }

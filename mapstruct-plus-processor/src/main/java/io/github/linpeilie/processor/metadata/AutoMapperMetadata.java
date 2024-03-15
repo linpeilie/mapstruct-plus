@@ -1,9 +1,7 @@
 package io.github.linpeilie.processor.metadata;
 
 import com.squareup.javapoet.ClassName;
-import io.github.linpeilie.processor.AutoMapperProperties;
 import java.util.List;
-import org.mapstruct.ReportingPolicy;
 
 public class AutoMapperMetadata extends AbstractMapperMetadata {
 
@@ -26,6 +24,8 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
     private boolean convertGenerate;
 
     private boolean reverseConvertGenerate;
+
+    private boolean cycleAvoiding;
 
     public String mapperName() {
         return sourceClassName.simpleName() + "To" + targetClassName.simpleName() + "Mapper";
@@ -112,5 +112,13 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
 
     public void setConvertGenerate(final boolean convertGenerate) {
         this.convertGenerate = convertGenerate;
+    }
+
+    public boolean isCycleAvoiding() {
+        return cycleAvoiding;
+    }
+
+    public void setCycleAvoiding(boolean cycleAvoiding) {
+        this.cycleAvoiding = cycleAvoiding;
     }
 }

@@ -23,6 +23,7 @@ export const series = {
         { text: 'Map 转对象', link: '/guide/map-to-class' },
         { text: '枚举转换', link: '/guide/enum-convert' },
         { text: '一个类与多个类之间转换', link: '/guide/multiple-class-convert' },
+        { text: '类循环嵌套', link: '/guide/cycle-avoiding' },
         { text: '类转换API', link: '/guide/converter-api' },
         { text: '配置项', link: '/guide/configuration' },
         { text: '常见问题', link: '/guide/faq' },

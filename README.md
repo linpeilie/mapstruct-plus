@@ -1,8 +1,135 @@
 # mapstruct-plus
 
+## What is MapStruct Plus
+
+MapStruct Plus is an enhancement to the MapStruct framework. It only does the enhancement, does not make the modification, and can automatically generate the transformation operation between two classes through an annotation, omitting the operation of defining the interface of MapStruct, makes Java type conversion easy and elegant.
+
+Goal: To be the simplest and most powerful type conversion tool
+
+**If this project helps you, hope to click a Star to encourage it!**
+
+## Link
+
+- [Document](https://mapstruct.plus)
+
+## Other open source projects
+
+- **EasyRelation**：[GitHub](https://github.com/linpeilie/easy-relation) | [Gitee](https://gitee.com/easii/easy-relation) | [Document](https://easy-relation.easii.cn)
+
+## Quick start
+
+
+The following shows how to convert two objects using MapStructPlus.
+
+Suppose there are two classes, `UserDto` and `User`, representing the data-layer object and business-layer object, respectively:
+
+- `UserDto`
+
+```java
+public class UserDto {
+    private String username;
+    private int age;
+    private boolean young;
+
+    // getter、setter、toString、equals、hashCode
+}
+```
+
+- `User`
+
+```java
+public class User {
+    private String username;
+    private int age;
+    private boolean young;
+
+    // getter、setter、toString、equals、hashCode
+}
+```
+
+Introducing `mapstruct-plus-spring-boot-starter` dependencies:
+
+```xml
+<properties>
+    <mapstruct-plus.version>latest version</mapstruct-plus.version>
+</properties>
+<dependencies>
+    <dependency>
+        <groupId>io.github.linpeilie</groupId>
+        <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
+        <version>${mapstruct-plus.version}</version>
+    </dependency>
+</dependencies>
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.8.1</version>
+            <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+                <annotationProcessorPaths>
+                    <path>
+                        <groupId>io.github.linpeilie</groupId>
+                        <artifactId>mapstruct-plus-processor</artifactId>
+                        <version>${mapstruct-plus.version}</version>
+                    </path>
+                </annotationProcessorPaths>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+```
+
+Test
+
+```java
+@SpringBootTest
+public class QuickStartTest {
+
+    @Autowired
+    private Converter converter;
+
+    @Test
+    public void test() {
+        User user = new User();
+        user.setUsername("jack");
+        user.setAge(23);
+        user.setYoung(false);
+
+        UserDto userDto = converter.convert(user, UserDto.class);
+        System.out.println(userDto);    // UserDto{username='jack', age=23, young=false}
+
+        assert user.getUsername().equals(userDto.getUsername());
+        assert user.getAge() == userDto.getAge();
+        assert user.isYoung() == userDto.isYoung();
+
+        User newUser = converter.convert(userDto, User.class);
+
+        System.out.println(newUser);    // User{username='jack', age=23, young=false}
+
+        assert user.getUsername().equals(newUser.getUsername());
+        assert user.getAge() == newUser.getAge();
+        assert user.isYoung() == newUser.isYoung();
+    }
+
+}
+```
+
+## Summary
+
+With the introduction of dependencies, the steps to using MapStructPlus are very simple.
+
+1. Add an `AutoMapper` annotation to the class you want to convert
+2. Get the `Converter` instance and call the convert method.
+
+--------
+
+
 ## 这是什么？
 
-Mapstruct Plus 是对 Mapstruct 框架的一个增强，只做增强，不做修改，可以通过一个注解，自动生成两个类之间的转换操作，省略了 Mapstruct 定义接口的操作，使 Java 类型转换更加便捷、优雅。
+MapStruct Plus 是对 MapStruct 框架的一个增强，只做增强，不做修改，可以通过一个注解，自动生成两个类之间的转换操作，省略了 Mapstruct 定义接口的操作，使 Java 类型转换更加便捷、优雅。
 
 目标：做最简单、最强大的类型转换工具
 
@@ -61,7 +188,7 @@ public class User {
 
 ```xml
 <properties>
-    <mapstruct-plus.version>1.3.4</mapstruct-plus.version>
+    <mapstruct-plus.version>1.4.0</mapstruct-plus.version>
 </properties>
 <dependencies>
     <dependency>
