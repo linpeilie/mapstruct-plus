@@ -62,17 +62,25 @@ footer:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.3.6</version>
+    <version>1.4.0-R1</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.3.6'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.0-R1'
 ```
 
 ## 更新日志
+
+### 1.4.0
+
+- **优化复杂对象转换逻辑，占用元空间更小！性能更快！**
+- 去除 hutool 等依赖，目前项目中只依赖了 MapStruct
+- 适配对象循环嵌套场景
+- [feature#63](https://github.com/linpeilie/mapstruct-plus/pull/63)`AutoMapping`、`ReverseAutoMapping` 支持 `qualifiedByName`、`conditionQualifiedByName` 和 `dependsOn` 属性
+- [issue#I93Z2Z](https://gitee.com/easii/mapstruct-plus/issues/I93Z2Z)`AutoMappings` 支持配置在方法上面
 
 ### 1.3.6
 

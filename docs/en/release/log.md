@@ -6,6 +6,14 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.4.0
+
+- **Optimize complex object conversion logic, take up less meta-space! and faster!**
+- Get rid of dependencies such as hutool, which currently only rely on MapStruct in the project.
+- The adaptation object loop nesting scenario
+- [feature#63](https://github.com/linpeilie/mapstruct-plus/pull/63) `AutoMapping`、`ReverseAutoMapping` supports `qualifiedByName`,`conditionQualifiedByName`,and `dependsOn` properties.
+- [issue#I93Z2Z](https://gitee.com/easii/mapstruct-plus/issues/I93Z2Z) `AutoMappings` supports configuration on methods.
+
 ### 1.3.6
 
 - Compatible with internal class conversion.
