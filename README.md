@@ -278,11 +278,14 @@ public class QuickStartTest {
 
 > 个人网站：[代码笔耕](https://easii.gitee.io)
 
+> 微信交流群
+
+![微信交流群](http://cos.easii.cn/wechat_20240315192612.jpg)
+
 > vx : Clue8a796d01
 
-![Clue8a796d01](http://cos.easii.cn/20230609091707.webp)
+<img src="https://gitee.com/easii/mapstruct-plus/raw/main/assets/contact-me.jpeg" alt="联系我" width="364" height="497" />
 
 > 公众号：**代码笔耕**
 
-![代码笔耕](http://cos.easii.cn/qrcode_for_gh_c207b35e04b8_344.webp)
-
+![代码笔耕](https://img-1318183505.cos.ap-nanjing.myqcloud.com/qrcode_for_gh_c207b35e04b8_344.webp)

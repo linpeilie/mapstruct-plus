@@ -122,7 +122,9 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 
 ## 联系我
 
-- 个人网站：[代码笔耕](https://easii.gitee.io)    
+- 个人网站：[代码笔耕](https://easii.gitee.io)
+- 微信交流群
+  ![微信交流群](http://cos.easii.cn/wechat_20240315192612.jpg)
 - vx : **Clue8a796d01**    
   ![Clue8a796d01](http://cos.easii.cn/20230609091707.webp)
 - 公众号：**代码笔耕**    
