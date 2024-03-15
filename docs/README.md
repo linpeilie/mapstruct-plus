@@ -120,4 +120,3 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 - [RuoYi-Vue-Plus](https://gitee.com/JavaLionLi/RuoYi-Vue-Plus/wikis/pages)
 - [RuoYi-Cloud-Plus](https://gitee.com/JavaLionLi/RuoYi-Cloud-Plus/wikis/pages)
 
-
