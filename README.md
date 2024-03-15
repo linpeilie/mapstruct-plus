@@ -284,7 +284,7 @@ public class QuickStartTest {
 
 > vx : Clue8a796d01
 
-![Clue8a796d01](http://cos.easii.cn/qrcode_for_gh_c207b35e04b8_344.webp)
+![Clue8a796d01](http://cos.easii.cn/20230609091707.webp)
 
 > 公众号：**代码笔耕**
 
