@@ -1,8 +1,5 @@
 package io.github.linpeilie.processor.generator;
 
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.StrUtil;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -11,14 +8,16 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
-import io.github.linpeilie.annotations.Immutable;
+import io.github.linpeilie.processor.ContextConstants;
 import io.github.linpeilie.processor.metadata.AutoMapperMetadata;
 import io.github.linpeilie.processor.metadata.AutoMappingMetadata;
+import io.github.linpeilie.utils.ArrayUtil;
+import io.github.linpeilie.utils.CollectionUtils;
+import io.github.linpeilie.utils.StrUtil;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -27,10 +26,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic;
-import org.apache.commons.lang3.StringUtils;
-
-import static io.github.linpeilie.processor.Constants.*;
 
 public class AutoMapperGenerator {
 
@@ -41,8 +36,6 @@ public class AutoMapperGenerator {
             JavaFile.builder(metadata.mapperPackage(), createTypeSpec(processingEnv, metadata)).build().writeTo(writer);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
-        } catch (Exception e) {
-            throw e;
         }
     }
 
@@ -51,7 +44,6 @@ public class AutoMapperGenerator {
             ParameterizedTypeName.get(metadata.getSuperClass(), metadata.getSuperGenerics());
 
         final ClassName targetClassName = metadata.getTargetClassName();
-
 
         TypeSpec.Builder builder = TypeSpec.interfaceBuilder(metadata.mapperName())
             .addSuperinterface(converterName)
@@ -62,32 +54,47 @@ public class AutoMapperGenerator {
         final ParameterSpec target = ParameterSpec.builder(targetClassName, "target")
             .addAnnotation(AnnotationSpec.builder(ClassName.get("org.mapstruct", "MappingTarget")).build())
             .build();
+        final ParameterSpec context =
+            ParameterSpec.builder(ClassName.get("io.github.linpeilie", "CycleAvoidingMappingContext"), "context")
+                .addAnnotation(ClassName.get("org.mapstruct", "Context"))
+                .build();
         if (metadata.getFieldMappingList() != null && !metadata.getFieldMappingList().isEmpty()) {
-            builder.addMethod(addConvertMethodSpec(Collections.singletonList(source), metadata.getFieldMappingList(),
-                targetClassName));
+            builder.addMethod(addConvertMethodSpec(
+                metadata.isCycleAvoiding() ? CollectionUtils.newArrayList(source, context) : Collections.singletonList(source),
+                metadata.getFieldMappingList(),
+                targetClassName,
+                CONVERT_METHOD_NAME));
         }
 
         boolean targetIsImmutable = classIsImmutable(processingEnv, targetClassName);
         if (targetIsImmutable) {
-            builder.addMethod(addEmptyConvertMethodForImmutableEntity(source, target, targetClassName));
-        } else {
-            builder.addMethod(addConvertMethodSpec(Arrays.asList(source, target), metadata.getFieldMappingList(),
-                targetClassName));
+            builder.addMethod(
+                addEmptyConvertMethodForImmutableEntity(
+                    metadata.isCycleAvoiding() ? CollectionUtils.newArrayList(source, target,
+                        context) : CollectionUtils.newArrayList(source, target),
+                    targetClassName,
+                    CONVERT_METHOD_NAME));
+        } else if (metadata.getFieldMappingList() != null && !metadata.getFieldMappingList().isEmpty()) {
+            builder.addMethod(addConvertMethodSpec(
+                metadata.isCycleAvoiding() ? CollectionUtils.newArrayList(source, target,
+                    context) : CollectionUtils.newArrayList(source, target),
+                metadata.getFieldMappingList(),
+                targetClassName,
+                CONVERT_METHOD_NAME));
         }
 
         return builder.build();
     }
 
-    private MethodSpec addEmptyConvertMethodForImmutableEntity(ParameterSpec source,
-        ParameterSpec target,
-        ClassName targetClassName) {
-        return MethodSpec.methodBuilder(CONVERT_METHOD_NAME)
+    private MethodSpec addEmptyConvertMethodForImmutableEntity(List<ParameterSpec> parameterSpecs,
+        ClassName targetClassName,
+        String methodName) {
+        MethodSpec.Builder builder = MethodSpec.methodBuilder(methodName)
             .addModifiers(Modifier.PUBLIC, Modifier.DEFAULT)
-            .addParameter(source)
-            .addParameter(target)
+            .addParameters(parameterSpecs)
             .returns(targetClassName)
-            .addCode("return target;")
-            .build();
+            .addCode("return target;");
+        return builder.build();
     }
 
     private boolean classIsImmutable(ProcessingEnvironment processingEnv, ClassName className) {
@@ -103,13 +110,14 @@ public class AutoMapperGenerator {
     }
 
     private MethodSpec addConvertMethodSpec(List<ParameterSpec> parameterSpecs,
-                                            List<AutoMappingMetadata> autoMappingMetadataList,
-                                            ClassName target) {
-        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder(CONVERT_METHOD_NAME)
+        List<AutoMappingMetadata> autoMappingMetadataList,
+        ClassName target, String methodName) {
+        final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder(methodName)
             .addParameters(parameterSpecs)
             .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
+            .addAnnotation(ClassName.get(ContextConstants.DoIgnore.packageName, ContextConstants.DoIgnore.className))
             .returns(target);
-        if (CollectionUtil.isNotEmpty(autoMappingMetadataList)) {
+        if (CollectionUtils.isNotEmpty(autoMappingMetadataList)) {
             methodSpecBuilder.addAnnotations(buildMappingAnnotations(autoMappingMetadataList));
         }
         return methodSpecBuilder.build();
@@ -132,17 +140,19 @@ public class AutoMapperGenerator {
                 builder.addMember("defaultValue",
                     CodeBlock.builder().add("$S", autoMappingMetadata.getDefaultValue()).build());
             }
-            if (StringUtils.isNotEmpty(autoMappingMetadata.getExpression())) {
+            if (StrUtil.isNotEmpty(autoMappingMetadata.getExpression())) {
                 builder.addMember("expression",
                     CodeBlock.builder().add("$S", autoMappingMetadata.getExpression()).build());
             } else {
                 builder.addMember("source", CodeBlock.builder().add("$S", autoMappingMetadata.getSource()).build());
             }
-            if (StringUtils.isNotEmpty(autoMappingMetadata.getDefaultExpression())) {
-                builder.addMember("defaultExpression",CodeBlock.builder().add("$S", autoMappingMetadata.getDefaultExpression()).build());
+            if (StrUtil.isNotEmpty(autoMappingMetadata.getDefaultExpression())) {
+                builder.addMember("defaultExpression",
+                    CodeBlock.builder().add("$S", autoMappingMetadata.getDefaultExpression()).build());
             }
-            if (StringUtils.isNotEmpty(autoMappingMetadata.getConditionExpression())) {
-                builder.addMember("conditionExpression", CodeBlock.builder().add("$S", autoMappingMetadata.getConditionExpression()).build());
+            if (StrUtil.isNotEmpty(autoMappingMetadata.getConditionExpression())) {
+                builder.addMember("conditionExpression",
+                    CodeBlock.builder().add("$S", autoMappingMetadata.getConditionExpression()).build());
             }
             if (ArrayUtil.isNotEmpty(autoMappingMetadata.getQualifiedByName())) {
                 builder.addMember("qualifiedByName", CodeBlock.builder().add("$L",
@@ -193,7 +203,8 @@ public class AutoMapperGenerator {
         final CodeBlock importsCodeBlock = importsCodeBuilder.add("}").build();
 
         AnnotationSpec.Builder builder =
-            AnnotationSpec.builder(ClassName.get(MAPSTRUCT_MAPPER_PACKAGE, MAPSTRUCT_MAPPER_CLASS_NAME))
+            AnnotationSpec.builder(
+                    ClassName.get(ContextConstants.Mapper.packageName, ContextConstants.Mapper.className))
                 .addMember("config", configCodeBlock)
                 .addMember("uses", usesCodeBlock)
                 .addMember("imports", importsCodeBlock);
