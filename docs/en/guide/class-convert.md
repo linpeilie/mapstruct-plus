@@ -146,6 +146,10 @@ public class QuickStartTest {
 }
 ```
 
+When there are multiple methods in a custom type converter, you can also specify the concrete conversion method with `@AutoMapping` 's `qualifiedByName`. 
+You can refer to [specify conversion methods](#specify-conversion-methods), sections.
+
+
 ## Custom Property conversions
 
 When there are inconsistent scenarios for attributes in the two classes, such as name, type, and so on, 
@@ -343,6 +347,113 @@ public class User {
 
 }
 ```
+
+### specify conversion methods
+
+::: info
+since 1.4.0
+
+Note that this feature needs to be used in conjunction with `@AutoMapper` 's `uses`.
+:::
+
+When an attribute needs to define the transformation logic separately and is complex, you can implement the method first, 
+specifying it by qualifiedByName.
+
+For example:
+
+Need film distribution, need according to the different language, change to the corresponding language title. 
+There are two conversion methods, one is to convert English to French, and the other is to convert French to English:
+
+
+```java
+@Component
+@Named("TitleTranslator")
+public class Titles {
+
+    @Named("EnglishToFrench")
+    public String translateTitleEF(String title) {
+        if ("One Hundred Years of Solitude".equals(title)) {
+            return "Cent ans de solitude";
+        }
+        return "Inconnu et inconnu";
+    }
+
+    @Named("FrenchToEnglish")
+    public String translateTitleFE(String title) {
+        if ("Cent ans de solitude".equals(title)) {
+            return "One Hundred Years of Solitude";
+        }
+        return "Unknown";
+    }
+
+}
+```
+
+The conversion logic is then applied：
+
+:::: code-group
+::: code-group-item EnglishRelease
+```java
+@Data
+@AutoMapper(target = FrenchRelease.class, uses = Titles.class)
+public class EnglishRelease {
+
+    @AutoMapping(qualifiedByName = "EnglishToFrench")
+    private String title;
+
+}
+```
+:::
+::: code-group-item FrenchRelease
+```java
+@Data
+@AutoMapper(target = EnglishRelease.class, uses = Titles.class)
+public class FrenchRelease {
+
+    @AutoMapping(qualifiedByName = "FrenchToEnglish")
+    private String title;
+
+}
+```
+:::
+::::
+
+### Specifies a dependency between fields
+
+When the transformation logic for attribute A, which depends on attribute B, can specify that attribute a depends on B, 
+the transformation will first transform B and then transform A.
+
+Example：
+
+:::: code-group
+::: code-group-item DependsSource
+```java
+@Data
+@AutoMapper(target = DependsTarget.class)
+public class DependsSource {
+
+    private String firstName;
+    private String lastName;
+    @AutoMapping(dependsOn = {"firstName", "lastName"})
+    private String fullName;
+
+}
+```
+:::
+::: code-group-item DependsTarget
+```java
+@Data
+public class DependsTarget {
+
+    private String firstName;
+    private String lastName;
+    private String fullName;
+
+}
+```
+:::
+::::
+
 
 ## Automatically access the custom converter interface
 
