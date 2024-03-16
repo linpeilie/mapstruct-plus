@@ -15,6 +15,7 @@ export const series = {
         { text: 'Map to object', link: '/en/guide/map-to-class' },
         { text: 'Conversion for enum', link: '/en/guide/enum-convert' },
         { text: 'Class converted with multiple class', link: '/en/guide/multiple-class-convert' },
+        { text: 'Cycle Avoiding', link: '/en/guide/cycle-avoiding' },
         { text: 'Api', link: '/en/guide/converter-api' },
         { text: 'Configuration', link: '/en/guide/configuration' },
         { text: 'Faq', link: '/en/guide/faq' },

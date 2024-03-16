@@ -142,6 +142,11 @@ public class QuickStartTest {
 }
 ```
 
+当自定的类型转换器中有多个方法时，还可以通过 `@AutoMapping` 的 `qualifiedByName` 来指定具体的转换方法。
+具体可以参考 [指定转换方法](#指定转换方法) 章节。
+
+### 
+
 ## 自定义属性转换
 
 当两个类中属性存在不一致的场景时，例如名称、类型等不一致，可以进行自定义转换，通过在属性上面添加 `@AutoMapping`，来配置映射规则。
@@ -334,6 +339,107 @@ public class User {
 }
 ```
 
+### 指定转换方法
+
+::: info
+since 1.4.0    
+需要注意的是，该功能需要结合 `@AutoMapper` 的 `uses` 一起使用。
+:::
+
+当某个属性需要单独定义转换逻辑，并且比较复杂时，可以先实现该方法，通过 `qualifiedByName` 来指定该方法。
+
+例如：
+
+需要电影发行，需要根据不同的语言，修改为相应的语言标题。这里先实现两个转换方法，一个是将英语转为法语，另一个是将法语转换为英语：
+
+```java
+@Component
+@Named("TitleTranslator")
+public class Titles {
+
+    @Named("EnglishToFrench")
+    public String translateTitleEF(String title) {
+        if ("One Hundred Years of Solitude".equals(title)) {
+            return "Cent ans de solitude";
+        }
+        return "Inconnu et inconnu";
+    }
+
+    @Named("FrenchToEnglish")
+    public String translateTitleFE(String title) {
+        if ("Cent ans de solitude".equals(title)) {
+            return "One Hundred Years of Solitude";
+        }
+        return "Unknown";
+    }
+
+}
+```
+
+接下来应用该转换逻辑：
+
+:::: code-group
+::: code-group-item EnglishRelease
+```java
+@Data
+@AutoMapper(target = FrenchRelease.class, uses = Titles.class)
+public class EnglishRelease {
+
+    @AutoMapping(qualifiedByName = "EnglishToFrench")
+    private String title;
+
+}
+```
+:::
+::: code-group-item FrenchRelease
+```java
+@Data
+@AutoMapper(target = EnglishRelease.class, uses = Titles.class)
+public class FrenchRelease {
+
+    @AutoMapping(qualifiedByName = "FrenchToEnglish")
+    private String title;
+
+}
+```
+:::
+::::
+
+### 指定属性之间的依赖关系
+
+当属性 A 的转换逻辑，依赖于属性 B，可以指定 A 依赖 B，则在进行转换时，会先转换 B，然后再转换 A。
+
+示例：
+
+:::: code-group
+::: code-group-item DependsSource
+```java
+@Data
+@AutoMapper(target = DependsTarget.class)
+public class DependsSource {
+
+    private String firstName;
+    private String lastName;
+    @AutoMapping(dependsOn = {"firstName", "lastName"})
+    private String fullName;
+
+}
+```
+:::
+::: code-group-item DependsTarget
+```java
+@Data
+public class DependsTarget {
+
+    private String firstName;
+    private String lastName;
+    private String fullName;
+
+}
+```
+:::
+::::
+
 ## 自动接入自定义转换接口
 
 ::: info
@@ -468,7 +574,7 @@ public class CarDtoToCarMapperImpl implements CarDtoToCarMapper {
 **在该文中，所有提到的源类指通过 `@AutoMapper` 注解的类；目标类指的是 `@AutoMapper` 中 `target` 属性指定的类型。**
 :::
 
-前面提到，当在一个类上面添加 `@AutoMapper` 注解时，默认情况下，除了会生成源类到目标类的转换接口，还会生成目标类到源类的转换接口和实现类，这里需要注意的是，默认情况下生成的该转换接口，并没有任何自定义配置，即使在源类中配置了 `@AutoMapping` 注解。
+前面提到，当在一个类上面添加 `@AutoMapper` 注解时，默认情况下，除了会生成**源类到目标类的转换接口**，还会生成**目标类到源类的转换接口和实现类**，这里需要注意的是，**默认情况下生成的该转换接口，并没有任何自定义配置**，即使在源类中配置了 `@AutoMapping` 注解。
 
 这里要实现目标类到源类的自定义转换配置，可以有两种方式：
 
