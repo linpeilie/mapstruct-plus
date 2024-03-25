@@ -78,6 +78,14 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 - [feature#63](https://github.com/linpeilie/mapstruct-plus/pull/63) `AutoMapping`、`ReverseAutoMapping` supports `qualifiedByName`,`conditionQualifiedByName`,and `dependsOn` properties.
 - [issue#I93Z2Z](https://gitee.com/easii/mapstruct-plus/issues/I93Z2Z) `AutoMappings` supports configuration on methods.
 
+> Points to note for upgrading 1.4.0
+> - 1.4.0 and later versions, complex object comparisons reply on `ConvertMapperAdapter` generated in the project,
+    which may cause [`NoSuchMethodError`](/guide/faq.html) exceptions under multiple modules because the Class Loading mechanism 
+    will load only one, of course, this problem has been around before, and the odds are probably lower,
+    so be sure to configure the `adapterPackage` to avoid this problem with multiple modules.
+> - Map to object conversions still rely on class conversions in hutool, and additional `hutool-core` dependencies need to be introduced if this 
+    functionality is required.
+
 ### 1.3.6
 
 - Compatible with internal class conversion.

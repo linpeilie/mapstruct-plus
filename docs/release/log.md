@@ -14,6 +14,14 @@ description: MapStructPlus release log
 - [feature#63](https://github.com/linpeilie/mapstruct-plus/pull/63)`AutoMapping`、`ReverseAutoMapping` 支持 `qualifiedByName`、`conditionQualifiedByName` 和 `dependsOn` 属性
 - [issue#I93Z2Z](https://gitee.com/easii/mapstruct-plus/issues/I93Z2Z)`AutoMappings` 支持配置在方法上面
 
+
+> 升级 1.4.0 注意事项：
+> - 1.4.0 及以后的版本，复杂对象比较依赖项目中生成的 `ConvertMapperAdapter`，
+  在多模块下，由于类加载机制只会加载一个的原因，可能会导致 [`NoSuchMethodError`](/guide/faq.html) 的异常，
+  当然，这个问题在之前也会有，几率可能低一些，所以多模块下，务必配置 `adapterPackage` 来避免该问题。
+> - Map 与对象的转换，还是依赖 hutool 中的类转换实现，如果需要该功能，需要额外引入 `hutool-core` 依赖包。
+
+
 ### 1.3.6
 
 - 兼容内部类转换
