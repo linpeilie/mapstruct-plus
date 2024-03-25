@@ -32,4 +32,14 @@ public @interface AutoMapper {
      */
     boolean reverseConvertGenerate() default true;
 
+    /**
+     * 是否需要避免对象循环嵌套
+     * <p>
+     *     循环嵌套：A中有属性类型B，B中有属性类型A，且可能对象之间互相引用
+     * </p>
+     *
+     * @return true: 需要避免对象循环嵌套；false：不需要
+     */
+    boolean cycleAvoiding() default false;
+
 }

@@ -1,6 +1,5 @@
 package io.github.linpeilie;
 
-import cn.hutool.core.date.DateUtil;
 import io.github.linpeilie.model.Goods;
 import io.github.linpeilie.model.GoodsDto;
 import io.github.linpeilie.model.MapModelA;
@@ -27,14 +26,14 @@ public class QuickStartTest {
     private Converter converter;
 
     @Test
-    public void test() {
+    public void test() throws ParseException {
         Map<String, Object> mapModel1 = new HashMap<>();
         mapModel1.put("str", "1jkf1ijkj3f");
         mapModel1.put("i1", 111);
         mapModel1.put("l2", 11231);
 
         Map<String, Object> mapModel2 = new HashMap<>();
-        mapModel2.put("date", DateUtil.parse("2023-02-23 01:03:23"));
+        mapModel2.put("date", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2023-02-23 01:03:23"));
 
         mapModel1.put("mapModelB", mapModel2);
 
@@ -99,7 +98,7 @@ public class QuickStartTest {
     }
 
     @Test
-    public void multiClassConvertTest() {
+    public void multiClassConvertTest() throws ParseException {
         User user = new User();
         List<String> list = new ArrayList<>();
         list.add("1");
@@ -110,7 +109,7 @@ public class QuickStartTest {
         user.setUsername("Nick");
         user.setAge(12);
         user.setYoung(true);
-        user.setBirthday(DateUtil.parseDateTime("2023-02-23 02:01:43"));
+        user.setBirthday(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2023-02-23 02:01:43"));
         user.setAssets(123.234);
         user.setVoField("vofieldfff");
         user.setMoney(12543.123);

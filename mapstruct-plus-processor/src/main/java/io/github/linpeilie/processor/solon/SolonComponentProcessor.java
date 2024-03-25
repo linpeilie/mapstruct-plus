@@ -1,8 +1,7 @@
 package io.github.linpeilie.processor.solon;
 
-import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.collection.ListUtil;
 import io.github.linpeilie.ComponentModelConstant;
+import io.github.linpeilie.utils.CollectionUtils;
 import java.util.List;
 import org.mapstruct.ap.internal.model.Annotation;
 import org.mapstruct.ap.internal.model.Mapper;
@@ -16,7 +15,7 @@ public class SolonComponentProcessor extends AnnotationBasedComponentModelProces
 
     @Override
     protected List<Annotation> getTypeAnnotations(final Mapper mapper) {
-        return CollectionUtil.newArrayList(component());
+        return CollectionUtils.newArrayList(component());
     }
 
     private Annotation component() {
@@ -29,7 +28,7 @@ public class SolonComponentProcessor extends AnnotationBasedComponentModelProces
 
     @Override
     protected List<Annotation> getMapperReferenceAnnotations() {
-        return CollectionUtil.newArrayList(inject());
+        return CollectionUtils.newArrayList(inject());
     }
 
     @Override

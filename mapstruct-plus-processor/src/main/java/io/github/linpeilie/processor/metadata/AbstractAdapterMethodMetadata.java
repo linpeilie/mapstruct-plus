@@ -32,4 +32,12 @@ public abstract class AbstractAdapterMethodMetadata {
         return false;
     }
 
+    public boolean needCycleAvoiding() {
+        return false;
+    }
+
+    public String cycleAvoidingMethodName() {
+        return "convertWithCycle";
+    }
+
 }

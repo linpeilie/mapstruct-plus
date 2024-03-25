@@ -8,7 +8,25 @@ description: MapStructPlus Map转为对象 map convert to class
 
 MapStructPlus 提供了更加强大的 `Map<String, Object>` 转对象的功能。
 
+::: warning
+MapStructPlus 1.4.0 及以后版本，不再内置 [Hutool](https://hutool.cn) 框架，如果需要用到该功能时，需要额外引入 `hutool-core` 依赖。
+:::
+
 ## 使用
+
+### 添加依赖
+
+> 1.4.0 及以后的版本需要添加该依赖，1.4.0之前的版本内置 hutool，不需要额外添加。
+
+```xml
+<dependency>
+    <groupId>cn.hutool</groupId>
+    <artifactId>hutool-core</artifactId>
+    <version>${hutool.version}</version>
+</dependency>
+```
+
+### 添加注解
 
 **当想要自动生成 `Map<String, Object>` 转为目标类的接口及实现类时，只需要在目标类上添加 `@AutoMapMapper` 注解**。
 

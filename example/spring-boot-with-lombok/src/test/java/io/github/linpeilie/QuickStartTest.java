@@ -2,7 +2,10 @@ package io.github.linpeilie;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.StrUtil;
 import io.github.linpeilie.model.Car;
+import io.github.linpeilie.model.EnglishRelease;
+import io.github.linpeilie.model.FrenchRelease;
 import io.github.linpeilie.model.Goods;
 import io.github.linpeilie.model.GoodsDto;
 import io.github.linpeilie.model.GoodsStateEnum;
@@ -16,6 +19,8 @@ import io.github.linpeilie.model.SVO;
 import io.github.linpeilie.model.Sku;
 import io.github.linpeilie.model.SysMenu;
 import io.github.linpeilie.model.SysMenuVo;
+import io.github.linpeilie.model.TreeNode;
+import io.github.linpeilie.model.TreeNodeDto;
 import io.github.linpeilie.model.User;
 import io.github.linpeilie.model.UserDto;
 import io.github.linpeilie.model.UserVO;
@@ -260,6 +265,50 @@ public class QuickStartTest {
         Assert.equals(sDto1.getId(), sDto.getId());
         Assert.equals(sDto1.getSuccess(), sDto.getSuccess());
         System.out.println(sDto1);
+    }
+
+    @Test
+    public void testConditionQualifiedByName() {
+        TreeNode parent = new TreeNode();
+        // children
+        List<TreeNode> children = new ArrayList<>();
+        for (int i = 0; i < 1; i++) {
+            TreeNode child = new TreeNode();
+            child.setParent(parent);
+            children.add(child);
+        }
+        parent.setChildren(children);
+        TreeNodeDto treeNodeDto1 = converter.convert(parent, TreeNodeDto.class);
+        // 当 children 为 <2 时不进行转换
+        Assert.isNull(treeNodeDto1.getChildren());
+        for (int i = 0; i < 99; i++) {
+            TreeNode child = new TreeNode();
+            child.setParent(parent);
+            children.add(child);
+        }
+        TreeNodeDto treeNodeDto2 = converter.convert(parent, TreeNodeDto.class);
+        Assert.equals(treeNodeDto2.getChildren().size(), 100);
+
+        treeNodeDto2.getChildren().forEach(child -> {
+            Assert.equals(child.getParent(), treeNodeDto2);
+        });
+    }
+
+    @Test
+    public void testQualifiedByName() {
+        EnglishRelease englishRelease = new EnglishRelease();
+        englishRelease.setTitle("Algorithms, 4th Edition");
+        FrenchRelease frenchRelease1 = converter.convert(englishRelease, FrenchRelease.class);
+        Assert.equals(frenchRelease1.getTitle(), "Inconnu et inconnu");
+        englishRelease.setTitle("One Hundred Years of Solitude");
+        FrenchRelease frenchRelease2 = converter.convert(englishRelease, FrenchRelease.class);
+        Assert.equals(frenchRelease2.getTitle(), "Cent ans de solitude");
+
+        EnglishRelease englishRelease1 = converter.convert(frenchRelease1, EnglishRelease.class);
+        Assert.equals(englishRelease1.getTitle(), "Unknown");
+        frenchRelease2.setTitle("Cent ans de solitude");
+        EnglishRelease englishRelease2 = converter.convert(frenchRelease2, EnglishRelease.class);
+        Assert.equals(englishRelease2.getTitle(), "One Hundred Years of Solitude");
     }
 
 }

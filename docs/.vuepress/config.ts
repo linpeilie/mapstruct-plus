@@ -18,6 +18,18 @@ export default defineUserConfig({
       description: ''
     }
   },
+  head: [
+      ['script', {}, `
+          var _hmt = _hmt || [];
+          (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?fab881821b3db8a7c460db1c91ea0f3a";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+          })();
+      `],
+      ['meta', {name: 'baidu-site-verification', content: 'codeva-OceTRzMGJ2'}],
+  ],
   theme: recoTheme(themeConfig),
   markdown: {
     anchor: {

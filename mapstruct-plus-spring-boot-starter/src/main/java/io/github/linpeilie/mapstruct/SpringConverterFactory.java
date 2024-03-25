@@ -1,6 +1,7 @@
 package io.github.linpeilie.mapstruct;
 
 import io.github.linpeilie.AbstractCachedConverterFactory;
+import io.github.linpeilie.BaseCycleAvoidingMapper;
 import io.github.linpeilie.BaseMapMapper;
 import io.github.linpeilie.BaseMapper;
 import org.springframework.context.ApplicationContext;
