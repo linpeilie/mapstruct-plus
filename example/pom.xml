@@ -18,7 +18,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mapstruct.version>1.5.1.Final</mapstruct.version>
-        <mapstruct-plus.version>1.4.0</mapstruct-plus.version>
+        <mapstruct-plus.version>1.4.1-SNAPSHOT</mapstruct-plus.version>
         <lombok.version>1.18.22</lombok.version>
         <hutool.version>5.8.26</hutool.version>
     </properties>

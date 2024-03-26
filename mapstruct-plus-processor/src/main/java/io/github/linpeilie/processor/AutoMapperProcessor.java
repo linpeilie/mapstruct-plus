@@ -44,6 +44,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.annotation.processing.AbstractProcessor;
@@ -552,19 +553,22 @@ public class AutoMapperProcessor extends AbstractProcessor {
             reverseMapperMetadata.setSuperClass(
                 ClassName.get(ContextConstants.BaseMapper.packageName, ContextConstants.BaseMapper.className));
         }
-        if (CollectionUtils.isNotEmpty(autoMapperMetadata.getFieldReverseMappingList())) {
-            reverseMapperMetadata.setFieldMappingList(autoMapperMetadata.getFieldReverseMappingList());
-        } else {
-            // 需要继承的属性
-            final List<AutoMappingMetadata> fieldMetadataList =
-                autoMapperMetadata.getFieldMappingList().stream().map(fieldMapping -> {
-                    final AutoMappingMetadata autoMappingMetadata = new AutoMappingMetadata();
-                    autoMappingMetadata.setSource(fieldMapping.getTarget());
-                    autoMappingMetadata.setTarget(fieldMapping.getSource());
-                    return autoMappingMetadata;
-                }).collect(Collectors.toList());
-            reverseMapperMetadata.setFieldMappingList(fieldMetadataList);
+        // 默认的规则
+        Map<String, AutoMappingMetadata> autoMappingMap =
+            autoMapperMetadata.getFieldMappingList().stream().map(fieldMapping -> {
+                final AutoMappingMetadata autoMappingMetadata = new AutoMappingMetadata();
+                autoMappingMetadata.setSource(fieldMapping.getTarget());
+                autoMappingMetadata.setTarget(fieldMapping.getSource());
+                return autoMappingMetadata;
+            }).collect(Collectors.toMap(AutoMappingMetadata::getTarget, Function.identity(), (a, b) -> a));
+
+        List<AutoMappingMetadata> fieldReverseMappingList = autoMapperMetadata.getFieldReverseMappingList();
+        if (CollectionUtils.isNotEmpty(fieldReverseMappingList)) {
+            fieldReverseMappingList.forEach(reverseMapping -> {
+                autoMappingMap.put(reverseMapping.getTarget(), reverseMapping);
+            });
         }
+        reverseMapperMetadata.setFieldMappingList(new ArrayList<>(autoMappingMap.values()));
         return reverseMapperMetadata;
     }
 
