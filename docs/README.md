@@ -125,6 +125,7 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 
 - [RuoYi-Vue-Plus](https://gitee.com/JavaLionLi/RuoYi-Vue-Plus/wikis/pages)
 - [RuoYi-Cloud-Plus](https://gitee.com/JavaLionLi/RuoYi-Cloud-Plus/wikis/pages)
+- [Stream-Query](http://stream-query.dromara.org/)：允许完全摆脱Mapper的mybatis-plus🌽体验！可以使用类似“工具类”🔧这样的静态函数进行数据库操作
 
 ## 联系我
 
