@@ -1,5 +1,6 @@
 package io.github.linpeilie.processor;
 
+import java.io.File;
 import org.mapstruct.MappingConstants;
 
 /**
@@ -92,6 +93,10 @@ public interface ContextConstants {
         String autoMappers = "autoMappers";
         String autoMapMappers = "autoMapMappers";
         String enumMappers = "enumMappers";
+    }
+
+    interface AutoIncrementFile {
+        String file = System.getProperty("user.home") + File.separator + ".msp" + File.separator + "incrementMark";
     }
 
     interface Map {

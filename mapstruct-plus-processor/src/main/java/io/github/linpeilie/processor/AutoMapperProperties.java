@@ -1,5 +1,7 @@
 package io.github.linpeilie.processor;
 
+import io.github.linpeilie.processor.utils.FileUtils;
+import io.github.linpeilie.processor.utils.IncrementMarkUtils;
 import org.mapstruct.NullValueMappingStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
@@ -16,7 +18,8 @@ public class AutoMapperProperties {
 
     private static NullValueMappingStrategy nullValueMappingStrategy = NullValueMappingStrategy.RETURN_NULL;
 
-    private static NullValuePropertyMappingStrategy nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL;
+    private static NullValuePropertyMappingStrategy nullValuePropertyMappingStrategy =
+        NullValuePropertyMappingStrategy.SET_TO_NULL;
 
     private static String buildMethod = "build";
 
@@ -33,6 +36,15 @@ public class AutoMapperProperties {
     private static String autoMapperConfigClassName = ContextConstants.AutoConfig.autoMapperConfigClassName;
 
     private static String autoMapMapperConfigClassName = ContextConstants.AutoConfig.autoMapMapperConfigClassName;
+
+    static {
+        // load increment mark
+        Integer mark = IncrementMarkUtils.incrementAndGet();
+        adapterClassName = adapterClassName + "$" + mark;
+        mapAdapterClassName = mapAdapterClassName + "$" + mark;
+        autoMapperConfigClassName = autoMapperConfigClassName + "$" + mark;
+        autoMapMapperConfigClassName = autoMapMapperConfigClassName + "$" + mark;
+    }
 
     /* ******************** getter/setter ******************** */
 
