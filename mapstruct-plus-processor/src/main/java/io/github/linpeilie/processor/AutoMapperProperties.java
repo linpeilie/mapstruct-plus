@@ -1,5 +1,6 @@
 package io.github.linpeilie.processor;
 
+import com.squareup.javapoet.ClassName;
 import io.github.linpeilie.processor.utils.FileUtils;
 import io.github.linpeilie.processor.utils.IncrementMarkUtils;
 import org.mapstruct.NullValueMappingStrategy;
@@ -12,14 +13,29 @@ public class AutoMapperProperties {
 
     private static String componentModel = ContextConstants.ComponentModelConfig.defaultComponentModel;
 
-    private static ReportingPolicy unmappedSourcePolicy = ReportingPolicy.IGNORE;
+    private static String unmappedSourcePolicy;
 
-    private static ReportingPolicy unmappedTargetPolicy = ReportingPolicy.IGNORE;
+    private static String unmappedTargetPolicy;
 
-    private static NullValueMappingStrategy nullValueMappingStrategy = NullValueMappingStrategy.RETURN_NULL;
+    private static String typeConversionPolicy;
 
-    private static NullValuePropertyMappingStrategy nullValuePropertyMappingStrategy =
-        NullValuePropertyMappingStrategy.SET_TO_NULL;
+    private static String collectionMappingStrategy;
+
+    private static String nullValueMappingStrategy;
+
+    private static String nullValueIterableMappingStrategy;
+
+    private static String nullValueMapMappingStrategy;
+
+    private static String nullValuePropertyMappingStrategy;
+
+    private static String nullValueCheckStrategy;
+
+    private static ClassName mappingControl;
+
+    private static ClassName unexpectedValueMappingException;
+
+    private static Boolean suppressTimestampInGenerated;
 
     private static String buildMethod = "build";
 
@@ -46,117 +62,145 @@ public class AutoMapperProperties {
         autoMapMapperConfigClassName = autoMapMapperConfigClassName + "$" + mark;
     }
 
-    /* ******************** getter/setter ******************** */
-
-    public static String getMapperPackage() {
-        return mapperPackage;
-    }
-
-    public static String getAdapterPackage() {
-        return adapterPackage;
-    }
-
-    public static void setAdapterPackage(final String adapterPackage) {
-        AutoMapperProperties.adapterPackage = adapterPackage;
-    }
-
-    public static String getAdapterClassName() {
-        return adapterClassName;
-    }
-
-    public static String getCycleAvoidingAdapterClassName() {
-        return getAdapterClassName() + "ForCycleAvoiding";
-    }
-
-    public static void setAdapterClassName(final String adapterClassName) {
-        AutoMapperProperties.adapterClassName = adapterClassName;
-    }
-
-    public static String getMapAdapterClassName() {
-        return mapAdapterClassName;
-    }
-
-    public static void setMapAdapterClassName(final String mapAdapterClassName) {
-        AutoMapperProperties.mapAdapterClassName = mapAdapterClassName;
-    }
-
-    public static String getConfigPackage() {
-        return autoConfigPackage;
-    }
-
-    public static void setAutoConfigPackage(String autoConfigPackage) {
-        AutoMapperProperties.autoConfigPackage = autoConfigPackage;
-    }
-
     public static String getConfigClassName() {
         return autoMapperConfigClassName;
-    }
-
-    public static String getCycleAvoidingConfigClassName() {
-        return getConfigClassName() + "ForCycleAvoiding";
-    }
-
-    public static void setAutoMapperConfigClassName(String autoMapperConfigClassName) {
-        AutoMapperProperties.autoMapperConfigClassName = autoMapperConfigClassName;
     }
 
     public static String getMapConfigClassName() {
         return autoMapMapperConfigClassName;
     }
 
-    public static void setAutoMapMapperConfigClassName(String autoMapMapperConfigClassName) {
-        AutoMapperProperties.autoMapMapperConfigClassName = autoMapMapperConfigClassName;
+    public static String getConfigPackage() {
+        return autoConfigPackage;
+    }
+
+    public static String getCycleAvoidingAdapterClassName() {
+        return getAdapterClassName() + "ForCycleAvoiding";
+    }
+
+    public static String getCycleAvoidingConfigClassName() {
+        return getConfigClassName() + "ForCycleAvoiding";
+    }
+
+    /* ******************** getter/setter ******************** */
+
+    public static String getMapperPackage() {
+        return mapperPackage;
+    }
+
+    public static void setMapperPackage(String mapperPackage) {
+        AutoMapperProperties.mapperPackage = mapperPackage;
     }
 
     public static String getComponentModel() {
         return componentModel;
     }
 
-    public static void setMapperPackage(final String mapperPackage) {
-        AutoMapperProperties.mapperPackage = mapperPackage;
-    }
-
-    public static void setComponentModel(final String componentModel) {
+    public static void setComponentModel(String componentModel) {
         AutoMapperProperties.componentModel = componentModel;
     }
 
-    public static ReportingPolicy getUnmappedSourcePolicy() {
+    public static String getUnmappedSourcePolicy() {
         return unmappedSourcePolicy;
     }
 
-    public static void setUnmappedSourcePolicy(final ReportingPolicy unmappedSourcePolicy) {
+    public static void setUnmappedSourcePolicy(String unmappedSourcePolicy) {
         AutoMapperProperties.unmappedSourcePolicy = unmappedSourcePolicy;
     }
 
-    public static ReportingPolicy getUnmappedTargetPolicy() {
+    public static String getUnmappedTargetPolicy() {
         return unmappedTargetPolicy;
     }
 
-    public static void setUnmappedTargetPolicy(final ReportingPolicy unmappedTargetPolicy) {
+    public static void setUnmappedTargetPolicy(String unmappedTargetPolicy) {
         AutoMapperProperties.unmappedTargetPolicy = unmappedTargetPolicy;
     }
 
-    public static NullValueMappingStrategy getNullValueMappingStrategy() {
+    public static String getTypeConversionPolicy() {
+        return typeConversionPolicy;
+    }
+
+    public static void setTypeConversionPolicy(String typeConversionPolicy) {
+        AutoMapperProperties.typeConversionPolicy = typeConversionPolicy;
+    }
+
+    public static String getCollectionMappingStrategy() {
+        return collectionMappingStrategy;
+    }
+
+    public static void setCollectionMappingStrategy(String collectionMappingStrategy) {
+        AutoMapperProperties.collectionMappingStrategy = collectionMappingStrategy;
+    }
+
+    public static String getNullValueMappingStrategy() {
         return nullValueMappingStrategy;
     }
 
-    public static void setNullValueMappingStrategy(NullValueMappingStrategy nullValueMappingStrategy) {
+    public static void setNullValueMappingStrategy(String nullValueMappingStrategy) {
         AutoMapperProperties.nullValueMappingStrategy = nullValueMappingStrategy;
     }
 
-    public static NullValuePropertyMappingStrategy getNullValuePropertyMappingStrategy() {
+    public static String getNullValueIterableMappingStrategy() {
+        return nullValueIterableMappingStrategy;
+    }
+
+    public static void setNullValueIterableMappingStrategy(String nullValueIterableMappingStrategy) {
+        AutoMapperProperties.nullValueIterableMappingStrategy = nullValueIterableMappingStrategy;
+    }
+
+    public static String getNullValueMapMappingStrategy() {
+        return nullValueMapMappingStrategy;
+    }
+
+    public static void setNullValueMapMappingStrategy(String nullValueMapMappingStrategy) {
+        AutoMapperProperties.nullValueMapMappingStrategy = nullValueMapMappingStrategy;
+    }
+
+    public static String getNullValuePropertyMappingStrategy() {
         return nullValuePropertyMappingStrategy;
     }
 
-    public static void setNullValuePropertyMappingStrategy(NullValuePropertyMappingStrategy nullValuePropertyMappingStrategy) {
+    public static void setNullValuePropertyMappingStrategy(String nullValuePropertyMappingStrategy) {
         AutoMapperProperties.nullValuePropertyMappingStrategy = nullValuePropertyMappingStrategy;
+    }
+
+    public static String getNullValueCheckStrategy() {
+        return nullValueCheckStrategy;
+    }
+
+    public static void setNullValueCheckStrategy(String nullValueCheckStrategy) {
+        AutoMapperProperties.nullValueCheckStrategy = nullValueCheckStrategy;
+    }
+
+    public static ClassName getMappingControl() {
+        return mappingControl;
+    }
+
+    public static void setMappingControl(ClassName mappingControl) {
+        AutoMapperProperties.mappingControl = mappingControl;
+    }
+
+    public static ClassName getUnexpectedValueMappingException() {
+        return unexpectedValueMappingException;
+    }
+
+    public static void setUnexpectedValueMappingException(ClassName unexpectedValueMappingException) {
+        AutoMapperProperties.unexpectedValueMappingException = unexpectedValueMappingException;
+    }
+
+    public static Boolean getSuppressTimestampInGenerated() {
+        return suppressTimestampInGenerated;
+    }
+
+    public static void setSuppressTimestampInGenerated(Boolean suppressTimestampInGenerated) {
+        AutoMapperProperties.suppressTimestampInGenerated = suppressTimestampInGenerated;
     }
 
     public static String getBuildMethod() {
         return buildMethod;
     }
 
-    public static void setBuildMethod(final String buildMethod) {
+    public static void setBuildMethod(String buildMethod) {
         AutoMapperProperties.buildMethod = buildMethod;
     }
 
@@ -164,7 +208,55 @@ public class AutoMapperProperties {
         return disableBuilder;
     }
 
-    public static void setDisableBuilder(final boolean disableBuilder) {
+    public static void setDisableBuilder(boolean disableBuilder) {
         AutoMapperProperties.disableBuilder = disableBuilder;
+    }
+
+    public static String getAdapterPackage() {
+        return adapterPackage;
+    }
+
+    public static void setAdapterPackage(String adapterPackage) {
+        AutoMapperProperties.adapterPackage = adapterPackage;
+    }
+
+    public static String getAdapterClassName() {
+        return adapterClassName;
+    }
+
+    public static void setAdapterClassName(String adapterClassName) {
+        AutoMapperProperties.adapterClassName = adapterClassName;
+    }
+
+    public static String getMapAdapterClassName() {
+        return mapAdapterClassName;
+    }
+
+    public static void setMapAdapterClassName(String mapAdapterClassName) {
+        AutoMapperProperties.mapAdapterClassName = mapAdapterClassName;
+    }
+
+    public static String getAutoConfigPackage() {
+        return autoConfigPackage;
+    }
+
+    public static void setAutoConfigPackage(String autoConfigPackage) {
+        AutoMapperProperties.autoConfigPackage = autoConfigPackage;
+    }
+
+    public static String getAutoMapperConfigClassName() {
+        return autoMapperConfigClassName;
+    }
+
+    public static void setAutoMapperConfigClassName(String autoMapperConfigClassName) {
+        AutoMapperProperties.autoMapperConfigClassName = autoMapperConfigClassName;
+    }
+
+    public static String getAutoMapMapperConfigClassName() {
+        return autoMapMapperConfigClassName;
+    }
+
+    public static void setAutoMapMapperConfigClassName(String autoMapMapperConfigClassName) {
+        AutoMapperProperties.autoMapMapperConfigClassName = autoMapMapperConfigClassName;
     }
 }

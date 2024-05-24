@@ -13,6 +13,9 @@ public class Titles {
         if ("One Hundred Years of Solitude".equals(title)) {
             return "Cent ans de solitude";
         }
+        if ("Default".equals(title)) {
+            return null;
+        }
         return "Inconnu et inconnu";
     }
 

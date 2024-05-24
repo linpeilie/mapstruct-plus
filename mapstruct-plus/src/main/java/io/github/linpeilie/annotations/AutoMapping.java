@@ -1,12 +1,22 @@
 package io.github.linpeilie.annotations;
 
 import io.github.linpeilie.DefaultMapping;
+import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Condition;
+import org.mapstruct.Mapper;
+import org.mapstruct.MapperConfig;
 import org.mapstruct.Named;
+import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.Qualifier;
+import org.mapstruct.control.MappingControl;
+
+import static org.mapstruct.NullValueCheckStrategy.ON_IMPLICIT_CONVERSION;
 
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.CLASS)
@@ -28,6 +38,11 @@ public @interface AutoMapping {
 
     String numberFormat() default "";
 
+    /**
+     * @since 1.4.1
+     */
+    String constant() default "";
+
     String expression() default "";
 
     String defaultExpression() default "";
@@ -43,6 +58,25 @@ public @interface AutoMapping {
     String defaultValue() default "";
 
     /**
+     * A qualifier can be specified to aid the selection process of a suitable mapper. This is useful in case multiple
+     * mapping methods (hand written or generated) qualify and thus would result in an 'Ambiguous mapping methods found'
+     * error. A qualifier is a custom annotation and can be placed on a hand written mapper class or a method.
+     * <p>
+     * Note that {@link #defaultValue()} usage will also be converted using this qualifier.
+     *
+     * qualifier 可以置顶限定符来帮助选择合适的转换方法。qualifier 是一个自定义的注解，可以标注在 mapper 类或者方法上。
+     * <p>
+     * Note that {@link #defaultValue()} usage will also be converted using this qualifier.
+     * <p>
+     *
+     * @since 1.4.1
+     *
+     * @return the qualifiers
+     * @see Qualifier
+     */
+    Class<? extends Annotation>[] qualifiedBy() default { };
+
+    /**
      * String-based form of qualifiers; When looking for a suitable mapping method for a given property, MapStruct will
      * only consider those methods carrying directly or indirectly (i.e. on the class-level) a {@link Named} annotation
      * for each of the specified qualifier names.
@@ -53,9 +87,10 @@ public @interface AutoMapping {
      * <p>
      * Note that {@link #defaultValue()} usage will also be converted using this qualifier.
      *
+     * @since 1.4.0
+     *
      * @return One or more qualifier name(s)
      * @see Named
-     * @since 1.4.0
      */
     String[] qualifiedByName() default {};
 
@@ -72,11 +107,11 @@ public @interface AutoMapping {
      *   number of qualifiers as no custom annotation types are needed.
      * </p>
      *
+     * @since 1.4.0
      *
      * @return One or more qualifier name(s)
      * @see #qualifiedByName()
      * @see Named
-     * @since 1.4.0
      */
     String[] conditionQualifiedByName() default {};
 
@@ -87,9 +122,52 @@ public @interface AutoMapping {
      * <p>
      * An error will be raised in case a cycle in the dependency relationships is detected.
      *
-     * @return the dependencies of the mapped property
      * @since 1.4.0
+     *
+     * @return the dependencies of the mapped property
      */
     String[] dependsOn() default {};
+
+
+    /**
+     * Determines when to include a null check on the source property value of a bean mapping.
+     *
+     * Can be overridden by the one on {@link org.mapstruct.MapperConfig}, {@link Mapper} or {@link BeanMapping}.
+     *
+     * @since 1.4.1
+     *
+     * @return strategy how to do null checking
+     */
+    NullValueCheckStrategy nullValueCheckStrategy() default ON_IMPLICIT_CONVERSION;
+
+    /**
+     * The strategy to be applied when the source property is {@code null} or not present. If no strategy is configured,
+     * the strategy given via {@link MapperConfig#nullValuePropertyMappingStrategy()},
+     * {@link BeanMapping#nullValuePropertyMappingStrategy()} or
+     * {@link Mapper#nullValuePropertyMappingStrategy()} will be applied.
+     *
+     * {@link NullValuePropertyMappingStrategy#SET_TO_NULL} will be used by default.
+     *
+     * @since 1.4.1
+     *
+     * @return The strategy to be applied when {@code null} is passed as source property value or the source property
+     * is not present.
+     */
+    NullValuePropertyMappingStrategy nullValuePropertyMappingStrategy()
+        default NullValuePropertyMappingStrategy.SET_TO_NULL;
+
+    /**
+     * Allows detailed control over the mapping process.
+     *
+     * @return the mapping control
+     *
+     * @since 1.4.1
+     *
+     * @see org.mapstruct.control.DeepClone
+     * @see org.mapstruct.control.NoComplexMapping
+     * @see org.mapstruct.control.MappingControl
+     */
+    Class<? extends Annotation> mappingControl() default MappingControl.class;
+
 
 }

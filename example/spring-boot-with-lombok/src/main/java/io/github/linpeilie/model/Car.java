@@ -10,6 +10,7 @@ import lombok.Data;
 public class Car {
 
     private String make;
+    @AutoMapping(target = "seatMaterial", source = "seatConfiguration.seatMaterial")
     private SeatConfiguration seatConfiguration;
     private CarType type;
     private Tyre tyre;

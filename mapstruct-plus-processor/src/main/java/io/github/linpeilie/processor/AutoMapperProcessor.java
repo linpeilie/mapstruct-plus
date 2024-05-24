@@ -5,14 +5,15 @@ import com.squareup.javapoet.TypeName;
 import io.github.linpeilie.ComponentModelConstant;
 import io.github.linpeilie.annotations.AutoEnumMapper;
 import io.github.linpeilie.annotations.AutoMapMapper;
-import io.github.linpeilie.annotations.AutoMapper;
-import io.github.linpeilie.annotations.AutoMappers;
-import io.github.linpeilie.annotations.AutoMapping;
-import io.github.linpeilie.annotations.AutoMappings;
 import io.github.linpeilie.annotations.ComponentModelConfig;
-import io.github.linpeilie.annotations.MapperConfig;
-import io.github.linpeilie.annotations.ReverseAutoMapping;
-import io.github.linpeilie.annotations.ReverseAutoMappings;
+import io.github.linpeilie.processor.gem.AutoMapperGem;
+import io.github.linpeilie.processor.gem.AutoMappersGem;
+import io.github.linpeilie.processor.gem.AutoMappingGem;
+import io.github.linpeilie.processor.gem.AutoMappingsGem;
+import io.github.linpeilie.processor.gem.BuilderGem;
+import io.github.linpeilie.processor.gem.MapperConfigGem;
+import io.github.linpeilie.processor.gem.ReverseAutoMappingGem;
+import io.github.linpeilie.processor.gem.ReverseAutoMappingsGem;
 import io.github.linpeilie.processor.generator.AutoEnumMapperGenerator;
 import io.github.linpeilie.processor.generator.AutoMapperGenerator;
 import io.github.linpeilie.processor.generator.DefaultAdapterMapperGenerator;
@@ -34,7 +35,6 @@ import io.github.linpeilie.utils.StrUtil;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -68,11 +68,17 @@ import static io.github.linpeilie.processor.ProcessorOptions.ADAPTER_CLASS_NAME;
 import static io.github.linpeilie.processor.ProcessorOptions.ADAPTER_PACKAGE;
 import static io.github.linpeilie.processor.ProcessorOptions.BUILDER_BUILD_METHOD;
 import static io.github.linpeilie.processor.ProcessorOptions.BUILDER_DISABLE_BUILDER;
+import static io.github.linpeilie.processor.ProcessorOptions.COLLECTION_MAPPING_STRATEGY;
 import static io.github.linpeilie.processor.ProcessorOptions.MAPPER_CONFIG_CLASS;
 import static io.github.linpeilie.processor.ProcessorOptions.MAPPER_PACKAGE;
 import static io.github.linpeilie.processor.ProcessorOptions.MAP_ADAPTER_CLASS_NAME;
+import static io.github.linpeilie.processor.ProcessorOptions.NULL_VALUE_CHECK_STRATEGY;
+import static io.github.linpeilie.processor.ProcessorOptions.NULL_VALUE_ITERABLE_MAPPING_STRATEGY;
 import static io.github.linpeilie.processor.ProcessorOptions.NULL_VALUE_MAPPING_STRATEGY;
+import static io.github.linpeilie.processor.ProcessorOptions.NULL_VALUE_MAP_MAPPING_STRATEGY;
 import static io.github.linpeilie.processor.ProcessorOptions.NULL_VALUE_PROPERTY_MAPPING_STRATEGY;
+import static io.github.linpeilie.processor.ProcessorOptions.SUPPRESS_TIMESTAMP_IN_GENERATED;
+import static io.github.linpeilie.processor.ProcessorOptions.TYPE_CONVERSION_POLICY;
 import static io.github.linpeilie.processor.ProcessorOptions.UNMAPPED_SOURCE_POLICY;
 import static io.github.linpeilie.processor.ProcessorOptions.UNMAPPED_TARGET_POLICY;
 import static javax.tools.Diagnostic.Kind.ERROR;
@@ -87,7 +93,9 @@ import static javax.tools.Diagnostic.Kind.ERROR;
     ContextConstants.Annotations.mapper})
 @SupportedOptions({MAPPER_CONFIG_CLASS, MAPPER_PACKAGE, UNMAPPED_SOURCE_POLICY, UNMAPPED_TARGET_POLICY,
                    NULL_VALUE_MAPPING_STRATEGY, NULL_VALUE_PROPERTY_MAPPING_STRATEGY, BUILDER_BUILD_METHOD,
-                   BUILDER_DISABLE_BUILDER, ADAPTER_PACKAGE, ADAPTER_CLASS_NAME, MAP_ADAPTER_CLASS_NAME,})
+                   BUILDER_DISABLE_BUILDER, ADAPTER_PACKAGE, ADAPTER_CLASS_NAME, MAP_ADAPTER_CLASS_NAME,
+                   TYPE_CONVERSION_POLICY, COLLECTION_MAPPING_STRATEGY, NULL_VALUE_ITERABLE_MAPPING_STRATEGY,
+                   NULL_VALUE_MAP_MAPPING_STRATEGY, NULL_VALUE_CHECK_STRATEGY, SUPPRESS_TIMESTAMP_IN_GENERATED})
 public class AutoMapperProcessor extends AbstractProcessor {
 
     private static final ClassName MAPPING_DEFAULT_TARGET = ClassName.get("io.github.linpeilie", "DefaultMapping");
@@ -345,9 +353,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         List<ClassName> uses = Collections.singletonList(
             ClassName.get(ContextConstants.MapObjectConvert.packageName, ContextConstants.MapObjectConvert.className));
 
-        final AutoMapperMetadata autoMapperMetadata = new AutoMapMapperMetadata();
-        autoMapperMetadata.setTargetClassName(target);
-        autoMapperMetadata.setSourceClassName(source);
+        final AutoMapperMetadata autoMapperMetadata = new AutoMapMapperMetadata(source, target);
         autoMapperMetadata.setUsesClassNameList(uses);
         autoMapperMetadata.setSuperClass(
             ClassName.get(ContextConstants.BaseMapMapper.packageName, ContextConstants.BaseMapMapper.className));
@@ -365,36 +371,55 @@ public class AutoMapperProcessor extends AbstractProcessor {
             false);
     }
 
-    private void loadMapperConfig(MapperConfig mapperConfig) {
-        if (mapperConfig == null) {
+    private void loadMapperConfig(MapperConfigGem mapperConfigGem) {
+        if (mapperConfigGem == null || !mapperConfigGem.isValid()) {
             return;
         }
-        AutoMapperProperties.setUnmappedSourcePolicy(mapperConfig.unmappedSourcePolicy());
-        AutoMapperProperties.setUnmappedTargetPolicy(mapperConfig.unmappedTargetPolicy());
-        AutoMapperProperties.setNullValueMappingStrategy(mapperConfig.nullValueMappingStrategy());
-        AutoMapperProperties.setNullValuePropertyMappingStrategy(mapperConfig.nullValuePropertyMappingStrategy());
-        AutoMapperProperties.setBuildMethod(mapperConfig.builder().buildMethod());
-        AutoMapperProperties.setDisableBuilder(mapperConfig.builder().disableBuilder());
-        if (StrUtil.isNotEmpty(mapperConfig.mapperPackage())) {
-            AutoMapperProperties.setMapperPackage(mapperConfig.mapperPackage());
+        if (mapperConfigGem.mapperPackage().hasValue()) {
+            AutoMapperProperties.setMapperPackage(mapperConfigGem.mapperPackage().get());
         }
-        if (StrUtil.isNotEmpty(mapperConfig.adapterPackage())) {
-            AutoMapperProperties.setAdapterPackage(mapperConfig.adapterPackage());
+        AutoMapperProperties.setUnmappedSourcePolicy(mapperConfigGem.unmappedSourcePolicy().getValue());
+        // 重定义 MapStruct 中 unmappedTargetPolicy 的默认值 WARN ---> IGNORE
+        AutoMapperProperties.setUnmappedTargetPolicy(mapperConfigGem.unmappedTargetPolicy().getValue());
+        AutoMapperProperties.setTypeConversionPolicy(mapperConfigGem.typeConversionPolicy().getValue());
+        AutoMapperProperties.setCollectionMappingStrategy(mapperConfigGem.collectionMappingStrategy().getValue());
+        AutoMapperProperties.setNullValueMappingStrategy(mapperConfigGem.nullValueMappingStrategy().getValue());
+        AutoMapperProperties.setNullValueIterableMappingStrategy(
+            mapperConfigGem.nullValueIterableMappingStrategy().getValue());
+        AutoMapperProperties.setNullValueMapMappingStrategy(mapperConfigGem.nullValueMapMappingStrategy().getValue());
+        AutoMapperProperties.setNullValuePropertyMappingStrategy(
+            mapperConfigGem.nullValuePropertyMappingStrategy().getValue());
+        AutoMapperProperties.setNullValueCheckStrategy(mapperConfigGem.nullValueCheckStrategy().getValue());
+        if (mapperConfigGem.mappingControl().hasValue()) {
+            AutoMapperProperties.setMappingControl(transToClassName(mapperConfigGem.mappingControl().get()));
         }
-        if (StrUtil.isNotEmpty(mapperConfig.adapterClassName())) {
-            AutoMapperProperties.setAdapterClassName(mapperConfig.adapterClassName());
+        if (mapperConfigGem.unexpectedValueMappingException().hasValue()) {
+            AutoMapperProperties.setUnexpectedValueMappingException(
+                transToClassName(mapperConfigGem.unexpectedValueMappingException().get()));
         }
-        if (StrUtil.isNotEmpty(mapperConfig.mapAdapterClassName())) {
-            AutoMapperProperties.setMapAdapterClassName(mapperConfig.mapAdapterClassName());
+        AutoMapperProperties.setSuppressTimestampInGenerated(mapperConfigGem.suppressTimestampInGenerated().getValue());
+        BuilderGem builderGem = mapperConfigGem.builder().get();
+        if (builderGem.buildMethod().hasValue()) {
+            AutoMapperProperties.setBuildMethod(builderGem.buildMethod().get());
         }
-        if (StrUtil.isNotEmpty(mapperConfig.autoConfigPackage())) {
-            AutoMapperProperties.setAutoConfigPackage(mapperConfig.autoConfigPackage());
+        AutoMapperProperties.setDisableBuilder(builderGem.disableBuilder().get());
+        if (mapperConfigGem.adapterPackage().hasValue()) {
+            AutoMapperProperties.setAdapterPackage(mapperConfigGem.adapterPackage().get());
         }
-        if (StrUtil.isNotEmpty(mapperConfig.autoMapperConfigClassName())) {
-            AutoMapperProperties.setAutoMapperConfigClassName(mapperConfig.autoMapperConfigClassName());
+        if (mapperConfigGem.adapterClassName().hasValue()) {
+            AutoMapperProperties.setAdapterClassName(mapperConfigGem.adapterClassName().get());
         }
-        if (StrUtil.isNotEmpty(mapperConfig.autoMapMapperConfigClassName())) {
-            AutoMapperProperties.setAutoMapMapperConfigClassName(mapperConfig.autoMapMapperConfigClassName());
+        if (mapperConfigGem.mapAdapterClassName().hasValue()) {
+            AutoMapperProperties.setMapAdapterClassName(mapperConfigGem.mapAdapterClassName().get());
+        }
+        if (mapperConfigGem.autoConfigPackage().hasValue()) {
+            AutoMapperProperties.setAutoConfigPackage(mapperConfigGem.autoConfigPackage().get());
+        }
+        if (mapperConfigGem.autoMapperConfigClassName().hasValue()) {
+            AutoMapperProperties.setAutoMapperConfigClassName(mapperConfigGem.autoMapperConfigClassName().get());
+        }
+        if (mapperConfigGem.autoMapMapperConfigClassName().hasValue()) {
+            AutoMapperProperties.setAutoMapMapperConfigClassName(mapperConfigGem.autoMapMapperConfigClassName().get());
         }
     }
 
@@ -406,7 +431,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         if (CollectionUtils.isNotEmpty(typeElements)) {
             messager.printMessage(Diagnostic.Kind.NOTE,
                 "The previous Mapper Config Class was read , class name : " + typeElements.get(0));
-            loadMapperConfig(typeElements.get(0).getAnnotation(MapperConfig.class));
+            loadMapperConfig(MapperConfigGem.instanceOn(typeElements.get(0)));
         }
 
         // annotation --> MapperConfig
@@ -416,7 +441,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
             final Optional<? extends Element> mapperConfigOptional =
                 roundEnv.getElementsAnnotatedWith(mapperConfigAnnotation).stream().findFirst();
             if (mapperConfigOptional.isPresent()) {
-                loadMapperConfig(mapperConfigOptional.get().getAnnotation(MapperConfig.class));
+                loadMapperConfig(MapperConfigGem.instanceOn(mapperConfigOptional.get()));
                 // record
                 buildCollator.writeTypeElements(Collections.singletonList((TypeElement) mapperConfigOptional.get()));
             }
@@ -427,7 +452,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         if (StrUtil.isNotEmpty(mapperConfigClass)) {
             final TypeElement typeElement = processingEnv.getElementUtils().getTypeElement(mapperConfigClass);
             if (typeElement != null) {
-                loadMapperConfig(typeElement.getAnnotation(MapperConfig.class));
+                loadMapperConfig(MapperConfigGem.instanceOn(typeElement));
             }
         }
 
@@ -491,8 +516,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
             boolean defineReverseMapping = CollectionUtils.isNotEmpty(autoMapperMetadata.getFieldReverseMappingList());
             final AutoMapperMetadata reverseMapperMetadata = reverseMapper(autoMapperMetadata);
             if (defineReverseMapping) {
-                addMapper(reverseMapperMetadata);
-            } else if (!mapperSet.add(reverseMapperMetadata.mapperName())) {
+                addMapper(reverseMapperMetadata, true);
+            } else if (!addMapper(reverseMapperMetadata, false)) {
                 return;
             }
             reverseMapperMetadataList.add(reverseMapperMetadata);
@@ -553,14 +578,28 @@ public class AutoMapperProcessor extends AbstractProcessor {
             reverseMapperMetadata.setSuperClass(
                 ClassName.get(ContextConstants.BaseMapper.packageName, ContextConstants.BaseMapper.className));
         }
-        // 默认的规则
+        reverseMapperMetadata.setUnmappedSourcePolicy(autoMapperMetadata.getUnmappedSourcePolicy());
+        reverseMapperMetadata.setUnmappedTargetPolicy(autoMapperMetadata.getUnmappedTargetPolicy());
+        reverseMapperMetadata.setTypeConversionPolicy(autoMapperMetadata.getTypeConversionPolicy());
+        reverseMapperMetadata.setCollectionMappingStrategy(autoMapperMetadata.getCollectionMappingStrategy());
+        reverseMapperMetadata.setNullValueMappingStrategy(autoMapperMetadata.getNullValueMappingStrategy());
+        reverseMapperMetadata.setNullValueIterableMappingStrategy(
+            autoMapperMetadata.getNullValueIterableMappingStrategy());
+        reverseMapperMetadata.setNullValuePropertyMappingStrategy(
+            autoMapperMetadata.getNullValuePropertyMappingStrategy());
+        reverseMapperMetadata.setNullValueCheckStrategy(autoMapperMetadata.getNullValueCheckStrategy());
+        reverseMapperMetadata.setMappingControl(autoMapperMetadata.getMappingControl());
+        reverseMapperMetadata.setMapperNameSuffix(autoMapperMetadata.getMapperNameSuffix());
+        // 默认的规则（当 source 属性包含 . 时，不生成相应的反向转换规则）
         Map<String, AutoMappingMetadata> autoMappingMap =
-            autoMapperMetadata.getFieldMappingList().stream().map(fieldMapping -> {
-                final AutoMappingMetadata autoMappingMetadata = new AutoMappingMetadata();
-                autoMappingMetadata.setSource(fieldMapping.getTarget());
-                autoMappingMetadata.setTarget(fieldMapping.getSource());
-                return autoMappingMetadata;
-            }).collect(Collectors.toMap(AutoMappingMetadata::getTarget, Function.identity(), (a, b) -> a));
+            autoMapperMetadata.getFieldMappingList().stream()
+                .filter(fieldMapping -> !fieldMapping.getSource().contains("."))
+                .map(fieldMapping -> {
+                    final AutoMappingMetadata autoMappingMetadata = new AutoMappingMetadata();
+                    autoMappingMetadata.setSource(fieldMapping.getTarget());
+                    autoMappingMetadata.setTarget(fieldMapping.getSource());
+                    return autoMappingMetadata;
+                }).collect(Collectors.toMap(AutoMappingMetadata::getTarget, Function.identity(), (a, b) -> a));
 
         List<AutoMappingMetadata> fieldReverseMappingList = autoMapperMetadata.getFieldReverseMappingList();
         if (CollectionUtils.isNotEmpty(fieldReverseMappingList)) {
@@ -573,17 +612,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
     }
 
     private void writeAutoMapperClassFile(AutoMapperMetadata metadata) {
-        String mapperPackage = metadata.mapperPackage();
-        String mapperClassName = metadata.mapperName();
-        try (final Writer writer = processingEnv.getFiler()
-            .createSourceFile(mapperPackage + "." + mapperClassName)
-            .openWriter()) {
-            mapperGenerator.write(metadata, processingEnv, writer);
-        } catch (IOException e) {
-            processingEnv.getMessager()
-                .printMessage(ERROR,
-                    "Error while opening " + metadata.mapperName() + " output file: " + e.getMessage());
-        }
+        mapperGenerator.write(metadata, processingEnv);
     }
 
     private void addAdapterMethod(AutoMapperMetadata metadata) {
@@ -603,10 +632,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
     }
 
     private AutoMapperMetadata initAutoMapperMetadata(ClassName source, ClassName target, boolean cycleAvoiding) {
-        AutoMapperMetadata metadata = new AutoMapperMetadata();
+        AutoMapperMetadata metadata = new AutoMapperMetadata(source, target);
 
-        metadata.setSourceClassName(source);
-        metadata.setTargetClassName(target);
         metadata.setSuperGenerics(new ClassName[] {source, target});
         ClassName mapStructConfigClass;
         if (cycleAvoiding) {
@@ -621,26 +648,70 @@ public class AutoMapperProcessor extends AbstractProcessor {
     }
 
     private List<AutoMapperMetadata> buildAutoMapperMetadataByAutoMappers(final Element ele) {
-        final AutoMappers autoMappers = ele.getAnnotation(AutoMappers.class);
-        if (autoMappers == null) {
+        AutoMappersGem autoMappersGem = AutoMappersGem.instanceOn(ele);
+        if (autoMappersGem == null || !autoMappersGem.isValid()) {
             return null;
         }
+
         Set<String> targetClassNames = new HashSet<>();
-        return Arrays.stream(autoMappers.value()).filter(autoMapper -> {
-            ClassName className = transToClassName(autoMapper::target);
-            if (className == null) {
-                return false;
-            }
-            return targetClassNames.add(className.reflectionName());
-        }).map(autoMapper -> buildAutoMapperMetadata(autoMapper, ele)).collect(Collectors.toList());
+
+        return autoMappersGem.value().getValue().stream().filter(autoMapperGem -> {
+                if (autoMapperGem == null || !autoMapperGem.isValid()) {
+                    return false;
+                }
+                TypeMirror target = autoMapperGem.target().getValue();
+                return targetClassNames.add(target.toString());
+            }).map(autoMapperGem -> buildAutoMapperMetadata(autoMapperGem, ele))
+            .collect(Collectors.toList());
     }
 
     private AutoMapperMetadata buildAutoMapperMetadata(final Element ele) {
-        AutoMapper autoMapperAnnotation = ele.getAnnotation(AutoMapper.class);
-        if (autoMapperAnnotation == null) {
+        AutoMapperGem autoMapperGem = AutoMapperGem.instanceOn(ele);
+        if (autoMapperGem == null || !autoMapperGem.isValid()) {
             return null;
         }
-        return buildAutoMapperMetadata(autoMapperAnnotation, ele);
+
+        return buildAutoMapperMetadata(autoMapperGem, ele);
+    }
+
+    private List<AutoMappingMetadata> matchTargetFieldMapping(List<AutoMappingMetadata> autoMappingMetadataList,
+        ClassName target) {
+        // 先删除非当面目标类或父类的
+        autoMappingMetadataList.removeIf(mappingMetadata -> !isTargetFieldMapping(target, mappingMetadata));
+        // 适配目标属性同时配置了目标类及目标类父类的场景
+        Map<String, List<AutoMappingMetadata>> targetFieldAutoMappingMap = autoMappingMetadataList.stream()
+            .collect(Collectors.groupingBy(AutoMappingMetadata::getTarget));
+
+        List<AutoMappingMetadata> result = new ArrayList<>();
+
+        targetFieldAutoMappingMap.forEach((key, list) -> {
+            // 只有一个场景
+            if (list.size() == 1) {
+                result.add(list.get(0));
+                return;
+            }
+            // 有多个时，先匹配目标类型
+            ClassName targetClassName = target;
+            while (targetClassName != null) {
+                ClassName finalTargetClassName = targetClassName;
+                List<AutoMappingMetadata> matchedList = list.stream()
+                    .filter(mappingMetadata -> mappingMetadata.getTargetClass()
+                        .reflectionName()
+                        .equals(finalTargetClassName.reflectionName()))
+                    .collect(Collectors.toList());
+                if (!matchedList.isEmpty()) {
+                    result.addAll(matchedList);
+                    return;
+                }
+                targetClassName = getSuperClass(classNameToTypeElement(targetClassName))
+                    .map(ClassName::get)
+                    .orElse(null);
+            }
+            // 如果没有匹配到，则添加所有的
+            result.addAll(list);
+        });
+
+        return result;
     }
 
     private boolean isTargetFieldMapping(ClassName target, AutoMappingMetadata mappingMetadata) {
@@ -670,29 +741,28 @@ public class AutoMapperProcessor extends AbstractProcessor {
         return Optional.of((TypeElement) processingEnv.getTypeUtils().asElement(superclass));
     }
 
-    private AutoMapperMetadata buildAutoMapperMetadata(final AutoMapper autoMapper, final Element ele) {
+    private AutoMapperMetadata buildAutoMapperMetadata(final AutoMapperGem autoMapperGem, final Element ele) {
         ClassName source = ClassName.get((TypeElement) ele);
-        ClassName target = transToClassName(autoMapper::target);
+        ClassName target = (ClassName) ClassName.get(autoMapperGem.target().getValue());
         if (target == null) {
             return null;
         }
-        List<ClassName> uses = transToClassNameList(autoMapper::uses);
-        final List<ClassName> importsClassNameList = transToClassNameList(autoMapper::imports);
-        List<AutoMappingMetadata> autoMappingMetadataList = buildFieldMappingMetadata((TypeElement) ele);
-        autoMappingMetadataList.removeIf(mappingMetadata -> !isTargetFieldMapping(target, mappingMetadata));
 
-        List<AutoMappingMetadata> reverseMappingMetadataList = buildFieldReverseMappingMetadata((TypeElement) ele);
-        reverseMappingMetadataList.removeIf(mappingMetadata -> !isTargetFieldMapping(target, mappingMetadata));
+        List<AutoMappingMetadata> autoMappingMetadataList =
+            matchTargetFieldMapping(buildFieldMappingMetadata((TypeElement) ele), target);
 
-        AutoMapperMetadata metadata = initAutoMapperMetadata(source, target, autoMapper.cycleAvoiding());
+        List<AutoMappingMetadata> reverseMappingMetadataList =
+            matchTargetFieldMapping(buildFieldReverseMappingMetadata((TypeElement) ele), target);
 
-        metadata.setUsesClassNameList(uses);
-        metadata.setImportsClassNameList(importsClassNameList);
+        AutoMapperMetadata metadata = initAutoMapperMetadata(source, target, autoMapperGem.cycleAvoiding().get());
+
+        metadata.setUsesClassNameList(transToClassNameList(autoMapperGem.uses().get()));
+        metadata.setImportsClassNameList(transToClassNameList(autoMapperGem.imports().get()));
         metadata.setFieldMappingList(autoMappingMetadataList);
         metadata.setFieldReverseMappingList(reverseMappingMetadataList);
-        metadata.setConvertGenerate(autoMapper.convertGenerate());
-        metadata.setReverseConvertGenerate(autoMapper.reverseConvertGenerate());
-        metadata.setCycleAvoiding(autoMapper.cycleAvoiding());
+        metadata.setConvertGenerate(autoMapperGem.convertGenerate().get());
+        metadata.setReverseConvertGenerate(autoMapperGem.reverseConvertGenerate().get());
+        metadata.setCycleAvoiding(autoMapperGem.cycleAvoiding().get());
         if (metadata.isCycleAvoiding()) {
             metadata.setSuperClass(ClassName.get(ContextConstants.BaseCycleAvoidingMapper.packageName,
                 ContextConstants.BaseCycleAvoidingMapper.className));
@@ -700,8 +770,21 @@ public class AutoMapperProcessor extends AbstractProcessor {
             metadata.setSuperClass(
                 ClassName.get(ContextConstants.BaseMapper.packageName, ContextConstants.BaseMapper.className));
         }
+        metadata.setUnmappedSourcePolicy(autoMapperGem.unmappedSourcePolicy().getValue());
+        metadata.setUnmappedTargetPolicy(autoMapperGem.unmappedTargetPolicy().getValue());
+        metadata.setTypeConversionPolicy(autoMapperGem.typeConversionPolicy().getValue());
+        metadata.setCollectionMappingStrategy(autoMapperGem.collectionMappingStrategy().getValue());
+        metadata.setNullValueMappingStrategy(autoMapperGem.nullValueMappingStrategy().getValue());
+        metadata.setNullValueIterableMappingStrategy(autoMapperGem.nullValueIterableMappingStrategy().getValue());
+        metadata.setNullValuePropertyMappingStrategy(autoMapperGem.nullValuePropertyMappingStrategy().getValue());
+        metadata.setNullValueCheckStrategy(autoMapperGem.nullValueCheckStrategy().getValue());
+        metadata.setMappingControl(transToClassName(autoMapperGem.mappingControl().getValue()));
+        if (StrUtil.isNotEmpty(autoMapperGem.mapperName().getValue())) {
+            metadata.setMapperName(autoMapperGem.mapperName().getValue());
+        }
+        metadata.setMapperNameSuffix(autoMapperGem.mapperNameSuffix().getValue());
 
-        addMapper(metadata);
+        addMapper(metadata, true);
 
         return metadata;
     }
@@ -715,15 +798,13 @@ public class AutoMapperProcessor extends AbstractProcessor {
             if (field.getKind() != ElementKind.FIELD && field.getKind() != ElementKind.METHOD) {
                 continue;
             }
-            ReverseAutoMapping reverseAutoMapping = field.getAnnotation(ReverseAutoMapping.class);
-            if (reverseAutoMapping != null) {
-                list.add(buildAutoMappingMetadata(reverseAutoMapping, field));
+            ReverseAutoMappingGem reverseAutoMappingGem = ReverseAutoMappingGem.instanceOn(field);
+            if (reverseAutoMappingGem != null && reverseAutoMappingGem.isValid()) {
+                list.add(buildAutoMappingMetadata(reverseAutoMappingGem, field));
             }
-            ReverseAutoMappings reverseAutoMappings = field.getAnnotation(ReverseAutoMappings.class);
-            if (reverseAutoMappings != null) {
-                for (ReverseAutoMapping mapping : reverseAutoMappings.value()) {
-                    list.add(buildAutoMappingMetadata(mapping, field));
-                }
+            ReverseAutoMappingsGem reverseAutoMappingsGem = ReverseAutoMappingsGem.instanceOn(field);
+            if (reverseAutoMappingsGem != null && reverseAutoMappingsGem.isValid()) {
+                reverseAutoMappingsGem.value().get().forEach(a -> buildAutoMappingMetadata(a, field));
             }
         }
 
@@ -734,44 +815,57 @@ public class AutoMapperProcessor extends AbstractProcessor {
         return list;
     }
 
-    private AutoMappingMetadata buildAutoMappingMetadata(ReverseAutoMapping reverseAutoMapping, Element ele) {
-        ClassName targetClass = transToClassName(reverseAutoMapping::targetClass);
+    private AutoMappingMetadata buildAutoMappingMetadata(ReverseAutoMappingGem reverseAutoMappingGem, Element ele) {
+        ClassName targetClass = transToClassName(reverseAutoMappingGem.targetClass().get());
         if (targetClass == null) {
             return null;
         }
 
         AutoMappingMetadata metadata = new AutoMappingMetadata();
-        if (StrUtil.isNotEmpty(reverseAutoMapping.source())) {
-            metadata.setSource(reverseAutoMapping.source());
+        if (StrUtil.isNotEmpty(reverseAutoMappingGem.source().get())) {
+            metadata.setSource(reverseAutoMappingGem.source().get());
         } else {
             metadata.setSource(ele.getSimpleName().toString());
         }
-        if (StrUtil.isNotEmpty(reverseAutoMapping.target())) {
-            metadata.setTarget(reverseAutoMapping.target());
+        if (StrUtil.isNotEmpty(reverseAutoMappingGem.target().get())) {
+            metadata.setTarget(reverseAutoMappingGem.target().get());
         } else {
             metadata.setTarget(ele.getSimpleName().toString());
         }
         metadata.setTargetClass(targetClass);
-        metadata.setDefaultValue(reverseAutoMapping.defaultValue());
-        metadata.setIgnore(reverseAutoMapping.ignore());
-        metadata.setExpression(reverseAutoMapping.expression());
-        metadata.setDefaultExpression(reverseAutoMapping.defaultExpression());
-        metadata.setConditionExpression(reverseAutoMapping.conditionExpression());
-        metadata.setDateFormat(reverseAutoMapping.dateFormat());
-        metadata.setNumberFormat(reverseAutoMapping.numberFormat());
-        metadata.setQualifiedByName(reverseAutoMapping.qualifiedByName());
-        metadata.setConditionQualifiedByName(reverseAutoMapping.conditionQualifiedByName());
-        metadata.setDependsOn(reverseAutoMapping.dependsOn());
+        metadata.setDefaultValue(reverseAutoMappingGem.defaultValue().getValue());
+        metadata.setIgnore(reverseAutoMappingGem.ignore().getValue());
+        metadata.setExpression(reverseAutoMappingGem.expression().getValue());
+        metadata.setDefaultExpression(reverseAutoMappingGem.defaultExpression().getValue());
+        metadata.setConditionExpression(reverseAutoMappingGem.conditionExpression().getValue());
+        metadata.setDateFormat(reverseAutoMappingGem.dateFormat().getValue());
+        metadata.setNumberFormat(reverseAutoMappingGem.numberFormat().getValue());
+        metadata.setQualifiedByName(reverseAutoMappingGem.qualifiedByName().getValue());
+        metadata.setConditionQualifiedByName(reverseAutoMappingGem.conditionQualifiedByName().getValue());
+        metadata.setDependsOn(reverseAutoMappingGem.dependsOn().getValue());
+        metadata.setConstant(reverseAutoMappingGem.constant().getValue());
+        metadata.setQualifiedBy(transToClassNameList(reverseAutoMappingGem.qualifiedBy().getValue()));
+        metadata.setNullValueCheckStrategy(reverseAutoMappingGem.nullValueCheckStrategy().getValue());
+        metadata.setNullValuePropertyMappingStrategy(
+            reverseAutoMappingGem.nullValuePropertyMappingStrategy().getValue());
+        metadata.setMappingControl(transToClassName(reverseAutoMappingGem.mappingControl().getValue()));
+
         return metadata;
     }
 
-    private void addMapper(AutoMapperMetadata metadata) {
-        if (!mapperSet.add(metadata.mapperName())) {
-            throw new DuplicateMapperException("An exception occurred to generate " + metadata.mapperName() +
-                                               ", check the mapping configuration for " +
-                                               metadata.getSourceClassName().reflectionName() + " or " +
-                                               metadata.getTargetClassName().reflectionName());
+    private boolean addMapper(AutoMapperMetadata metadata, boolean throwsException) {
+        boolean addSuccess = mapperSet.add(
+            metadata.getSourceClassName().reflectionName() + "To" + metadata.getTargetClassName().reflectionName());
+        if (throwsException) {
+
+            if (!addSuccess) {
+                throw new DuplicateMapperException("An exception occurred to generate " + metadata.mapperName() +
+                                                   ", check the mapping configuration for " +
+                                                   metadata.getSourceClassName().reflectionName() + " or " +
+                                                   metadata.getTargetClassName().reflectionName());
+            }
         }
+        return addSuccess;
     }
 
     private List<AutoMappingMetadata> buildFieldMappingMetadata(final TypeElement autoMapperEle) {
@@ -785,15 +879,13 @@ public class AutoMapperProcessor extends AbstractProcessor {
             if (ele.getKind() != ElementKind.FIELD && ele.getKind() != ElementKind.METHOD) {
                 continue;
             }
-            AutoMapping autoMapping = ele.getAnnotation(AutoMapping.class);
-            if (autoMapping != null) {
-                list.add(buildAutoMappingMetadata(autoMapping, ele));
+            AutoMappingGem autoMappingGem = AutoMappingGem.instanceOn(ele);
+            if (autoMappingGem != null && autoMappingGem.isValid()) {
+                list.add(buildAutoMappingMetadata(autoMappingGem, ele));
             }
-            final AutoMappings autoMappings = ele.getAnnotation(AutoMappings.class);
-            if (autoMappings != null) {
-                for (AutoMapping autoMappingEle : autoMappings.value()) {
-                    list.add(buildAutoMappingMetadata(autoMappingEle, ele));
-                }
+            AutoMappingsGem autoMappingsGem = AutoMappingsGem.instanceOn(ele);
+            if (autoMappingsGem != null && autoMappingsGem.isValid()) {
+                autoMappingsGem.value().get().forEach(a -> list.add(buildAutoMappingMetadata(a, ele)));
             }
         }
 
@@ -804,8 +896,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
         return list;
     }
 
-    private AutoMappingMetadata buildAutoMappingMetadata(AutoMapping autoMapping, Element ele) {
-        ClassName targetClass = transToClassName(autoMapping::targetClass);
+    private AutoMappingMetadata buildAutoMappingMetadata(AutoMappingGem autoMappingGem, Element ele) {
+        ClassName targetClass = transToClassName(autoMappingGem.targetClass().get());
         if (targetClass == null) {
             return null;
         }
@@ -817,27 +909,32 @@ public class AutoMapperProcessor extends AbstractProcessor {
             elementName = ObjectUtils.defaultIfNull(StrUtil.getGeneralField(elementName), elementName);
         }
 
-        if (StrUtil.isNotEmpty(autoMapping.source())) {
-            metadata.setSource(autoMapping.source());
+        if (StrUtil.isNotEmpty(autoMappingGem.source().get())) {
+            metadata.setSource(autoMappingGem.source().get());
         } else {
             metadata.setSource(elementName);
         }
-        if (StrUtil.isNotEmpty(autoMapping.target())) {
-            metadata.setTarget(autoMapping.target());
+        if (StrUtil.isNotEmpty(autoMappingGem.target().get())) {
+            metadata.setTarget(autoMappingGem.target().get());
         } else {
             metadata.setTarget(elementName);
         }
         metadata.setTargetClass(targetClass);
-        metadata.setDefaultValue(autoMapping.defaultValue());
-        metadata.setIgnore(autoMapping.ignore());
-        metadata.setExpression(autoMapping.expression());
-        metadata.setDefaultExpression(autoMapping.defaultExpression());
-        metadata.setConditionExpression(autoMapping.conditionExpression());
-        metadata.setDateFormat(autoMapping.dateFormat());
-        metadata.setNumberFormat(autoMapping.numberFormat());
-        metadata.setQualifiedByName(autoMapping.qualifiedByName());
-        metadata.setConditionQualifiedByName(autoMapping.conditionQualifiedByName());
-        metadata.setDependsOn(autoMapping.dependsOn());
+        metadata.setDefaultValue(autoMappingGem.defaultValue().getValue());
+        metadata.setIgnore(autoMappingGem.ignore().getValue());
+        metadata.setExpression(autoMappingGem.expression().getValue());
+        metadata.setDefaultExpression(autoMappingGem.defaultExpression().getValue());
+        metadata.setConditionExpression(autoMappingGem.conditionExpression().getValue());
+        metadata.setDateFormat(autoMappingGem.dateFormat().getValue());
+        metadata.setNumberFormat(autoMappingGem.numberFormat().getValue());
+        metadata.setQualifiedByName(autoMappingGem.qualifiedByName().getValue());
+        metadata.setConditionQualifiedByName(autoMappingGem.conditionQualifiedByName().getValue());
+        metadata.setDependsOn(autoMappingGem.dependsOn().getValue());
+        metadata.setConstant(autoMappingGem.constant().getValue());
+        metadata.setQualifiedBy(transToClassNameList(autoMappingGem.qualifiedBy().getValue()));
+        metadata.setNullValueCheckStrategy(autoMappingGem.nullValueCheckStrategy().getValue());
+        metadata.setNullValuePropertyMappingStrategy(autoMappingGem.nullValuePropertyMappingStrategy().getValue());
+        metadata.setMappingControl(transToClassName(autoMappingGem.mappingControl().getValue()));
         return metadata;
     }
 
@@ -864,6 +961,22 @@ public class AutoMapperProcessor extends AbstractProcessor {
         return typeMirrors.stream()
             .map(typeMirror -> (ClassName) ClassName.get(typeMirror))
             .collect(Collectors.toList());
+    }
+
+    private List<ClassName> transToClassNameList(List<TypeMirror> typeMirrors) {
+        if (typeMirrors == null) {
+            return Collections.emptyList();
+        }
+        return typeMirrors.stream()
+            .map(this::transToClassName)
+            .collect(Collectors.toList());
+    }
+
+    private ClassName transToClassName(TypeMirror typeMirror) {
+        if (typeMirror == null) {
+            return null;
+        }
+        return (ClassName) ClassName.get(typeMirror);
     }
 
     private TypeElement classNameToTypeElement(ClassName className) {

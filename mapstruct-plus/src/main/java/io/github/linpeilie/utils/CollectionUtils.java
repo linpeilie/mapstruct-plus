@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CollectionUtils {
 
@@ -24,6 +25,13 @@ public class CollectionUtils {
         List<T> arrayList = new ArrayList<>(values.length);
         Collections.addAll(arrayList, values);
         return arrayList;
+    }
+
+    public static <T> String join(List<T> list, CharSequence delimiter, String prefix, String suffix) {
+        if (list == null) {
+            return null;
+        }
+        return list.stream().map(str -> prefix + str + suffix).collect(Collectors.joining(delimiter));
     }
 
 }

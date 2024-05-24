@@ -1,6 +1,7 @@
 package io.github.linpeilie;
 
 import io.github.linpeilie.annotations.MapperConfig;
+import io.github.linpeilie.utils.MapperUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -80,7 +81,7 @@ public class DefaultConverterFactory extends AbstractCachedConverterFactory {
     }
 
     private String getMapperClassName(Class<?> source, Class<?> target) {
-        return source.getSimpleName() + "To" + target.getSimpleName() + "Mapper";
+        return MapperUtils.getMapperClassName(source.getName(), target.getName());
     }
 
     private String getMapMapperClassName(Class<?> source) {

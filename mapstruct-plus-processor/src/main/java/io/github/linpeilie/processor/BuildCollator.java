@@ -1,5 +1,7 @@
 package io.github.linpeilie.processor;
 
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
 import io.github.linpeilie.processor.utils.FileUtils;
 import io.github.linpeilie.utils.CollectionUtils;
 import java.io.File;
@@ -96,6 +98,15 @@ public class BuildCollator {
         final List<String> lines = loadRecords();
         newRecords.forEach(ele -> {
             final String classQualifiedName = ((TypeElement) ele).getQualifiedName().toString();
+            lines.add(classQualifiedName);
+        });
+        write(new HashSet<>(lines));
+    }
+
+    public void appendNonexistentTypes(Collection<ClassName> typeNames) {
+        List<String> lines = loadRecords();
+        typeNames.forEach(ele -> {
+            String classQualifiedName = ele.reflectionName();
             lines.add(classQualifiedName);
         });
         write(new HashSet<>(lines));

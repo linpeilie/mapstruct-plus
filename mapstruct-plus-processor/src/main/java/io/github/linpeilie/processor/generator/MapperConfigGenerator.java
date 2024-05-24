@@ -69,6 +69,22 @@ public class MapperConfigGenerator {
             builder.addMember("unmappedTargetPolicy", unmappedTargetPolicyCodeBlock);
         }
 
+        // typeConversionPolicy
+        if (AutoMapperProperties.getTypeConversionPolicy() != null) {
+            CodeBlock typeConversionCodeBlock = CodeBlock.builder().add("$T.$L",
+                ClassName.get("org.mapstruct", "ReportingPolicy"),
+                AutoMapperProperties.getTypeConversionPolicy()).build();
+            builder.addMember("typeConversionPolicy", typeConversionCodeBlock);
+        }
+
+        // collectionMappingStrategy
+        if (AutoMapperProperties.getCollectionMappingStrategy() != null) {
+            CodeBlock collectionMappingStrategyCodeBlock = CodeBlock.builder().add("$T.$L",
+                ClassName.get("org.mapstruct", "CollectionMappingStrategy"),
+                AutoMapperProperties.getCollectionMappingStrategy()).build();
+            builder.addMember("collectionMappingStrategy", collectionMappingStrategyCodeBlock);
+        }
+
         // nullValueMappingStrategy
         if (AutoMapperProperties.getNullValueMappingStrategy() != null) {
             CodeBlock nullValueMappingStrategyCodeBlock = CodeBlock.builder().add("$T.$L",
@@ -77,12 +93,56 @@ public class MapperConfigGenerator {
             builder.addMember("nullValueMappingStrategy", nullValueMappingStrategyCodeBlock);
         }
 
+        // nullValueIterableMappingStrategy
+        if (AutoMapperProperties.getNullValueIterableMappingStrategy() != null) {
+            CodeBlock nullValueIterableMappingStrategyCodeBlock = CodeBlock.builder().add("$T.$L",
+                    ClassName.get("org.mapstruct", "NullValueIterableMappingStrategy"),
+                    AutoMapperProperties.getNullValueIterableMappingStrategy()).build();
+            builder.addMember("nullValueIterableMappingStrategy", nullValueIterableMappingStrategyCodeBlock);
+        }
+
+        // nullValueMapMappingStrategy
+        if (AutoMapperProperties.getNullValueMapMappingStrategy() != null) {
+            CodeBlock nullValueMapMappingStrategyCodeBlock = CodeBlock.builder().add("$T.$L",
+                    ClassName.get("org.mapstruct", "NullValueMapMappingStrategy"),
+                    AutoMapperProperties.getNullValueMapMappingStrategy()).build();
+            builder.addMember("nullValueMapMappingStrategy", nullValueMapMappingStrategyCodeBlock);
+        }
+
         // nullValuePropertyMappingStrategy
         if (AutoMapperProperties.getNullValuePropertyMappingStrategy() != null) {
             CodeBlock nullValuePropertyMappingStrategyCodeBlock = CodeBlock.builder().add("$T.$L",
                     ClassName.get("org.mapstruct", "NullValuePropertyMappingStrategy"),
                     AutoMapperProperties.getNullValuePropertyMappingStrategy()).build();
             builder.addMember("nullValuePropertyMappingStrategy", nullValuePropertyMappingStrategyCodeBlock);
+        }
+
+        // nullValueCheckStrategy
+        if (AutoMapperProperties.getNullValueCheckStrategy() != null) {
+            CodeBlock nullValueCheckStrategyCodeBlock = CodeBlock.builder().add("$T.$L",
+                    ClassName.get("org.mapstruct", "NullValueCheckStrategy"),
+                    AutoMapperProperties.getNullValueCheckStrategy()).build();
+            builder.addMember("nullValueCheckStrategy", nullValueCheckStrategyCodeBlock);
+        }
+
+        // mappingControl
+        if (AutoMapperProperties.getMappingControl() != null) {
+            CodeBlock mappingControlCodeBlock = CodeBlock.builder().add("$T.class",
+                    AutoMapperProperties.getMappingControl()).build();
+            builder.addMember("mappingControl", mappingControlCodeBlock);
+        }
+
+        // unexpectedValueMappingException
+        if (AutoMapperProperties.getUnexpectedValueMappingException() != null) {
+            CodeBlock unexpectedValueMappingExceptionCodeBlock = CodeBlock.builder().add("$T.class",
+                    AutoMapperProperties.getUnexpectedValueMappingException()).build();
+            builder.addMember("unexpectedValueMappingException", unexpectedValueMappingExceptionCodeBlock);
+        }
+
+        // suppressTimestampInGenerated
+        if (AutoMapperProperties.getSuppressTimestampInGenerated() != null) {
+            builder.addMember("suppressTimestampInGenerated", CodeBlock.builder()
+                .add(String.valueOf(AutoMapperProperties.getSuppressTimestampInGenerated())).build());
         }
 
         // builder

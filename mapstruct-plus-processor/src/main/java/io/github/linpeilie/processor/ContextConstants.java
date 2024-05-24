@@ -1,5 +1,6 @@
 package io.github.linpeilie.processor;
 
+import io.github.linpeilie.DefaultMapping;
 import java.io.File;
 import org.mapstruct.MappingConstants;
 
@@ -36,6 +37,10 @@ public interface ContextConstants {
         String qualifiedClassName = "org.mapstruct.Mapper";
         String packageName = "org.mapstruct";
         String className = "Mapper";
+    }
+
+    interface AutoMapping {
+        String qualifiedClassName = "io.github.linpeilie.annotations.AutoMapping";
     }
 
     interface AutoMapper {
@@ -93,6 +98,7 @@ public interface ContextConstants {
         String autoMappers = "autoMappers";
         String autoMapMappers = "autoMapMappers";
         String enumMappers = "enumMappers";
+        String uses = "uses";
     }
 
     interface AutoIncrementFile {
@@ -112,6 +118,47 @@ public interface ContextConstants {
     interface DoIgnore {
         String packageName = "io.github.linpeilie.annotations";
         String className = "DoIgnore";
+    }
+
+    interface MappingControl {
+        String packageName = "org.mapstruct.control";
+        String className = "MappingControl";
+        String qualifiedName = packageName + "." + className;
+    }
+
+    interface NullValueCheckStrategy {
+        String packageName = "org.mapstruct";
+        String className = "NullValueCheckStrategy";
+    }
+
+    interface NullValuePropertyMappingStrategy {
+        String packageName = "org.mapstruct";
+        String className = "NullValuePropertyMappingStrategy";
+    }
+
+    interface ReportingPolicy {
+        String packageName = "org.mapstruct";
+        String className = "ReportingPolicy";
+    }
+
+    interface CollectionMappingStrategy {
+        String packageName = "org.mapstruct";
+        String className = "CollectionMappingStrategy";
+    }
+
+    interface NullValueMappingStrategy {
+        String packageName = "org.mapstruct";
+        String className = "NullValueMappingStrategy";
+    }
+
+    interface MappingInheritanceStrategy {
+        String packageName = "org.mapstruct";
+        String className = "MappingInheritanceStrategy";
+    }
+
+    interface InjectionStrategy {
+        String packageName = "org.mapstruct";
+        String className = "InjectionStrategy";
     }
 
 }
