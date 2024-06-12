@@ -25,6 +25,13 @@ public @interface AutoMapping {
     Class<?> targetClass() default DefaultMapping.class;
 
     /**
+     * 是否生成反向转换的逻辑
+     *
+     * @return true : 生成反向转换的逻辑 false : 不生成反向转换的逻辑
+     */
+    boolean reverseConvertGenerate() default true;
+
+    /**
      * 来源，默认取当前字段名称
      * - 可以是当前类中的属性名
      * - 也可以是属性名.属性名，例如：address.city.name

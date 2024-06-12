@@ -9,6 +9,8 @@ public class AutoMappingMetadata {
 
     private ClassName targetClass;
 
+    private boolean reverseConvertGenerate;
+
     private String target;
 
     private String source;
@@ -50,6 +52,14 @@ public class AutoMappingMetadata {
 
     public void setTargetClass(final ClassName targetClass) {
         this.targetClass = targetClass;
+    }
+
+    public boolean getReverseConvertGenerate() {
+        return reverseConvertGenerate;
+    }
+
+    public void setReverseConvertGenerate(boolean reverseConvertGenerate) {
+        this.reverseConvertGenerate = reverseConvertGenerate;
     }
 
     public String getTarget() {

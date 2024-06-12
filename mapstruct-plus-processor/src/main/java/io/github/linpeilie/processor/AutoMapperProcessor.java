@@ -593,6 +593,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         // 默认的规则
         Map<String, AutoMappingMetadata> autoMappingMap =
             autoMapperMetadata.getFieldMappingList().stream()
+                .filter(AutoMappingMetadata::getReverseConvertGenerate)
                 .map(fieldMapping -> {
                     final AutoMappingMetadata autoMappingMetadata = new AutoMappingMetadata();
                     autoMappingMetadata.setSource(fieldMapping.getTarget());
@@ -919,6 +920,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
             metadata.setTarget(elementName);
         }
         metadata.setTargetClass(targetClass);
+        metadata.setReverseConvertGenerate(autoMappingGem.reverseConvertGenerate().get());
         metadata.setDefaultValue(autoMappingGem.defaultValue().getValue());
         metadata.setIgnore(autoMappingGem.ignore().getValue());
         metadata.setExpression(autoMappingGem.expression().getValue());
