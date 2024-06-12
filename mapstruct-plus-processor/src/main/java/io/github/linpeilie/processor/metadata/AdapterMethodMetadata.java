@@ -2,7 +2,6 @@ package io.github.linpeilie.processor.metadata;
 
 import com.squareup.javapoet.ClassName;
 import io.github.linpeilie.utils.ClassUtil;
-import io.github.linpeilie.utils.MapperUtils;
 
 public class AdapterMethodMetadata extends AbstractAdapterMethodMetadata {
 

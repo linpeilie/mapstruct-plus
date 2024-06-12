@@ -29,6 +29,7 @@ import io.github.linpeilie.processor.metadata.AutoMapMapperMetadata;
 import io.github.linpeilie.processor.metadata.AutoMapperMetadata;
 import io.github.linpeilie.processor.metadata.AutoMappingMetadata;
 import io.github.linpeilie.processor.utils.ExceptionUtils;
+import io.github.linpeilie.processor.utils.MapperUtils;
 import io.github.linpeilie.processor.utils.ObjectUtils;
 import io.github.linpeilie.utils.CollectionUtils;
 import io.github.linpeilie.utils.StrUtil;
@@ -756,7 +757,15 @@ public class AutoMapperProcessor extends AbstractProcessor {
 
         AutoMapperMetadata metadata = initAutoMapperMetadata(source, target, autoMapperGem.cycleAvoiding().get());
 
-        metadata.setUsesClassNameList(transToClassNameList(autoMapperGem.uses().get()));
+        List<ClassName> usesClassNameList = transToClassNameList(autoMapperGem.uses().get());
+        List<ClassName> useEnumClassNameList = transToClassNameList(autoMapperGem.useEnums().get()).stream()
+            .map(enumClass -> ClassName.get(MapperUtils.getMapperPackage(enumClass.packageName()),
+                MapperUtils.getEnumMapperClassName(enumClass.simpleName())))
+            .collect(Collectors.toList());
+
+        usesClassNameList.addAll(useEnumClassNameList);
+
+        metadata.setUsesClassNameList(usesClassNameList);
         metadata.setImportsClassNameList(transToClassNameList(autoMapperGem.imports().get()));
         metadata.setFieldMappingList(autoMappingMetadataList);
         metadata.setFieldReverseMappingList(reverseMappingMetadataList);
@@ -966,7 +975,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
 
     private List<ClassName> transToClassNameList(List<TypeMirror> typeMirrors) {
         if (typeMirrors == null) {
-            return Collections.emptyList();
+            return new ArrayList<>();
         }
         return typeMirrors.stream()
             .map(this::transToClassName)

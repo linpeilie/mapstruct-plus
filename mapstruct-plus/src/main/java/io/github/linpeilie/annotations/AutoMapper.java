@@ -29,6 +29,11 @@ public @interface AutoMapper {
 
     Class<?>[] uses() default {};
 
+    /**
+     * 转换需要依赖的枚举，依赖的枚举，需要被 AutoEnumMapper 所注解
+     */
+    Class<?>[] useEnums() default {};
+
     Class<?>[] imports() default {};
 
     /**

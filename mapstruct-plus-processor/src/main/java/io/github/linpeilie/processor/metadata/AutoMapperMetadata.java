@@ -1,7 +1,7 @@
 package io.github.linpeilie.processor.metadata;
 
 import com.squareup.javapoet.ClassName;
-import io.github.linpeilie.utils.MapperUtils;
+import io.github.linpeilie.processor.utils.MapperUtils;
 import io.github.linpeilie.utils.StrUtil;
 import java.util.List;
 import org.mapstruct.NullValueMappingStrategy;
@@ -22,6 +22,8 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
     private ClassName targetClassName;
 
     private List<ClassName> usesClassNameList;
+
+    private List<ClassName> useEnumClassNameList;
 
     private List<ClassName> importsClassNameList;
 
@@ -105,6 +107,14 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
     public AutoMapperMetadata setUsesClassNameList(final List<ClassName> usesClassNameList) {
         this.usesClassNameList = usesClassNameList;
         return this;
+    }
+
+    public List<ClassName> getUseEnumClassNameList() {
+        return useEnumClassNameList;
+    }
+
+    public void setUseEnumClassNameList(List<ClassName> useEnumClassNameList) {
+        this.useEnumClassNameList = useEnumClassNameList;
     }
 
     public List<ClassName> getImportsClassNameList() {

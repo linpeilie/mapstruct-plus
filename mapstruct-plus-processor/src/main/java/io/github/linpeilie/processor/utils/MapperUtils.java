@@ -1,4 +1,7 @@
-package io.github.linpeilie.utils;
+package io.github.linpeilie.processor.utils;
+
+import io.github.linpeilie.processor.AutoMapperProperties;
+import io.github.linpeilie.utils.StrUtil;
 
 public class MapperUtils {
 
@@ -9,6 +12,16 @@ public class MapperUtils {
                                  + "To"
                                  + targetQualifiedClassNames[targetQualifiedClassNames.length - 1];
         return mapperClassName.substring(0, 1).toUpperCase() + mapperClassName.substring(1) + "Mapper";
+    }
+
+    public static String getEnumMapperClassName(String sourceSimpleName) {
+        return sourceSimpleName + "Mapper";
+    }
+
+    public static String getMapperPackage(String sourcePackage) {
+        return StrUtil.isNotEmpty(AutoMapperProperties.getMapperPackage())
+               ? AutoMapperProperties.getMapperPackage() : sourcePackage;
+
     }
 
 }
