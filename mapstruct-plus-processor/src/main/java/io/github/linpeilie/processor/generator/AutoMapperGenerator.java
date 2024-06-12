@@ -8,7 +8,6 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
-import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.processor.ContextConstants;
 import io.github.linpeilie.processor.metadata.AutoMapperMetadata;
 import io.github.linpeilie.processor.metadata.AutoMappingMetadata;
@@ -26,7 +25,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import sun.reflect.annotation.AnnotationType;
 
 import static javax.tools.Diagnostic.Kind.ERROR;
 
@@ -239,8 +237,6 @@ public class AutoMapperGenerator {
     }
 
     private AnnotationSpec buildGeneratedMapperAnnotationSpec(AutoMapperMetadata metadata) {
-        Map<String, Object> autoMapperDefaultValueMap = AnnotationType.getInstance(AutoMapper.class).memberDefaults();
-
         List<ClassName> usesClassNameList =
             Optional.ofNullable(metadata.getUsesClassNameList()).orElse(new ArrayList<>());
 
@@ -280,8 +276,7 @@ public class AutoMapperGenerator {
                 .addMember("imports", importsCodeBlock);
 
         // unmappedSourcePolicy
-        if (metadata.getUnmappedSourcePolicy() != null
-            && !autoMapperDefaultValueMap.get("unmappedSourcePolicy").equals(metadata.getUnmappedSourcePolicy())) {
+        if (metadata.getUnmappedSourcePolicy() != null) {
             builder.addMember("unmappedSourcePolicy", CodeBlock.builder()
                 .add("$T.$L", ClassName.get(ContextConstants.ReportingPolicy.packageName,
                         ContextConstants.ReportingPolicy.className),
@@ -290,8 +285,7 @@ public class AutoMapperGenerator {
         }
 
         // unmappedTargetPolicy
-        if (metadata.getUnmappedTargetPolicy() != null
-            && !autoMapperDefaultValueMap.get("unmappedTargetPolicy").equals(metadata.getUnmappedTargetPolicy())) {
+        if (metadata.getUnmappedTargetPolicy() != null) {
             builder.addMember("unmappedTargetPolicy", CodeBlock.builder()
                 .add("$T.$L",
                     ClassName.get(ContextConstants.ReportingPolicy.packageName,
@@ -301,8 +295,7 @@ public class AutoMapperGenerator {
         }
 
         // typeConversionPolicy
-        if (metadata.getTypeConversionPolicy() != null &&
-            !autoMapperDefaultValueMap.get("typeConversionPolicy").equals(metadata.getTypeConversionPolicy())) {
+        if (metadata.getTypeConversionPolicy() != null) {
             builder.addMember("typeConversionPolicy", CodeBlock.builder()
                 .add("$T.$L",
                     ClassName.get(ContextConstants.ReportingPolicy.packageName,
@@ -312,9 +305,7 @@ public class AutoMapperGenerator {
         }
 
         // collectionMappingStrategy
-        if (metadata.getCollectionMappingStrategy() != null &&
-            !autoMapperDefaultValueMap.get("collectionMappingStrategy")
-                .equals(metadata.getCollectionMappingStrategy())) {
+        if (metadata.getCollectionMappingStrategy() != null) {
             builder.addMember("collectionMappingStrategy", CodeBlock.builder()
                 .add("$T.$L",
                     ClassName.get(ContextConstants.CollectionMappingStrategy.packageName,
@@ -324,8 +315,7 @@ public class AutoMapperGenerator {
         }
 
         // nullValueMappingStrategy
-        if (metadata.getNullValueMappingStrategy() != null &&
-            !autoMapperDefaultValueMap.get("nullValueMappingStrategy").equals(metadata.getNullValueMappingStrategy())) {
+        if (metadata.getNullValueMappingStrategy() != null) {
             builder.addMember("nullValueMappingStrategy", CodeBlock.builder()
                 .add("$T.$L",
                     ClassName.get(ContextConstants.NullValueMappingStrategy.packageName,
@@ -335,9 +325,7 @@ public class AutoMapperGenerator {
         }
 
         // nullValueIterableMappingStrategy
-        if (metadata.getNullValueIterableMappingStrategy() != null &&
-            !autoMapperDefaultValueMap.get("nullValueIterableMappingStrategy")
-                .equals(metadata.getNullValueIterableMappingStrategy())) {
+        if (metadata.getNullValueIterableMappingStrategy() != null) {
             builder.addMember("nullValueIterableMappingStrategy", CodeBlock.builder()
                 .add("$T.$L",
                     ClassName.get(ContextConstants.NullValueMappingStrategy.packageName,
@@ -347,9 +335,7 @@ public class AutoMapperGenerator {
         }
 
         // nullValuePropertyMappingStrategy
-        if (metadata.getNullValuePropertyMappingStrategy() != null &&
-            !autoMapperDefaultValueMap.get("nullValuePropertyMappingStrategy")
-                .equals(metadata.getNullValuePropertyMappingStrategy())) {
+        if (metadata.getNullValuePropertyMappingStrategy() != null) {
             builder.addMember("nullValuePropertyMappingStrategy", CodeBlock.builder()
                 .add("$T.$L",
                     ClassName.get(ContextConstants.NullValuePropertyMappingStrategy.packageName,
@@ -359,8 +345,7 @@ public class AutoMapperGenerator {
         }
 
         // nullValueCheckStrategy
-        if (metadata.getNullValueCheckStrategy() != null &&
-            !autoMapperDefaultValueMap.get("nullValueCheckStrategy").equals(metadata.getNullValueCheckStrategy())) {
+        if (metadata.getNullValueCheckStrategy() != null) {
             builder.addMember("nullValueCheckStrategy", CodeBlock.builder()
                 .add("$T.$L",
                     ClassName.get(ContextConstants.NullValueCheckStrategy.packageName,
@@ -370,9 +355,7 @@ public class AutoMapperGenerator {
         }
 
         // mappingControl
-        if (metadata.getMappingControl() != null &&
-            !((Class<?>) autoMapperDefaultValueMap.get("mappingControl")).getName()
-                .equals(metadata.getMappingControl().reflectionName())) {
+        if (metadata.getMappingControl() != null) {
             builder.addMember("mappingControl",
                 CodeBlock.builder().add("$T.class", metadata.getMappingControl()).build());
         }
