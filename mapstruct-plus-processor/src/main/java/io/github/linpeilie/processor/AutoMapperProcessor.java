@@ -590,10 +590,9 @@ public class AutoMapperProcessor extends AbstractProcessor {
         reverseMapperMetadata.setNullValueCheckStrategy(autoMapperMetadata.getNullValueCheckStrategy());
         reverseMapperMetadata.setMappingControl(autoMapperMetadata.getMappingControl());
         reverseMapperMetadata.setMapperNameSuffix(autoMapperMetadata.getMapperNameSuffix());
-        // 默认的规则（当 source 属性包含 . 时，不生成相应的反向转换规则）
+        // 默认的规则
         Map<String, AutoMappingMetadata> autoMappingMap =
             autoMapperMetadata.getFieldMappingList().stream()
-                .filter(fieldMapping -> !fieldMapping.getSource().contains("."))
                 .map(fieldMapping -> {
                     final AutoMappingMetadata autoMappingMetadata = new AutoMappingMetadata();
                     autoMappingMetadata.setSource(fieldMapping.getTarget());
