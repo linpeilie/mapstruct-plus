@@ -4,6 +4,7 @@ import recoTheme from "vuepress-theme-reco";
 import { themeConfig } from './config/index'
 import { sitemapPlugin } from '@vuepress/plugin-sitemap'
 import { webpackBundler } from '@vuepress/bundler-webpack'
+import { viteBundler } from '@vuepress/bundler-vite'
 
 export default defineUserConfig({
   locales: {
