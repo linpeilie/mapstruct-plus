@@ -591,24 +591,22 @@ public class AutoMapperProcessor extends AbstractProcessor {
         reverseMapperMetadata.setNullValueCheckStrategy(autoMapperMetadata.getNullValueCheckStrategy());
         reverseMapperMetadata.setMappingControl(autoMapperMetadata.getMappingControl());
         reverseMapperMetadata.setMapperNameSuffix(autoMapperMetadata.getMapperNameSuffix());
-        // 默认的规则
-        Map<String, AutoMappingMetadata> autoMappingMap =
-            autoMapperMetadata.getFieldMappingList().stream()
-                .filter(AutoMappingMetadata::getReverseConvertGenerate)
-                .map(fieldMapping -> {
-                    final AutoMappingMetadata autoMappingMetadata = new AutoMappingMetadata();
-                    autoMappingMetadata.setSource(fieldMapping.getTarget());
-                    autoMappingMetadata.setTarget(fieldMapping.getSource());
-                    return autoMappingMetadata;
-                }).collect(Collectors.toMap(AutoMappingMetadata::getTarget, Function.identity(), (a, b) -> a));
 
         List<AutoMappingMetadata> fieldReverseMappingList = autoMapperMetadata.getFieldReverseMappingList();
-        if (CollectionUtils.isNotEmpty(fieldReverseMappingList)) {
-            fieldReverseMappingList.forEach(reverseMapping -> {
-                autoMappingMap.put(reverseMapping.getTarget(), reverseMapping);
-            });
+        if (CollectionUtils.isEmpty(fieldReverseMappingList)) {
+            // 默认的规则
+            Map<String, AutoMappingMetadata> autoMappingMap =
+                autoMapperMetadata.getFieldMappingList().stream()
+                    .filter(AutoMappingMetadata::getReverseConvertGenerate)
+                    .map(fieldMapping -> {
+                        final AutoMappingMetadata autoMappingMetadata = new AutoMappingMetadata();
+                        autoMappingMetadata.setSource(fieldMapping.getTarget());
+                        autoMappingMetadata.setTarget(fieldMapping.getSource());
+                        return autoMappingMetadata;
+                    }).collect(Collectors.toMap(AutoMappingMetadata::getTarget, Function.identity(), (a, b) -> a));
+            fieldReverseMappingList = new ArrayList<>(autoMappingMap.values());
         }
-        reverseMapperMetadata.setFieldMappingList(new ArrayList<>(autoMappingMap.values()));
+        reverseMapperMetadata.setFieldMappingList(fieldReverseMappingList);
         return reverseMapperMetadata;
     }
 
