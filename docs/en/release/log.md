@@ -6,6 +6,19 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.4.1
+
+- **feat**: Added the `mapperNameSuffix` attribute to the `AutoMapper` annotation. This supports adding a suffix to the generated conversion interface name, and the reverse conversion interface will be effective under the default rules.
+- **feat**: Adapted the `Mapper` annotation to support the following attributes: `unmappedSourcePolicy`, `unmappedTargetPolicy`, `typeConversionPolicy`, `collectionMappingStrategy`, `nullValueMappingStrategy`, `nullValueIterableMappingStrategy`, `nullValuePropertyMappingStrategy`, `nullValueCheckStrategy`, and `mappingControl`.
+- **feat**: Adapted the `Mapping` annotation to support the following attributes: `constant`, `qualifiedBy`, `nullValueCheckStrategy`, `nullValuePropertyMappingStrategy`, and `mappingControl`.
+- **feat**: Adapted MapStruct configuration to support the following attributes: `typeConversionPolicy`, `collectionMappingStrategy`, `nullValueIterableMappingStrategy`, `nullValueMapMappingStrategy`, `nullValueCheckStrategy`, `mappingControl`, `unexpectedValueMappingException`, and `suppressTimestampInGenerated`.
+- **fix**: Resolved the issue of class name conflicts generated in different packages within the same module.
+- **feat**: Added the `reverseConvertGenerate` attribute to the `AutoMapping` annotation to control whether to generate reverse conversion logic, adapting to more complex application scenarios.
+- **fix**: Fixed the issue of conversion rule conflicts when both parent and child classes are configured in `targetClass`.
+- **fix**: Resolved class name conflicts of configuration classes and proxy classes in different modules.
+- **feat**: Added the `useEnums` attribute to `AutoMapper`, supporting manual configuration of required enums for conversion, solving the issue of automatic conversion of enums across modules.
+- Optimized the logic for generating conversion interfaces.
+
 ### 1.4.0
 
 - **Optimize complex object conversion logic, take up less meta-space! and faster!**

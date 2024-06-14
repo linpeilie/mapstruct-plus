@@ -6,6 +6,19 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.4.1
+
+- feat: `AutoMapper` 注解增加 `mapperNameSuffix` 属性，支持配置生成的转换接口名称增加后缀，默认规则下生成的反向转换接口同时生效；
+- feat : 适配 `Mapper` 注解的 `unmappedSourcePolicy`、`unmappedTargetPolicy`、`typeConversionPolicy`、`collectionMappingStrategy`、`nullValueMappingStrategy`、`nullValueIterableMappingStrategy`、`nullValuePropertyMappingStrategy`、`nullValueCheckStrategy`、`mappingControl` 属性；
+- feat : 适配 `Mapping` 注解的 `constant`、`qualifiedBy`、`nullValueCheckStrategy`、`nullValuePropertyMappingStrategy`、`mappingControl`；
+- feat : 适配 MapStruct 配置的 `typeConversionPolicy`、`collectionMappingStrategy`、`nullValueIterableMappingStrategy`、`nullValueMapMappingStrategy`、`nullValueCheckStrategy`、`mappingControl`、`unexpectedValueMappingException`、`suppressTimestampInGenerated` 属性；
+- fix : 适配同一个模块中同类不同包生成类名冲突的问题；
+- feat : `AutoMapping` 注解增加 `reverseConvertGenerate`，控制是否生成反向转换逻辑，适配更加复杂的应用场景；
+- fix : 修复 `targetClass` 同时配置父类和子类时，转换规则冲突的问题；
+- fix : 修复不同模块配置类、代理类类名冲突的问题；
+- feat : `AutoMapper` 增加 `useEnums` 属性，支持手动配置转换时需要的枚举，解决跨模块枚举无法自动转换的问题；
+- 优化转换接口生成逻辑；
+
 ### 1.4.0
 
 - **优化复杂对象转换逻辑，占用元空间更小！性能更快！**

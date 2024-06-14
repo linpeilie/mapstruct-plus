@@ -11,8 +11,8 @@ bannerBrand:
   description: Probably the simplest and most powerful Java Bean transformation tool
   tagline: MapStructPlus is an enhancement tool of MapStruct. On the basis of MapStruct, it realizes the function of automatically generating Mapper interface, and strengthens some functions, making Java type conversion more convenient and elegant.
   buttons:
-    - { text: Quick Start, link: '/en/introduction/quick-start' }
-    - { text: 'FAQ', link: '/en/guide/faq', type: 'plain' }
+    - { text: Quick Start, link: '/en/introduction/quick-start.html' }
+    - { text: 'FAQ', link: '/en/guide/faq.html', type: 'plain' }
   socialLinks:
     - { icon: 'LogoGithub', link: 'https://github.com/vuepress-reco/vuepress-theme-reco' }
 isShowTitleInHome: true
@@ -70,6 +70,25 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 
 ## Change Log
 
+### 1.4.1
+
+Sure, here is the translated update document:
+
+---
+
+### Updates
+
+- **feat**: Added the `mapperNameSuffix` attribute to the `AutoMapper` annotation. This supports adding a suffix to the generated conversion interface name, and the reverse conversion interface will be effective under the default rules.
+- **feat**: Adapted the `Mapper` annotation to support the following attributes: `unmappedSourcePolicy`, `unmappedTargetPolicy`, `typeConversionPolicy`, `collectionMappingStrategy`, `nullValueMappingStrategy`, `nullValueIterableMappingStrategy`, `nullValuePropertyMappingStrategy`, `nullValueCheckStrategy`, and `mappingControl`.
+- **feat**: Adapted the `Mapping` annotation to support the following attributes: `constant`, `qualifiedBy`, `nullValueCheckStrategy`, `nullValuePropertyMappingStrategy`, and `mappingControl`.
+- **feat**: Adapted MapStruct configuration to support the following attributes: `typeConversionPolicy`, `collectionMappingStrategy`, `nullValueIterableMappingStrategy`, `nullValueMapMappingStrategy`, `nullValueCheckStrategy`, `mappingControl`, `unexpectedValueMappingException`, and `suppressTimestampInGenerated`.
+- **fix**: Resolved the issue of class name conflicts generated in different packages within the same module.
+- **feat**: Added the `reverseConvertGenerate` attribute to the `AutoMapping` annotation to control whether to generate reverse conversion logic, adapting to more complex application scenarios.
+- **fix**: Fixed the issue of conversion rule conflicts when both parent and child classes are configured in `targetClass`.
+- **fix**: Resolved class name conflicts of configuration classes and proxy classes in different modules.
+- **feat**: Added the `useEnums` attribute to `AutoMapper`, supporting manual configuration of required enums for conversion, solving the issue of automatic conversion of enums across modules.
+- Optimized the logic for generating conversion interfaces.
+
 ### 1.4.0
 
 - **Optimize complex object conversion logic, take up less meta-space! and faster!**
@@ -92,11 +111,6 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 - The targetClass in the AutoMapping annotation supports configuring the parent class.
 - AutoMapperConfig and AutoMapMapperConfig package and class name generated automatically by the framework support configuration.
 - Supports AutoMapping annotations configured in the parent class.
-
-### 1.3.5
-
-- `@AutoMapping`、`@ReversedAutoMapping` support is configured on top of methods.
-- `@AutoMapping`、`@ReverseAutoMapping` support the defaultExpression and conditionExpression properties
 
 ……
 
