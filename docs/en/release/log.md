@@ -6,6 +6,19 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.4.1
+
+- **feat**: Added the `mapperNameSuffix` attribute to the `AutoMapper` annotation. This supports adding a suffix to the generated conversion interface name, and the reverse conversion interface will be effective under the default rules.
+- **feat**: Adapted the `Mapper` annotation to support the following attributes: `unmappedSourcePolicy`, `unmappedTargetPolicy`, `typeConversionPolicy`, `collectionMappingStrategy`, `nullValueMappingStrategy`, `nullValueIterableMappingStrategy`, `nullValuePropertyMappingStrategy`, `nullValueCheckStrategy`, and `mappingControl`.
+- **feat**: Adapted the `Mapping` annotation to support the following attributes: `constant`, `qualifiedBy`, `nullValueCheckStrategy`, `nullValuePropertyMappingStrategy`, and `mappingControl`.
+- **feat**: Adapted MapStruct configuration to support the following attributes: `typeConversionPolicy`, `collectionMappingStrategy`, `nullValueIterableMappingStrategy`, `nullValueMapMappingStrategy`, `nullValueCheckStrategy`, `mappingControl`, `unexpectedValueMappingException`, and `suppressTimestampInGenerated`.
+- **fix**: Resolved the issue of class name conflicts generated in different packages within the same module.
+- **feat**: Added the `reverseConvertGenerate` attribute to the `AutoMapping` annotation to control whether to generate reverse conversion logic, adapting to more complex application scenarios.
+- **fix**: Fixed the issue of conversion rule conflicts when both parent and child classes are configured in `targetClass`.
+- **fix**: Resolved class name conflicts of configuration classes and proxy classes in different modules.
+- **feat**: Added the `useEnums` attribute to `AutoMapper`, supporting manual configuration of required enums for conversion, solving the issue of automatic conversion of enums across modules.
+- Optimized the logic for generating conversion interfaces.
+
 ### 1.4.0
 
 - **Optimize complex object conversion logic, take up less meta-space! and faster!**
@@ -13,6 +26,14 @@ description: MapStructPlus release log
 - The adaptation object loop nesting scenario
 - [feature#63](https://github.com/linpeilie/mapstruct-plus/pull/63) `AutoMapping`、`ReverseAutoMapping` supports `qualifiedByName`,`conditionQualifiedByName`,and `dependsOn` properties.
 - [issue#I93Z2Z](https://gitee.com/easii/mapstruct-plus/issues/I93Z2Z) `AutoMappings` supports configuration on methods.
+
+> Points to note for upgrading 1.4.0
+> - 1.4.0 and later versions, complex object comparisons reply on `ConvertMapperAdapter` generated in the project,
+    which may cause [`NoSuchMethodError`](/guide/faq.html) exceptions under multiple modules because the Class Loading mechanism
+    will load only one, of course, this problem has been around before, and the odds are probably lower,
+    so be sure to configure the `adapterPackage` to avoid this problem with multiple modules.
+> - Map to object conversions still rely on class conversions in hutool, and additional `hutool-core` dependencies need to be introduced if this
+    functionality is required.
 
 ### 1.3.6
 

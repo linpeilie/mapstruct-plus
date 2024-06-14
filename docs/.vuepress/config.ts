@@ -2,7 +2,9 @@ import { defineUserConfig } from "vuepress";
 import type { DefaultThemeOptions } from "vuepress";
 import recoTheme from "vuepress-theme-reco";
 import { themeConfig } from './config/index'
-import { umamiAnalyticsPlugin } from 'vuepress-plugin-umami-analytics'
+import { sitemapPlugin } from '@vuepress/plugin-sitemap'
+import { webpackBundler } from '@vuepress/bundler-webpack'
+import { viteBundler } from '@vuepress/bundler-vite'
 
 export default defineUserConfig({
   locales: {
@@ -37,9 +39,9 @@ export default defineUserConfig({
     }
   },
   plugins: [
-    umamiAnalyticsPlugin({
-        id: '50be7a94-e1d7-4d49-a8db-67b17acaa0b3',
-        src: 'https://114.115.147.1/script.js'
-    })
-  ]
+    sitemapPlugin({
+        hostname: 'mapstruct.plus'
+    }),
+  ],
+  bundler: webpackBundler(),
 });

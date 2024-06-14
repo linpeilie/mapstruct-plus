@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @AutoMappers({
     @AutoMapper(target = Goods.class),
-    @AutoMapper(target = GoodsVo.class)
+//    @AutoMapper(target = GoodsVo.class)
 })
 public class GoodsDto extends BaseDTO {
 

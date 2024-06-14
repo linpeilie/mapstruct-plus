@@ -11,7 +11,7 @@ import com.squareup.javapoet.TypeSpec;
 import io.github.linpeilie.processor.metadata.AbstractAdapterMethodMetadata;
 import io.github.linpeilie.processor.metadata.AdapterMapMethodMetadata;
 import io.github.linpeilie.processor.metadata.AdapterMethodMetadata;
-import io.github.linpeilie.processor.utils.ClassUtil;
+import io.github.linpeilie.utils.ClassUtil;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;

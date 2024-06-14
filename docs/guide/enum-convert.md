@@ -6,6 +6,8 @@ category:
 description: MapStructPlus Map转为对象 map convert to class
 ---
 
+## 枚举自动转换
+
 > 当前特性从 1.2.2 开始支持
 
 当需要进行枚举转换时（例如枚举转换为编码值，或者由编码转换为枚举），可以在目标枚举添加 `@AutoEnumMapper` 注解，
@@ -73,3 +75,12 @@ public void enumMapTest() {
 }
 ```
 
+## 跨模块支持
+
+当枚举与要使用的类型，不在同一个模块（module）中时，并不能自动转换，需要指定依赖关系。
+
+在 `AutoMapper` 注解中，可以通过属性 `useEnums` 来指定，当前转换关系，需要依赖的枚举类列表。这些枚举需要被 `AutoEnumMapper`注解。 
+
+> 该特性从 1.4.1 开始支持
+
+需要注意的是，当两个类在同一个模块（module）中，无需指定，可以自动转换。当前特性主要解决跨模块之间不能自动转换的问题。

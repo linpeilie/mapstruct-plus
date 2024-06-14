@@ -10,7 +10,7 @@ import lombok.Data;
 @AutoMapper(target = FrenchRelease.class, uses = Titles.class)
 public class EnglishRelease {
 
-    @AutoMapping(qualifiedByName = "EnglishToFrench")
+    @AutoMapping(qualifiedByName = "EnglishToFrench", defaultValue = "DefaultTitle")
     @ReverseAutoMapping(qualifiedByName = "FrenchToEnglish")
     private String title;
 
