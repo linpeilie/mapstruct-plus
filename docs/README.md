@@ -11,8 +11,8 @@ bannerBrand:
   description: 可能是最简单最强大的Java Bean转换工具
   tagline: Mapstruct Plus 是 Mapstruct 的增强工具，在 Mapstruct 的基础上，实现了自动生成 Mapper 接口的功能，并强化了部分功能，使 Java 类型转换更加便捷、优雅。
   buttons:
-    - { text: 快速开始, link: '/introduction/quick-start' }
-    - { text: '常见问题', link: '/guide/faq', type: 'plain' }
+    - { text: 快速开始, link: '/introduction/quick-start.html' }
+    - { text: '常见问题', link: '/guide/faq.html', type: 'plain' }
   socialLinks:
     - { icon: 'LogoGithub', link: 'https://github.com/vuepress-reco/vuepress-theme-reco' }
 isShowTitleInHome: true
@@ -62,17 +62,30 @@ footer:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.0'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.1'
 ```
 
 ## 更新日志
+
+### 1.4.1
+
+- feat: `AutoMapper` 注解增加 `mapperNameSuffix` 属性，支持配置生成的转换接口名称增加后缀，默认规则下生成的反向转换接口同时生效；
+- feat : 适配 `Mapper` 注解的 `unmappedSourcePolicy`、`unmappedTargetPolicy`、`typeConversionPolicy`、`collectionMappingStrategy`、`nullValueMappingStrategy`、`nullValueIterableMappingStrategy`、`nullValuePropertyMappingStrategy`、`nullValueCheckStrategy`、`mappingControl` 属性；
+- feat : 适配 `Mapping` 注解的 `constant`、`qualifiedBy`、`nullValueCheckStrategy`、`nullValuePropertyMappingStrategy`、`mappingControl`；
+- feat : 适配 MapStruct 配置的 `typeConversionPolicy`、`collectionMappingStrategy`、`nullValueIterableMappingStrategy`、`nullValueMapMappingStrategy`、`nullValueCheckStrategy`、`mappingControl`、`unexpectedValueMappingException`、`suppressTimestampInGenerated` 属性；
+- fix : 适配同一个模块中同类不同包生成类名冲突的问题；
+- feat : `AutoMapping` 注解增加 `reverseConvertGenerate`，控制是否生成反向转换逻辑，适配更加复杂的应用场景；
+- fix : 修复 `targetClass` 同时配置父类和子类时，转换规则冲突的问题；
+- fix : 修复不同模块配置类、代理类类名冲突的问题；
+- feat : `AutoMapper` 增加 `useEnums` 属性，支持手动配置转换时需要的枚举，解决跨模块枚举无法自动转换的问题；
+- 优化转换接口生成逻辑；
 
 ### 1.4.0
 
@@ -94,12 +107,6 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 - feature : AutoMapping 注解中的 targetClass 支持配置父类
 - [issue#I8QPRO](https://gitee.com/easii/mapstruct-plus/issues/I8QPRO) : 框架自动生成的 AutoMapperConfig 和 AutoMapMapper 包和类名支持配置
 - [issue#I8T7EF](https://gitee.com/easii/mapstruct-plus/issues/I8T7EF) : 支持在父类中配置的 AutoMapping 注解
-
-
-### 1.3.5
-
-- AutoMapping、ReverseAutoMapping 支持配置在方法上面；
-- AutoMapping、ReverseAutoMapping 支持 defaultExpression 和 conditionExpression 属性
 
 ……
 

@@ -1,34 +1,50 @@
 package io.github.linpeilie.processor.metadata;
 
 import com.squareup.javapoet.ClassName;
+import io.github.linpeilie.processor.ContextConstants;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AutoMappingMetadata {
 
     private ClassName targetClass;
 
-    private String target = "";
+    private boolean reverseConvertGenerate;
 
-    private String source = "";
+    private String target;
 
-    private String dateFormat = "";
+    private String source;
 
-    private String numberFormat = "";
+    private String dateFormat;
 
-    private String expression = "";
+    private String numberFormat;
 
-    private String defaultExpression = "";
+    private String expression;
 
-    private String conditionExpression = "";
+    private String defaultExpression;
 
-    private boolean ignore = false;
+    private String conditionExpression;
 
-    private String defaultValue = "";
+    private Boolean ignore;
 
-    String[] qualifiedByName = {};
+    private String defaultValue;
 
-    String[] conditionQualifiedByName = {};
+    private List<String> qualifiedByName;
 
-    String[] dependsOn = {};
+    private List<String> conditionQualifiedByName;
+
+    private List<String> dependsOn;
+
+    private String constant;
+
+    private List<ClassName> qualifiedBy;
+
+    private String nullValueCheckStrategy;
+
+    private String nullValuePropertyMappingStrategy;
+
+    private ClassName mappingControl;
+    /*********** getter/setter ************/
 
     public ClassName getTargetClass() {
         return targetClass;
@@ -36,6 +52,14 @@ public class AutoMappingMetadata {
 
     public void setTargetClass(final ClassName targetClass) {
         this.targetClass = targetClass;
+    }
+
+    public boolean getReverseConvertGenerate() {
+        return reverseConvertGenerate;
+    }
+
+    public void setReverseConvertGenerate(boolean reverseConvertGenerate) {
+        this.reverseConvertGenerate = reverseConvertGenerate;
     }
 
     public String getTarget() {
@@ -78,11 +102,7 @@ public class AutoMappingMetadata {
         this.expression = expression;
     }
 
-    public boolean isIgnore() {
-        return ignore;
-    }
-
-    public void setIgnore(final boolean ignore) {
+    public void setIgnore(final Boolean ignore) {
         this.ignore = ignore;
     }
 
@@ -110,27 +130,71 @@ public class AutoMappingMetadata {
         this.conditionExpression = conditionExpression;
     }
 
-    public String[] getQualifiedByName() {
+    public String getConstant() {
+        return constant;
+    }
+
+    public void setConstant(String constant) {
+        this.constant = constant;
+    }
+
+    public List<ClassName> getQualifiedBy() {
+        return qualifiedBy;
+    }
+
+    public void setQualifiedBy(List<ClassName> qualifiedBy) {
+        this.qualifiedBy = qualifiedBy;
+    }
+
+    public Boolean getIgnore() {
+        return ignore;
+    }
+
+    public List<String> getQualifiedByName() {
         return qualifiedByName;
     }
 
-    public void setQualifiedByName(String[] qualifiedByName) {
+    public void setQualifiedByName(List<String> qualifiedByName) {
         this.qualifiedByName = qualifiedByName;
     }
 
-    public String[] getConditionQualifiedByName() {
+    public List<String> getConditionQualifiedByName() {
         return conditionQualifiedByName;
     }
 
-    public void setConditionQualifiedByName(String[] conditionQualifiedByName) {
+    public void setConditionQualifiedByName(List<String> conditionQualifiedByName) {
         this.conditionQualifiedByName = conditionQualifiedByName;
     }
 
-    public String[] getDependsOn() {
+    public List<String> getDependsOn() {
         return dependsOn;
     }
 
-    public void setDependsOn(String[] dependsOn) {
+    public void setDependsOn(List<String> dependsOn) {
         this.dependsOn = dependsOn;
+    }
+
+    public String getNullValueCheckStrategy() {
+        return nullValueCheckStrategy;
+    }
+
+    public void setNullValueCheckStrategy(String nullValueCheckStrategy) {
+        this.nullValueCheckStrategy = nullValueCheckStrategy;
+    }
+
+    public String getNullValuePropertyMappingStrategy() {
+        return nullValuePropertyMappingStrategy;
+    }
+
+    public void setNullValuePropertyMappingStrategy(String nullValuePropertyMappingStrategy) {
+        this.nullValuePropertyMappingStrategy = nullValuePropertyMappingStrategy;
+    }
+
+    public ClassName getMappingControl() {
+        return mappingControl;
+    }
+
+    public void setMappingControl(ClassName mappingControl) {
+        this.mappingControl = mappingControl;
     }
 }

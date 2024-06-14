@@ -31,6 +31,10 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.mapstruct.tools.gem</groupId>
+            <artifactId>gem-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -43,7 +47,13 @@
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
                     <encoding>UTF-8</encoding>
-                    <proc>none</proc>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.mapstruct.tools.gem</groupId>
+                            <artifactId>gem-processor</artifactId>
+                            <version>${gem.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
         </plugins>

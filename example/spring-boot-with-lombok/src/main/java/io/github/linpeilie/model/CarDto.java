@@ -10,5 +10,6 @@ public class CarDto {
     private String type;
     private List<WheelDto> wheels;
     private TyreDTO tyre;
+    private String seatMaterial;
 
 }

@@ -1,7 +1,7 @@
 package io.github.linpeilie.processor.metadata;
 
-import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
+import io.github.linpeilie.processor.utils.MapperUtils;
 
 public class AutoEnumMapperMetadata extends AbstractMapperMetadata {
 
@@ -27,7 +27,7 @@ public class AutoEnumMapperMetadata extends AbstractMapperMetadata {
 
     @Override
     public String mapperName() {
-        return sourceClassName.simpleName() + "Mapper";
+        return MapperUtils.getEnumMapperClassName(sourceClassName.simpleName());
     }
 
     public String toEnumMethodName() {

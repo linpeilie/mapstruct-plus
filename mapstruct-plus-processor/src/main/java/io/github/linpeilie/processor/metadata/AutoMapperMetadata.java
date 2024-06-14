@@ -1,13 +1,29 @@
 package io.github.linpeilie.processor.metadata;
 
 import com.squareup.javapoet.ClassName;
+import io.github.linpeilie.processor.utils.MapperUtils;
+import io.github.linpeilie.utils.StrUtil;
 import java.util.List;
+import org.mapstruct.NullValueMappingStrategy;
+import org.mapstruct.SubclassExhaustiveStrategy;
 
 public class AutoMapperMetadata extends AbstractMapperMetadata {
+
+    public AutoMapperMetadata(ClassName sourceClassName, ClassName targetClassName) {
+        this.sourceClassName = sourceClassName;
+        this.targetClassName = targetClassName;
+        this.mapperName = MapperUtils.getMapperClassName(sourceClassName.reflectionName(), targetClassName.reflectionName());
+    }
+
+    private String mapperName;
+
+    private String mapperNameSuffix;
 
     private ClassName targetClassName;
 
     private List<ClassName> usesClassNameList;
+
+    private List<ClassName> useEnumClassNameList;
 
     private List<ClassName> importsClassNameList;
 
@@ -27,8 +43,52 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
 
     private boolean cycleAvoiding;
 
+    private String unmappedSourcePolicy;
+
+    private String unmappedTargetPolicy;
+
+    private String typeConversionPolicy;
+
+    private String collectionMappingStrategy;
+
+    private String nullValueMappingStrategy;
+
+    private String nullValueIterableMappingStrategy;
+
+    private NullValueMappingStrategy nullValueMapMappingStrategy;
+
+    private String nullValuePropertyMappingStrategy;
+
+    private String nullValueCheckStrategy;
+
+    private SubclassExhaustiveStrategy subclassExhaustiveStrategy;
+
+    private ClassName mappingControl;
+
+    public String qualifiedMapperName() {
+        return mapperPackage() + "." + mapperName();
+    }
+
+    /*************** getter/setter ***************/
+
     public String mapperName() {
-        return sourceClassName.simpleName() + "To" + targetClassName.simpleName() + "Mapper";
+        return StrUtil.isNotEmpty(this.mapperNameSuffix) ? this.mapperName + this.mapperNameSuffix : this.mapperName;
+    }
+
+    public void setMapperName(String mapperName) {
+        this.mapperName = mapperName;
+    }
+
+    public String getMapperName() {
+        return mapperName;
+    }
+
+    public String getMapperNameSuffix() {
+        return mapperNameSuffix;
+    }
+
+    public void setMapperNameSuffix(String mapperNameSuffix) {
+        this.mapperNameSuffix = mapperNameSuffix;
     }
 
     public ClassName getTargetClassName() {
@@ -47,6 +107,14 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
     public AutoMapperMetadata setUsesClassNameList(final List<ClassName> usesClassNameList) {
         this.usesClassNameList = usesClassNameList;
         return this;
+    }
+
+    public List<ClassName> getUseEnumClassNameList() {
+        return useEnumClassNameList;
+    }
+
+    public void setUseEnumClassNameList(List<ClassName> useEnumClassNameList) {
+        this.useEnumClassNameList = useEnumClassNameList;
     }
 
     public List<ClassName> getImportsClassNameList() {
@@ -120,5 +188,93 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
 
     public void setCycleAvoiding(boolean cycleAvoiding) {
         this.cycleAvoiding = cycleAvoiding;
+    }
+
+    public String getUnmappedSourcePolicy() {
+        return unmappedSourcePolicy;
+    }
+
+    public void setUnmappedSourcePolicy(String unmappedSourcePolicy) {
+        this.unmappedSourcePolicy = unmappedSourcePolicy;
+    }
+
+    public String getUnmappedTargetPolicy() {
+        return unmappedTargetPolicy;
+    }
+
+    public void setUnmappedTargetPolicy(String unmappedTargetPolicy) {
+        this.unmappedTargetPolicy = unmappedTargetPolicy;
+    }
+
+    public String getTypeConversionPolicy() {
+        return typeConversionPolicy;
+    }
+
+    public void setTypeConversionPolicy(String typeConversionPolicy) {
+        this.typeConversionPolicy = typeConversionPolicy;
+    }
+
+    public String getCollectionMappingStrategy() {
+        return collectionMappingStrategy;
+    }
+
+    public void setCollectionMappingStrategy(String collectionMappingStrategy) {
+        this.collectionMappingStrategy = collectionMappingStrategy;
+    }
+
+    public String getNullValueMappingStrategy() {
+        return nullValueMappingStrategy;
+    }
+
+    public void setNullValueMappingStrategy(String nullValueMappingStrategy) {
+        this.nullValueMappingStrategy = nullValueMappingStrategy;
+    }
+
+    public String getNullValueIterableMappingStrategy() {
+        return nullValueIterableMappingStrategy;
+    }
+
+    public void setNullValueIterableMappingStrategy(String nullValueIterableMappingStrategy) {
+        this.nullValueIterableMappingStrategy = nullValueIterableMappingStrategy;
+    }
+
+    public NullValueMappingStrategy getNullValueMapMappingStrategy() {
+        return nullValueMapMappingStrategy;
+    }
+
+    public void setNullValueMapMappingStrategy(NullValueMappingStrategy nullValueMapMappingStrategy) {
+        this.nullValueMapMappingStrategy = nullValueMapMappingStrategy;
+    }
+
+    public String getNullValuePropertyMappingStrategy() {
+        return nullValuePropertyMappingStrategy;
+    }
+
+    public void setNullValuePropertyMappingStrategy(String nullValuePropertyMappingStrategy) {
+        this.nullValuePropertyMappingStrategy = nullValuePropertyMappingStrategy;
+    }
+
+    public String getNullValueCheckStrategy() {
+        return nullValueCheckStrategy;
+    }
+
+    public void setNullValueCheckStrategy(String nullValueCheckStrategy) {
+        this.nullValueCheckStrategy = nullValueCheckStrategy;
+    }
+
+    public SubclassExhaustiveStrategy getSubclassExhaustiveStrategy() {
+        return subclassExhaustiveStrategy;
+    }
+
+    public void setSubclassExhaustiveStrategy(SubclassExhaustiveStrategy subclassExhaustiveStrategy) {
+        this.subclassExhaustiveStrategy = subclassExhaustiveStrategy;
+    }
+
+    public ClassName getMappingControl() {
+        return mappingControl;
+    }
+
+    public void setMappingControl(ClassName mappingControl) {
+        this.mappingControl = mappingControl;
     }
 }

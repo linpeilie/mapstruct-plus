@@ -2,6 +2,7 @@ package io.github.linpeilie.processor.metadata;
 
 import com.squareup.javapoet.ClassName;
 import io.github.linpeilie.processor.AutoMapperProperties;
+import io.github.linpeilie.processor.utils.MapperUtils;
 import io.github.linpeilie.utils.StrUtil;
 
 public abstract class AbstractMapperMetadata {
@@ -9,8 +10,7 @@ public abstract class AbstractMapperMetadata {
     protected ClassName sourceClassName;
 
     public String mapperPackage() {
-        return StrUtil.isNotEmpty(AutoMapperProperties.getMapperPackage())
-               ? AutoMapperProperties.getMapperPackage() : sourceClassName.packageName();
+        return MapperUtils.getMapperPackage(sourceClassName.packageName());
     }
 
     public abstract String mapperName();
