@@ -70,7 +70,7 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 
 ## Change Log
 
-### 1.4.1
+### 1.4.2
 
 Sure, here is the translated update document:
 

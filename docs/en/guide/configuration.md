@@ -194,7 +194,7 @@ eg:
 
 ### typeConversionPolicy
 
-> since `1.4.1`
+> since `1.4.2`
 
 - **Description**：How lossy (narrowing) conversion, for instance: long to integer should be reported.
 - **Type**：`ReportingPolicy`
@@ -207,7 +207,7 @@ eg:
 
 ### collectionMappingStrategy
 
-> since `1.4.1`
+> since `1.4.2`
 
 - **Description**：The strategy to be applied when propagating the value of collection-typed properties. By default, only JavaBeans accessor methods (setters or getters) will be used, but it is also possible to invoke a corresponding adder method for each element of the source collection (e. g. orderDto.
 - **Type**：`CollectionMappingStrategy`
@@ -221,7 +221,7 @@ eg:
 
 ### nullValueIterableMappingStrategy
 
-> since `1.4.1`
+> since `1.4.2`
 
 - **Description**：The strategy to be applied when null is passed as source argument value to an IterableMapping. If no strategy is configured, the strategy given via `nullValueMappingStrategy()` will be applied, using `NullValueMappingStrategy`.`RETURN_NULL` by default.
 - **Type**：`NullValueMappingStrategy`
@@ -233,7 +233,7 @@ eg:
 
 ### nullValueMapMappingStrategy
 
-> since `1.4.1`
+> since `1.4.2`
 
 - **Description**：he strategy to be applied when null is passed as source argument value to a MapMapping. If no strategy is configured, the strategy given via `nullValueMappingStrategy()` will be applied, using `NullValueMappingStrategy`.`RETURN_NULL` by default.
 - **Type**：`NullValueMappingStrategy`
@@ -245,7 +245,7 @@ eg:
 
 ### nullValueCheckStrategy
 
-> since `1.4.1`
+> since `1.4.2`
 
 - **Description**：Determines when to include a null check on the source property value of a bean mapping.
 - **Type**：`NullValueCheckStrategy`
@@ -257,7 +257,7 @@ eg:
 
 ### mappingControl
 
-> since `1.4.1`
+> since `1.4.2`
 
 - **Description**：Allows detailed control over the mapping process.
 - **Type**：`Class`
@@ -265,7 +265,7 @@ eg:
 
 ### unexpectedValueMappingException
 
-> since `1.4.1`
+> since `1.4.2`
 
 - **Description**：Exception that should be thrown by the generated code if no mapping matches for enums. If no exception is configured, IllegalArgumentException will be used by default.
 - **Type**：`Class`
@@ -273,7 +273,7 @@ eg:
 
 ### suppressTimestampInGenerated
 
-> since `1.4.1`
+> since `1.4.2`
 
 - **Description**：Flag indicating whether the addition of a time stamp in the @Generated annotation should be suppressed. i. e. not be added. The method overrides the flag set through an annotation processor option.
 - **Type**：`boolean`

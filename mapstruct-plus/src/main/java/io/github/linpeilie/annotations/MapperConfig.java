@@ -53,7 +53,7 @@ public @interface MapperConfig {
      * How lossy (narrowing) conversion, for instance: long to integer should be
      * reported.
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @return The reporting policy for type conversion.
      */
@@ -64,7 +64,7 @@ public @interface MapperConfig {
      * accessor methods (setters or getters) will be used, but it is also possible to invoke a corresponding adder
      * method for each element of the source collection (e.g. {@code orderDto.addOrderLine()}).
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @return The strategy applied when propagating the value of collection-typed properties.
      */
@@ -81,7 +81,7 @@ public @interface MapperConfig {
      * If no strategy is configured, the strategy given via {@link #nullValueMappingStrategy()} will be applied, using
      * {@link NullValueMappingStrategy#RETURN_NULL} by default.
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @return The strategy to be applied when {@code null} is passed as source value to an {@link IterableMapping}.
      */
@@ -92,7 +92,7 @@ public @interface MapperConfig {
      * If no strategy is configured, the strategy given via {@link #nullValueMappingStrategy()} will be applied, using
      * {@link NullValueMappingStrategy#RETURN_NULL} by default.
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @return The strategy to be applied when {@code null} is passed as source value to a {@link MapMapping}.
      */
@@ -109,7 +109,7 @@ public @interface MapperConfig {
      *
      * Can be overridden by the one on {@link Mapper}, {@link BeanMapping} or {@link Mapping}.
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @return strategy how to do null checking
      */
@@ -120,7 +120,7 @@ public @interface MapperConfig {
      *
      * @return the mapping control
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @see org.mapstruct.control.DeepClone
      * @see org.mapstruct.control.NoComplexMapping
@@ -144,7 +144,7 @@ public @interface MapperConfig {
      *     </li>
      * </ul>
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @return the exception that should be used in the generated code
      */
@@ -156,7 +156,7 @@ public @interface MapperConfig {
      *
      * The method overrides the flag set through an annotation processor option.
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @return whether the addition of a timestamp should be suppressed
      */
