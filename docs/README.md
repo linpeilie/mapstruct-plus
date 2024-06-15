@@ -62,19 +62,19 @@ footer:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.1'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.2'
 ```
 
 ## 更新日志
 
-### 1.4.1
+### 1.4.2
 
 - feat: `AutoMapper` 注解增加 `mapperNameSuffix` 属性，支持配置生成的转换接口名称增加后缀，默认规则下生成的反向转换接口同时生效；
 - feat : 适配 `Mapper` 注解的 `unmappedSourcePolicy`、`unmappedTargetPolicy`、`typeConversionPolicy`、`collectionMappingStrategy`、`nullValueMappingStrategy`、`nullValueIterableMappingStrategy`、`nullValuePropertyMappingStrategy`、`nullValueCheckStrategy`、`mappingControl` 属性；
@@ -132,6 +132,7 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 
 - [RuoYi-Vue-Plus](https://gitee.com/JavaLionLi/RuoYi-Vue-Plus/wikis/pages)
 - [RuoYi-Cloud-Plus](https://gitee.com/JavaLionLi/RuoYi-Cloud-Plus/wikis/pages)
+- [Stream-Query](http://stream-query.dromara.org/)：允许完全摆脱Mapper的mybatis-plus🌽体验！可以使用类似“工具类”🔧这样的静态函数进行数据库操作
 
 ## 联系我
 

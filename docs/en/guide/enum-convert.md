@@ -81,7 +81,7 @@ When enums and the types they are used with are not in the same module, they can
 
 In the `AutoMapper` annotation, you can specify the enum class list needed for the current conversion relationship through the `useEnums` attribute. These enums need to be annotated with `AutoEnumMapper`.
 
-> This feature is supported starting from version 1.4.1.
+> This feature is supported starting from version 1.4.2.
 
 It is important to note that when two classes are in the same module, specification is not required, and they can be automatically converted. This feature mainly addresses the issue of inability to automatically convert between different modules.
 

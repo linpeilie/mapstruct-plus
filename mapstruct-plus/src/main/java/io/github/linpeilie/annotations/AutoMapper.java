@@ -75,7 +75,7 @@ public @interface AutoMapper {
      * reported. The method overrides an unmappedSourcePolicy set in a central
      * configuration
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @return The reporting policy for unmapped source properties.
      */
@@ -86,7 +86,7 @@ public @interface AutoMapper {
      * reported. The method overrides an unmappedTargetPolicy set in a central
      * configuration
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @return The reporting policy for unmapped target properties.
      */
@@ -97,7 +97,7 @@ public @interface AutoMapper {
      * reported. The method overrides an typeConversionPolicy set in a central
      * configuration
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @return The reporting policy for unmapped target properties.
      */
@@ -111,7 +111,7 @@ public @interface AutoMapper {
      * Any setting given for this attribute will take precedence over {@link org.mapstruct.MapperConfig#collectionMappingStrategy()},
      * if present.
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @return The strategy applied when propagating the value of collection-typed properties.
      */
@@ -122,7 +122,7 @@ public @interface AutoMapper {
      * If no strategy is configured, the strategy given via {@link MapperConfig#nullValueMappingStrategy()} will be
      * applied, using {@link NullValueMappingStrategy#RETURN_NULL} by default.
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @return The strategy to be applied when {@code null} is passed as source value to the methods of this mapper.
      */
@@ -134,7 +134,7 @@ public @interface AutoMapper {
      * strategy is configured, the strategy given via {@link MapperConfig#nullValueIterableMappingStrategy()} will be
      * applied, using {@link NullValueMappingStrategy#RETURN_NULL} by default.
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @return The strategy to be applied when {@code null} is passed as source value to an {@link IterableMapping} of
      * this mapper.
@@ -147,7 +147,7 @@ public @interface AutoMapper {
      * configured, the strategy given via {@link MapperConfig#nullValuePropertyMappingStrategy()} will be applied,
      * {@link NullValuePropertyMappingStrategy#SET_TO_NULL} will be used by default.
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @return The strategy to be applied when {@code null} is passed as source property value or the source property
      * is not present.
@@ -160,7 +160,7 @@ public @interface AutoMapper {
      *
      * Can be overridden by the one on {@link MapperConfig}, {@link BeanMapping}  or {@link Mapping}.
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @return strategy how to do null checking
      */
@@ -171,7 +171,7 @@ public @interface AutoMapper {
      *
      * @return the mapping control
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @see org.mapstruct.control.DeepClone
      * @see org.mapstruct.control.NoComplexMapping
