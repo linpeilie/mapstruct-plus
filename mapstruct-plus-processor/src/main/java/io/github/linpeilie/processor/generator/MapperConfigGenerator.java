@@ -96,7 +96,7 @@ public class MapperConfigGenerator {
         // nullValueIterableMappingStrategy
         if (AutoMapperProperties.getNullValueIterableMappingStrategy() != null) {
             CodeBlock nullValueIterableMappingStrategyCodeBlock = CodeBlock.builder().add("$T.$L",
-                    ClassName.get("org.mapstruct", "NullValueIterableMappingStrategy"),
+                    ClassName.get("org.mapstruct", "NullValueMappingStrategy"),
                     AutoMapperProperties.getNullValueIterableMappingStrategy()).build();
             builder.addMember("nullValueIterableMappingStrategy", nullValueIterableMappingStrategyCodeBlock);
         }
@@ -104,7 +104,7 @@ public class MapperConfigGenerator {
         // nullValueMapMappingStrategy
         if (AutoMapperProperties.getNullValueMapMappingStrategy() != null) {
             CodeBlock nullValueMapMappingStrategyCodeBlock = CodeBlock.builder().add("$T.$L",
-                    ClassName.get("org.mapstruct", "NullValueMapMappingStrategy"),
+                    ClassName.get("org.mapstruct", "NullValueMappingStrategy"),
                     AutoMapperProperties.getNullValueMapMappingStrategy()).build();
             builder.addMember("nullValueMapMappingStrategy", nullValueMapMappingStrategyCodeBlock);
         }

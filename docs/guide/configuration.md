@@ -191,7 +191,7 @@ public class MapStructPlusConfiguration {
 
 ### typeConversionPolicy
 
-> since `1.4.1`
+> since `1.4.2`
 
 - **说明**：有损转换的处理策略，例如：long 转换为 int
 - **类型**：`ReportingPolicy`
@@ -204,7 +204,7 @@ public class MapStructPlusConfiguration {
 
 ### collectionMappingStrategy
 
-> since `1.4.1`
+> since `1.4.2`
 
 - **说明**：转换列表集合属性时的策略。
 - **类型**：`CollectionMappingStrategy`
@@ -218,7 +218,7 @@ public class MapStructPlusConfiguration {
 
 ### nullValueIterableMappingStrategy
 
-> since `1.4.1`
+> since `1.4.2`
 
 - **说明**：当将 `null` 作为源参数值传递给 `IterableMapping` 时要应用的策略。如果未配置策略，则将应用通过 `nullValueMappingStrategy()` 给出的策略。
 - **类型**：`NullValueMappingStrategy`
@@ -230,7 +230,7 @@ public class MapStructPlusConfiguration {
 
 ### nullValueMapMappingStrategy
 
-> since `1.4.1`
+> since `1.4.2`
 
 - **说明**：当将 `null` 作为源参数值传递给 `MapMapping` 时要应用的策略。如果未配置策略，则将应用通过 `nullValueMappingStrategy()` 给出的策略。
 - **类型**：`NullValueMappingStrategy`
@@ -242,7 +242,7 @@ public class MapStructPlusConfiguration {
 
 ### nullValueCheckStrategy
 
-> since `1.4.1`
+> since `1.4.2`
 
 - **说明**：确定何时对 bean 映射的源属性值进行 null 检查。
 - **类型**：`NullValueCheckStrategy`
@@ -254,7 +254,7 @@ public class MapStructPlusConfiguration {
 
 ### mappingControl
 
-> since `1.4.1`
+> since `1.4.2`
 
 - **说明**：允许对映射过程进行详细控制。
 - **类型**：`Class`
@@ -262,7 +262,7 @@ public class MapStructPlusConfiguration {
 
 ### unexpectedValueMappingException
 
-> since `1.4.1`
+> since `1.4.2`
 
 - **说明**：如果枚举没有匹配的映射，则生成的代码应抛出异常。如果没有配置异常，则默认使用 IllegalArgumentException 。
 - **类型**：`Class`
@@ -270,7 +270,7 @@ public class MapStructPlusConfiguration {
 
 ### suppressTimestampInGenerated
 
-> since `1.4.1`
+> since `1.4.2`
 
 - **说明**：标识是否应在 `@Generated` 注释中添加时间戳
 - **类型**：`boolean`

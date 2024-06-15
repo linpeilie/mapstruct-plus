@@ -82,7 +82,7 @@ public @interface ReverseAutoMapping {
      * Note that {@link #defaultValue()} usage will also be converted using this qualifier.
      * <p>
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @return the qualifiers
      * @see Qualifier
@@ -147,7 +147,7 @@ public @interface ReverseAutoMapping {
      *
      * Can be overridden by the one on {@link org.mapstruct.MapperConfig}, {@link Mapper} or {@link BeanMapping}.
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @return strategy how to do null checking
      */
@@ -161,7 +161,7 @@ public @interface ReverseAutoMapping {
      *
      * {@link NullValuePropertyMappingStrategy#SET_TO_NULL} will be used by default.
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @return The strategy to be applied when {@code null} is passed as source property value or the source property
      * is not present.
@@ -174,7 +174,7 @@ public @interface ReverseAutoMapping {
      *
      * @return the mapping control
      *
-     * @since 1.4.1
+     * @since 1.4.2
      *
      * @see org.mapstruct.control.DeepClone
      * @see org.mapstruct.control.NoComplexMapping
