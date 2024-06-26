@@ -180,6 +180,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         // 根据配置生成适配类生成器
         switch (AutoMapperProperties.getComponentModel()) {
             case MappingConstants.ComponentModel.SPRING:
+            case ContextConstants.ComponentModelConfig.springLazy:
                 this.adapterMapperGenerator = new SpringAdapterMapperGenerator();
                 break;
             case ComponentModelConstant.SOLON:
