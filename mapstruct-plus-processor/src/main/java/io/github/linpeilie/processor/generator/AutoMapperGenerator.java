@@ -32,22 +32,9 @@ public class AutoMapperGenerator {
 
     public static final String CONVERT_METHOD_NAME = "convert";
 
-    private static final Map<String, Integer> AUTO_MAPPER_INDEX = new HashMap<>();
-
     public void write(AutoMapperMetadata metadata, ProcessingEnvironment processingEnv) {
         String mapperPackage = metadata.mapperPackage();
-
-        /*
-            当前处理方式，本地使用 IDEA 开发时，当修改 Source/Target 类时，可能还会出现类名冲突的问题，
-            当出现该问题时，需要执行 clean 把之前构建的类清掉。
-         */
         String mapperName = metadata.mapperName();
-        // 同名类时，增加后缀
-        Integer index = AUTO_MAPPER_INDEX.getOrDefault(mapperName, 0);
-        if (index > 0) {
-            mapperName = mapperName + "__" + index;
-        }
-        AUTO_MAPPER_INDEX.put(metadata.mapperName(), ++index);
 
         try (final Writer writer = processingEnv.getFiler()
             .createSourceFile(mapperPackage + "." + mapperName)

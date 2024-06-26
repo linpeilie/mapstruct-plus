@@ -117,6 +117,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
 
     private final Set<String> mapperSet = new HashSet<>();
 
+    private static final Map<String, Integer> AUTO_MAPPER_INDEX = new HashMap<>();
+
     private Messager messager;
 
     public AutoMapperProcessor() {
@@ -517,10 +519,21 @@ public class AutoMapperProcessor extends AbstractProcessor {
 
         mapperList.addAll(reverseMapperMetadataList);
 
+        mapperList.removeIf(metadata -> !metadata.isConvertGenerate());
+
+        // 兼容同模块下，同名不同包的场景
         mapperList.forEach(metadata -> {
-            if (!metadata.isConvertGenerate()) {
-                return;
+            String mapperName = metadata.mapperName();
+            // 同名类时，增加后缀
+            Integer index = AUTO_MAPPER_INDEX.getOrDefault(mapperName, 0);
+            if (index > 0) {
+                mapperName = mapperName + "__" + index;
             }
+            AUTO_MAPPER_INDEX.put(metadata.mapperName(), ++index);
+            metadata.setMapperName(mapperName);
+        });
+
+        mapperList.forEach(metadata -> {
             this.writeAutoMapperClassFile(metadata);
             addAdapterMethod(metadata);
         });
