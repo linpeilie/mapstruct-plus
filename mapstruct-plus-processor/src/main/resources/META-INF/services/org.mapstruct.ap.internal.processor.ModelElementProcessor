@@ -11,5 +11,5 @@ org.mapstruct.ap.internal.processor.MapperRenderingProcessor
 org.mapstruct.ap.internal.processor.MethodRetrievalProcessor
 org.mapstruct.ap.internal.processor.SpringComponentProcessor
 org.mapstruct.ap.internal.processor.MapperServiceProcessor
-io.github.linpeilie.processor.solon.SolonComponentProcessor
+io.github.linpeilie.processor.enhance.processor.SolonComponentProcessor
 io.github.linpeilie.processor.enhance.processor.SpringComponentProcessor
