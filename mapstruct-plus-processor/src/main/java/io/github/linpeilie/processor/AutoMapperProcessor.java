@@ -178,17 +178,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         refreshProperties(annotations, roundEnv);
 
         // 根据配置生成适配类生成器
-        switch (AutoMapperProperties.getComponentModel()) {
-            case MappingConstants.ComponentModel.SPRING:
-            case ContextConstants.ComponentModelConfig.springLazy:
-                this.adapterMapperGenerator = new SpringAdapterMapperGenerator();
-                break;
-            case ComponentModelConstant.SOLON:
-                this.adapterMapperGenerator = new SolonAdapterMapperGenerator();
-                break;
-            default:
-                this.adapterMapperGenerator = new DefaultAdapterMapperGenerator();
-        }
+        this.adapterMapperGenerator = AdapterMapperGeneratorFactory.instance(AutoMapperProperties.getComponentModel());
 
         // AutoMapMapper
         final TypeElement autoMapMapperAnnotation =
