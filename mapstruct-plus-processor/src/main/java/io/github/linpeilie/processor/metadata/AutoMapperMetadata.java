@@ -1,9 +1,11 @@
 package io.github.linpeilie.processor.metadata;
 
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.TypeName;
 import io.github.linpeilie.processor.utils.MapperUtils;
 import io.github.linpeilie.utils.StrUtil;
 import java.util.List;
+import java.util.Set;
 import org.mapstruct.NullValueMappingStrategy;
 import org.mapstruct.SubclassExhaustiveStrategy;
 
@@ -64,6 +66,8 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
     private SubclassExhaustiveStrategy subclassExhaustiveStrategy;
 
     private ClassName mappingControl;
+
+    private Set<TypeName> dependencies;
 
     public String qualifiedMapperName() {
         return mapperPackage() + "." + mapperName();
@@ -276,5 +280,13 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
 
     public void setMappingControl(ClassName mappingControl) {
         this.mappingControl = mappingControl;
+    }
+
+    public Set<TypeName> getDependencies() {
+        return dependencies;
+    }
+
+    public void setDependencies(Set<TypeName> dependencies) {
+        this.dependencies = dependencies;
     }
 }

@@ -12,6 +12,7 @@ import io.github.linpeilie.processor.metadata.AbstractAdapterMethodMetadata;
 import io.github.linpeilie.processor.metadata.AdapterMapMethodMetadata;
 import io.github.linpeilie.processor.metadata.AdapterMethodMetadata;
 import io.github.linpeilie.utils.ClassUtil;
+import io.github.linpeilie.utils.CollectionUtils;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -61,9 +62,6 @@ public abstract class AbstractAdapterMapperGenerator {
             .map(method -> buildProxyMethod(method, cycleAvoiding))
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
-        if (methods.isEmpty()) {
-            return null;
-        }
         return createTypeSpec(methods, adapterClassName,
             cycleAvoiding ? ClassName.get(adapterPackage(), AutoMapperProperties.getAdapterClassName()) : null);
     }
@@ -77,7 +75,9 @@ public abstract class AbstractAdapterMapperGenerator {
         }
 
         // adapter methods
-        adapterBuilder.addMethods(methods);
+        if (CollectionUtils.isNotEmpty(methods)) {
+            adapterBuilder.addMethods(methods);
+        }
 
         return adapterBuilder.build();
     }
