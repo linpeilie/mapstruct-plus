@@ -378,7 +378,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         }
         AutoMapperProperties.setUnmappedSourcePolicy(mapperConfigGem.unmappedSourcePolicy().getValue());
         // 重定义 MapStruct 中 unmappedTargetPolicy 的默认值 WARN ---> IGNORE
-        AutoMapperProperties.setUnmappedTargetPolicy(mapperConfigGem.unmappedTargetPolicy().getValue());
+        AutoMapperProperties.setUnmappedTargetPolicy(mapperConfigGem.unmappedTargetPolicy().get());
         AutoMapperProperties.setTypeConversionPolicy(mapperConfigGem.typeConversionPolicy().getValue());
         AutoMapperProperties.setCollectionMappingStrategy(mapperConfigGem.collectionMappingStrategy().getValue());
         AutoMapperProperties.setNullValueMappingStrategy(mapperConfigGem.nullValueMappingStrategy().getValue());
