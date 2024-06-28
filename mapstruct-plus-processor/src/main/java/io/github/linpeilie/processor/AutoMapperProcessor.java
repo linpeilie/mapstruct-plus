@@ -580,9 +580,12 @@ public class AutoMapperProcessor extends AbstractProcessor {
                 typeRelationMappers.get(metadata.getSourceClassName().reflectionName());
 
             if (CollectionUtils.isNotEmpty(sourceDependencies)) {
-                sourceDependencies.removeIf(
-                    sourceDependency -> sourceDependency.reflectionName().equals(metadata.mapperName()));
                 metadata.addUseList(sourceDependencies);
+            }
+            // remove itself
+            if (CollectionUtils.isNotEmpty(metadata.getUsesClassNameList())) {
+                metadata.getUsesClassNameList()
+                    .removeIf(use -> use.reflectionName().equals(metadata.mapperClass().reflectionName()));
             }
         });
 
