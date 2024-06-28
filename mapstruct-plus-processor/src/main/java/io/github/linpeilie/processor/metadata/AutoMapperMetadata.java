@@ -4,6 +4,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;
 import io.github.linpeilie.processor.utils.MapperUtils;
 import io.github.linpeilie.utils.StrUtil;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.mapstruct.NullValueMappingStrategy;
@@ -73,6 +74,13 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
         return mapperPackage() + "." + mapperName();
     }
 
+    public boolean addUseList(List<ClassName> uses) {
+        if (this.usesClassNameList == null) {
+            this.usesClassNameList = new ArrayList<>();
+        }
+        return usesClassNameList.addAll(uses);
+    }
+
     /*************** getter/setter ***************/
 
     public String mapperName() {
@@ -81,10 +89,6 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
 
     public void setMapperName(String mapperName) {
         this.mapperName = mapperName;
-    }
-
-    public String getMapperName() {
-        return mapperName;
     }
 
     public String getMapperNameSuffix() {

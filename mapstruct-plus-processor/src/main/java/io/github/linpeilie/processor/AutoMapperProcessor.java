@@ -572,10 +572,17 @@ public class AutoMapperProcessor extends AbstractProcessor {
                 ).filter(Objects::nonNull).flatMap(Collection::stream).collect(Collectors.toList());
 
                 if (CollectionUtils.isNotEmpty(dependencyMappers)) {
-                    List<ClassName> uses = Optional.ofNullable(metadata.getUsesClassNameList()).orElse(new ArrayList<>());
-                    uses.addAll(dependencyMappers);
-                    metadata.setUsesClassNameList(uses);
+                    metadata.addUseList(dependencyMappers);
                 }
+            }
+            // source
+            List<ClassName> sourceDependencies =
+                typeRelationMappers.get(metadata.getSourceClassName().reflectionName());
+
+            if (CollectionUtils.isNotEmpty(sourceDependencies)) {
+                sourceDependencies.removeIf(
+                    sourceDependency -> sourceDependency.reflectionName().equals(metadata.mapperName()));
+                metadata.addUseList(sourceDependencies);
             }
         });
 
