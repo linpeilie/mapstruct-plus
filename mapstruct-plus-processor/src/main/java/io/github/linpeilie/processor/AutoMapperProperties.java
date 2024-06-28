@@ -15,7 +15,7 @@ public class AutoMapperProperties {
 
     private static String unmappedSourcePolicy;
 
-    private static String unmappedTargetPolicy;
+    private static String unmappedTargetPolicy = "IGNORE";
 
     private static String typeConversionPolicy;
 
