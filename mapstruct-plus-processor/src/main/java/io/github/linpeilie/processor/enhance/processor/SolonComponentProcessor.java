@@ -1,4 +1,4 @@
-package io.github.linpeilie.processor.solon;
+package io.github.linpeilie.processor.enhance.processor;
 
 import io.github.linpeilie.ComponentModelConstant;
 import io.github.linpeilie.utils.CollectionUtils;

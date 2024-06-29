@@ -58,25 +58,25 @@ fotter:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.3</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.0'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.3'
 ```
 
 ## Change Log
 
+### 1.4.3
+
+- **feat**: Added `spring-lazy` option to `ComponentModel` for lazy loading Spring Beans, resolving mutual dependency issues, and set this option as the default configuration.
+- **fix**: Fixed the issue where the default configuration for `unmappedTargetPolicy` was not effective.
+- **enhance**: Optimized IDEA local development build efficiency, reducing build time and metaspace usage to some extent.[Issue #89](https://github.com/linpeilie/mapstruct-plus/issues/89)
+
 ### 1.4.2
-
-Sure, here is the translated update document:
-
----
-
-### Updates
 
 - **feat**: Added the `mapperNameSuffix` attribute to the `AutoMapper` annotation. This supports adding a suffix to the generated conversion interface name, and the reverse conversion interface will be effective under the default rules.
 - **feat**: Adapted the `Mapper` annotation to support the following attributes: `unmappedSourcePolicy`, `unmappedTargetPolicy`, `typeConversionPolicy`, `collectionMappingStrategy`, `nullValueMappingStrategy`, `nullValueIterableMappingStrategy`, `nullValuePropertyMappingStrategy`, `nullValueCheckStrategy`, and `mappingControl`.

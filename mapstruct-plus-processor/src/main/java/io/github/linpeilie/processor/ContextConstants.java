@@ -65,7 +65,8 @@ public interface ContextConstants {
 
     interface ComponentModelConfig {
         String qualifiedClassName = "io.github.linpeilie.annotations.ComponentModelConfig";
-        String defaultComponentModel = MappingConstants.ComponentModel.SPRING;
+        String springLazy = "spring-lazy";
+        String defaultComponentModel = springLazy;
     }
 
     interface ConvertAdapter {

@@ -24,4 +24,9 @@ public class MapstructAutoConfiguration {
         return new Converter(converterFactory);
     }
 
+    @Bean
+    public SpringContextUtils springContextUtils() {
+        return new SpringContextUtils();
+    }
+
 }
