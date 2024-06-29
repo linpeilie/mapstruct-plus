@@ -543,19 +543,10 @@ public class AutoMapperProcessor extends AbstractProcessor {
 
         mapperList.removeIf(metadata -> !metadata.isConvertGenerate());
 
-        // 兼容同模块下，同名不同包的场景
         mapperList.forEach(metadata -> {
-            String mapperName = metadata.mapperName();
-            // 同名类时，增加后缀
-            Integer index = AUTO_MAPPER_INDEX.getOrDefault(mapperName, 0);
-            if (index > 0) {
-                mapperName = mapperName + "__" + index;
-            }
-            AUTO_MAPPER_INDEX.put(metadata.mapperName(), ++index);
-            metadata.setMapperName(mapperName);
-        });
+            // 兼容同模块下，同名不同包的场景
+            this.mapperNameAddSuffix(metadata);
 
-        mapperList.forEach(metadata -> {
             if (metadata.isCycleAvoiding()) {
                 addAdapterMethod(metadata);
             } else {
@@ -563,33 +554,11 @@ public class AutoMapperProcessor extends AbstractProcessor {
             }
         });
 
-        // import dependency
         mapperList.forEach(metadata -> {
-            Set<TypeName> dependencies = metadata.getDependencies();
-            if (CollectionUtils.isNotEmpty(dependencies)) {
-                List<ClassName> dependencyMappers = dependencies.stream().map(dependency ->
-                    typeRelationMappers.get(dependency.toString())
-                ).filter(Objects::nonNull).flatMap(Collection::stream).collect(Collectors.toList());
-
-                if (CollectionUtils.isNotEmpty(dependencyMappers)) {
-                    metadata.addUseList(dependencyMappers);
-                }
-            }
-            // source
-            List<ClassName> sourceDependencies =
-                typeRelationMappers.get(metadata.getSourceClassName().reflectionName());
-
-            if (CollectionUtils.isNotEmpty(sourceDependencies)) {
-                metadata.addUseList(sourceDependencies);
-            }
-            // remove itself
-            if (CollectionUtils.isNotEmpty(metadata.getUsesClassNameList())) {
-                metadata.getUsesClassNameList()
-                    .removeIf(use -> use.reflectionName().equals(metadata.mapperClass().reflectionName()));
-            }
+            this.relationDependencies(metadata);
+            this.usesRemoveItself(metadata);
+            this.writeAutoMapperClassFile(metadata);
         });
-
-        mapperList.forEach(this::writeAutoMapperClassFile);
 
         adapterMapperGenerator.write(processingEnv,
             methodMap.values(),
@@ -613,6 +582,45 @@ public class AutoMapperProcessor extends AbstractProcessor {
                 AutoMapperProperties.getCycleAvoidingConfigClassName(),
                 AutoMapperProperties.getCycleAvoidingAdapterClassName(),
                 customMapperList);
+        }
+    }
+
+    private void mapperNameAddSuffix(AutoMapperMetadata metadata) {
+        String mapperName = metadata.mapperName();
+        // 同名类时，增加后缀
+        Integer index = AUTO_MAPPER_INDEX.getOrDefault(mapperName, 0);
+        if (index > 0) {
+            mapperName = mapperName + "__" + index;
+        }
+        AUTO_MAPPER_INDEX.put(metadata.mapperName(), ++index);
+        metadata.setMapperName(mapperName);
+    }
+
+    private void relationDependencies(AutoMapperMetadata metadata) {
+        Set<TypeName> dependencies = metadata.getDependencies();
+        if (CollectionUtils.isNotEmpty(dependencies)) {
+            List<ClassName> dependencyMappers = dependencies.stream().map(dependency ->
+                typeRelationMappers.get(dependency.toString())
+            ).filter(Objects::nonNull).flatMap(Collection::stream).collect(Collectors.toList());
+
+            if (CollectionUtils.isNotEmpty(dependencyMappers)) {
+                metadata.addUseList(dependencyMappers);
+            }
+        }
+        // source
+        List<ClassName> sourceDependencies =
+            typeRelationMappers.get(metadata.getSourceClassName().reflectionName());
+
+        if (CollectionUtils.isNotEmpty(sourceDependencies)) {
+            metadata.addUseList(sourceDependencies);
+        }
+    }
+
+    private void usesRemoveItself(AutoMapperMetadata metadata) {
+        // remove itself
+        if (CollectionUtils.isNotEmpty(metadata.getUsesClassNameList())) {
+            metadata.getUsesClassNameList()
+                .removeIf(use -> use.reflectionName().equals(metadata.mapperClass().reflectionName()));
         }
     }
 
