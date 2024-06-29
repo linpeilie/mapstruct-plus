@@ -7,12 +7,12 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import io.github.linpeilie.processor.ContextConstants;
 import io.github.linpeilie.processor.metadata.AutoMapperMetadata;
 import io.github.linpeilie.processor.metadata.AutoMappingMetadata;
 import io.github.linpeilie.utils.CollectionUtils;
-import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,22 +32,9 @@ public class AutoMapperGenerator {
 
     public static final String CONVERT_METHOD_NAME = "convert";
 
-    private static final Map<String, Integer> AUTO_MAPPER_INDEX = new HashMap<>();
-
     public void write(AutoMapperMetadata metadata, ProcessingEnvironment processingEnv) {
         String mapperPackage = metadata.mapperPackage();
-
-        /*
-            当前处理方式，本地使用 IDEA 开发时，当修改 Source/Target 类时，可能还会出现类名冲突的问题，
-            当出现该问题时，需要执行 clean 把之前构建的类清掉。
-         */
         String mapperName = metadata.mapperName();
-        // 同名类时，增加后缀
-        Integer index = AUTO_MAPPER_INDEX.getOrDefault(mapperName, 0);
-        if (index > 0) {
-            mapperName = mapperName + "__" + index;
-        }
-        AUTO_MAPPER_INDEX.put(metadata.mapperName(), ++index);
 
         try (final Writer writer = processingEnv.getFiler()
             .createSourceFile(mapperPackage + "." + mapperName)
@@ -55,7 +42,7 @@ public class AutoMapperGenerator {
             JavaFile.builder(metadata.mapperPackage(), createTypeSpec(processingEnv, metadata, mapperName))
                 .build()
                 .writeTo(writer);
-        } catch (IOException e) {
+        } catch (Exception e) {
             processingEnv.getMessager()
                 .printMessage(ERROR,
                     "Error while opening " + metadata.mapperName() + " output file: " + e.getMessage());
@@ -79,19 +66,69 @@ public class AutoMapperGenerator {
         ParameterSpec target = ParameterSpec.builder(targetClassName, "target")
             .addAnnotation(AnnotationSpec.builder(ClassName.get("org.mapstruct", "MappingTarget")).build())
             .build();
+        ParameterSpec sourceList = ParameterSpec.builder(
+            ParameterizedTypeName.get(
+                ClassName.get("java.util", "List"),
+                metadata.getSourceClassName()
+            ), "sourceList").build();
         ParameterSpec context =
             ParameterSpec.builder(ClassName.get("io.github.linpeilie", "CycleAvoidingMappingContext"), "context")
                 .addAnnotation(ClassName.get("org.mapstruct", "Context"))
                 .build();
-        if (metadata.getFieldMappingList() != null && !metadata.getFieldMappingList().isEmpty()) {
-            builder.addMethod(addConvertMethodSpec(
-                metadata.isCycleAvoiding() ? CollectionUtils.newArrayList(source, context) : Collections.singletonList(
-                    source),
-                metadata.getFieldMappingList(),
-                targetClassName,
-                CONVERT_METHOD_NAME));
+        ParameterizedTypeName targetList = ParameterizedTypeName.get(
+            ClassName.get("java.util", "List"),
+            targetClassName
+        );
+
+        // 如果需要避免循环依赖，则把 BaseMapper 中的实现，全部添加 DoIgnore 防止使用该方法进行转换
+        if (metadata.isCycleAvoiding()) {
+            // convert(source)
+            builder.addMethod(
+                addCallSuperConvertMethodSpec(
+                    metadata.getSuperClass(),
+                    CollectionUtils.newArrayList(source),
+                    targetClassName,
+                    CONVERT_METHOD_NAME)
+            );
+            // convert(source, target)
+            builder.addMethod(
+                addCallSuperConvertMethodSpec(
+                    metadata.getSuperClass(), CollectionUtils.newArrayList(source, target),
+                    targetClassName,
+                    CONVERT_METHOD_NAME
+                )
+            );
+            // convert(sourceList)
+            builder.addMethod(
+                addCallSuperConvertMethodSpec(
+                    metadata.getSuperClass(), CollectionUtils.newArrayList(sourceList),
+                    targetList,
+                    CONVERT_METHOD_NAME
+                )
+            );
+            // convert(sourceList, context)
+            builder.addMethod(
+                addCallSuperConvertMethodSpec(
+                    metadata.getSuperClass(), CollectionUtils.newArrayList(sourceList, context),
+                    targetList,
+                    CONVERT_METHOD_NAME
+                )
+            );
         }
 
+        // convert(source) | convert(source, context)
+        if (CollectionUtils.isNotEmpty(metadata.getFieldMappingList()) || metadata.isCycleAvoiding()) {
+            builder.addMethod(addConvertMethodSpec(
+                metadata.isCycleAvoiding()
+                    ? CollectionUtils.newArrayList(source, context)
+                    : Collections.singletonList(source),
+                metadata.getFieldMappingList(),
+                targetClassName,
+                CONVERT_METHOD_NAME,
+                metadata.isCycleAvoiding()));
+        }
+
+        // convert(source, target)
         boolean targetIsImmutable = classIsImmutable(processingEnv, targetClassName);
         if (targetIsImmutable) {
             builder.addMethod(
@@ -100,13 +137,15 @@ public class AutoMapperGenerator {
                         context) : CollectionUtils.newArrayList(source, target),
                     targetClassName,
                     CONVERT_METHOD_NAME));
-        } else if (metadata.getFieldMappingList() != null && !metadata.getFieldMappingList().isEmpty()) {
+        } else if (CollectionUtils.isNotEmpty(metadata.getFieldMappingList()) || metadata.isCycleAvoiding()) {
             builder.addMethod(addConvertMethodSpec(
-                metadata.isCycleAvoiding() ? CollectionUtils.newArrayList(source, target,
-                    context) : CollectionUtils.newArrayList(source, target),
+                metadata.isCycleAvoiding()
+                    ? CollectionUtils.newArrayList(source, target, context)
+                    : CollectionUtils.newArrayList(source, target),
                 metadata.getFieldMappingList(),
                 targetClassName,
-                CONVERT_METHOD_NAME));
+                CONVERT_METHOD_NAME,
+                metadata.isCycleAvoiding()));
         }
 
         return builder.build();
@@ -137,15 +176,50 @@ public class AutoMapperGenerator {
 
     private MethodSpec addConvertMethodSpec(List<ParameterSpec> parameterSpecs,
         List<AutoMappingMetadata> autoMappingMetadataList,
-        ClassName target, String methodName) {
+        ClassName target,
+        String methodName,
+        boolean cycleAvoiding) {
         final MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder(methodName)
             .addParameters(parameterSpecs)
             .addModifiers(Modifier.PUBLIC, Modifier.ABSTRACT)
-            .addAnnotation(ClassName.get(ContextConstants.DoIgnore.packageName, ContextConstants.DoIgnore.className))
             .returns(target);
         if (CollectionUtils.isNotEmpty(autoMappingMetadataList)) {
             methodSpecBuilder.addAnnotations(buildMappingAnnotations(autoMappingMetadataList));
         }
+        if (cycleAvoiding) {
+            methodSpecBuilder.addAnnotation(
+                ClassName.get(ContextConstants.DoIgnore.packageName, ContextConstants.DoIgnore.className));
+        }
+        return methodSpecBuilder.build();
+    }
+
+    private ClassName doIgnore() {
+        return ClassName.get(ContextConstants.DoIgnore.packageName, ContextConstants.DoIgnore.className);
+    }
+
+    private MethodSpec addCallSuperConvertMethodSpec(ClassName superClass,
+        List<ParameterSpec> parameterSpecs,
+        TypeName target,
+        String methodName) {
+        MethodSpec.Builder methodSpecBuilder = MethodSpec.methodBuilder(methodName)
+            .addParameters(parameterSpecs)
+            .addModifiers(Modifier.DEFAULT, Modifier.PUBLIC)
+            .addAnnotation(doIgnore())
+            .returns(target);
+
+        // return super.convert( *** );
+        CodeBlock.Builder codeBlock = CodeBlock.builder();
+        codeBlock.add("return $T.super.$L(", superClass, methodName);
+        for (int i = 0; i < parameterSpecs.size(); i++) {
+            codeBlock.add("$N", parameterSpecs.get(i));
+            if (i != parameterSpecs.size() -1) {
+                codeBlock.add(",");
+            }
+        }
+        codeBlock.add(");\n");
+
+        methodSpecBuilder.addCode(codeBlock.build());
+
         return methodSpecBuilder.build();
     }
 

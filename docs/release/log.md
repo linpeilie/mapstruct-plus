@@ -6,6 +6,12 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.4.3
+
+- feat: `ComponentModel` 增加 `spring-lazy` 可选项，懒加载 Spring Bean，解决互相依赖的问题，并将默认配置改为该选项；
+- fix: 解决 `unmappedTargetPolicy` 默认配置不生效的问题；
+- enhance: 优化 IDEA 本地开发构建效率，一定程度上缩短构建时间、减小元空间占用；[Issue #89](https://github.com/linpeilie/mapstruct-plus/issues/89)
+
 ### 1.4.2
 
 - feat: `AutoMapper` 注解增加 `mapperNameSuffix` 属性，支持配置生成的转换接口名称增加后缀，默认规则下生成的反向转换接口同时生效；

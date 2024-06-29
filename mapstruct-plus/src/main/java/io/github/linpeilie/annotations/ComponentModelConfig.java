@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.SOURCE)
 public @interface ComponentModelConfig {
 
-    String componentModel() default "spring";
+    String componentModel() default "spring-lazy";
 
 }

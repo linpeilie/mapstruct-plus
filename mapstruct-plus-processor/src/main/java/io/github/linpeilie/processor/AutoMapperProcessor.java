@@ -1,6 +1,8 @@
 package io.github.linpeilie.processor;
 
+import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import io.github.linpeilie.ComponentModelConstant;
 import io.github.linpeilie.annotations.AutoEnumMapper;
@@ -117,6 +119,10 @@ public class AutoMapperProcessor extends AbstractProcessor {
 
     private final Set<String> mapperSet = new HashSet<>();
 
+    private static final Map<String, Integer> AUTO_MAPPER_INDEX = new HashMap<>();
+
+    private final Map<String, List<ClassName>> typeRelationMappers = new HashMap<>();
+
     private Messager messager;
 
     public AutoMapperProcessor() {
@@ -178,16 +184,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         refreshProperties(annotations, roundEnv);
 
         // 根据配置生成适配类生成器
-        switch (AutoMapperProperties.getComponentModel()) {
-            case MappingConstants.ComponentModel.SPRING:
-                this.adapterMapperGenerator = new SpringAdapterMapperGenerator();
-                break;
-            case ComponentModelConstant.SOLON:
-                this.adapterMapperGenerator = new SolonAdapterMapperGenerator();
-                break;
-            default:
-                this.adapterMapperGenerator = new DefaultAdapterMapperGenerator();
-        }
+        this.adapterMapperGenerator = AdapterMapperGeneratorFactory.instance(AutoMapperProperties.getComponentModel());
 
         // AutoMapMapper
         final TypeElement autoMapMapperAnnotation =
@@ -381,7 +378,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         }
         AutoMapperProperties.setUnmappedSourcePolicy(mapperConfigGem.unmappedSourcePolicy().getValue());
         // 重定义 MapStruct 中 unmappedTargetPolicy 的默认值 WARN ---> IGNORE
-        AutoMapperProperties.setUnmappedTargetPolicy(mapperConfigGem.unmappedTargetPolicy().getValue());
+        AutoMapperProperties.setUnmappedTargetPolicy(mapperConfigGem.unmappedTargetPolicy().get());
         AutoMapperProperties.setTypeConversionPolicy(mapperConfigGem.typeConversionPolicy().getValue());
         AutoMapperProperties.setCollectionMappingStrategy(mapperConfigGem.collectionMappingStrategy().getValue());
         AutoMapperProperties.setNullValueMappingStrategy(mapperConfigGem.nullValueMappingStrategy().getValue());
@@ -507,7 +504,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         mapperList.addAll(autoMapperMetadata);
     }
 
-    private void generateMapper() {
+    private List<AutoMapperMetadata> generateReverseConverters() {
         List<AutoMapperMetadata> reverseMapperMetadataList = new ArrayList<>();
 
         mapperList.forEach(autoMapperMetadata -> {
@@ -524,19 +521,44 @@ public class AutoMapperProcessor extends AbstractProcessor {
             reverseMapperMetadataList.add(reverseMapperMetadata);
         });
 
-        mapperList.addAll(reverseMapperMetadataList);
+        return reverseMapperMetadataList;
+    }
+
+    private void typeRelationMapper(AutoMapperMetadata metadata) {
+        String source = metadata.getSourceClassName().reflectionName();
+        if (!typeRelationMappers.containsKey(source)) {
+            typeRelationMappers.put(source, new ArrayList<>());
+        }
+        typeRelationMappers.get(source).add(metadata.mapperClass());
+
+        String target = metadata.getTargetClassName().reflectionName();
+        if (!typeRelationMappers.containsKey(target)) {
+            typeRelationMappers.put(target, new ArrayList<>());
+        }
+        typeRelationMappers.get(target).add(metadata.mapperClass());
+    }
+
+    private void generateMapper() {
+        mapperList.addAll(generateReverseConverters());
+
+        mapperList.removeIf(metadata -> !metadata.isConvertGenerate());
 
         mapperList.forEach(metadata -> {
-            if (!metadata.isConvertGenerate()) {
-                return;
+            // 兼容同模块下，同名不同包的场景
+            this.mapperNameAddSuffix(metadata);
+
+            if (metadata.isCycleAvoiding()) {
+                addAdapterMethod(metadata);
+            } else {
+                typeRelationMapper(metadata);
             }
-            this.writeAutoMapperClassFile(metadata);
-            addAdapterMethod(metadata);
         });
 
-        if (methodMap.isEmpty()) {
-            return;
-        }
+        mapperList.forEach(metadata -> {
+            this.relationDependencies(metadata);
+            this.usesRemoveItself(metadata);
+            this.writeAutoMapperClassFile(metadata);
+        });
 
         adapterMapperGenerator.write(processingEnv,
             methodMap.values(),
@@ -561,6 +583,88 @@ public class AutoMapperProcessor extends AbstractProcessor {
                 AutoMapperProperties.getCycleAvoidingAdapterClassName(),
                 customMapperList);
         }
+    }
+
+    private void mapperNameAddSuffix(AutoMapperMetadata metadata) {
+        String mapperName = metadata.mapperName();
+        // 同名类时，增加后缀
+        Integer index = AUTO_MAPPER_INDEX.getOrDefault(mapperName, 0);
+        if (index > 0) {
+            mapperName = mapperName + "__" + index;
+        }
+        AUTO_MAPPER_INDEX.put(metadata.mapperName(), ++index);
+        metadata.setMapperName(mapperName);
+    }
+
+    private void relationDependencies(AutoMapperMetadata metadata) {
+        Set<TypeName> dependencies = metadata.getDependencies();
+        if (CollectionUtils.isNotEmpty(dependencies)) {
+            List<ClassName> dependencyMappers = dependencies.stream().map(dependency ->
+                typeRelationMappers.get(dependency.toString())
+            ).filter(Objects::nonNull).flatMap(Collection::stream).collect(Collectors.toList());
+
+            if (CollectionUtils.isNotEmpty(dependencyMappers)) {
+                metadata.addUseList(dependencyMappers);
+            }
+        }
+        // source
+        List<ClassName> sourceDependencies =
+            typeRelationMappers.get(metadata.getSourceClassName().reflectionName());
+
+        if (CollectionUtils.isNotEmpty(sourceDependencies)) {
+            metadata.addUseList(sourceDependencies);
+        }
+    }
+
+    private void usesRemoveItself(AutoMapperMetadata metadata) {
+        // remove itself
+        if (CollectionUtils.isNotEmpty(metadata.getUsesClassNameList())) {
+            metadata.getUsesClassNameList()
+                .removeIf(use -> use.reflectionName().equals(metadata.mapperClass().reflectionName()));
+        }
+    }
+
+    private Set<TypeName> listDependencies(TypeElement autoMapperEle) {
+        Set<TypeName> set = new HashSet<>();
+
+        if (!autoMapperEle.getKind().isClass() && !autoMapperEle.getKind().isInterface()) {
+            return set;
+        }
+
+        for (Element ele : autoMapperEle.getEnclosedElements()) {
+            if (ele.getKind() != ElementKind.FIELD) {
+                continue;
+            }
+            TypeName typeName = ClassName.get(ele.asType());
+            if (typeName instanceof ArrayTypeName) {
+                ArrayTypeName arrayTypeName = (ArrayTypeName) typeName;
+                typeName = arrayTypeName.componentType;
+            } else if (typeName instanceof ParameterizedTypeName) {
+                ParameterizedTypeName parameterizedTypeName = (ParameterizedTypeName) typeName;
+                List<TypeName> typeArguments = parameterizedTypeName.typeArguments;
+                set.addAll(typeArguments);
+                continue;
+            }
+            set.add(typeName);
+        }
+
+        // add super class dependencies
+        getSuperClass(autoMapperEle).ifPresent(superClass -> set.addAll(listDependencies(superClass)));
+
+        set.removeIf(ele -> {
+            if (ele == null) {
+                return true;
+            }
+            try {
+                if (ele.box().isBoxedPrimitive()) {
+                    return true;
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+            return false;
+        });
+        return set;
     }
 
     private AutoMapperMetadata reverseMapper(AutoMapperMetadata autoMapperMetadata) {
@@ -761,6 +865,9 @@ public class AutoMapperProcessor extends AbstractProcessor {
                 MapperUtils.getEnumMapperClassName(enumClass.simpleName())))
             .collect(Collectors.toList());
 
+        // dependencies
+        Set<TypeName> dependencies = listDependencies((TypeElement) ele);
+
         usesClassNameList.addAll(useEnumClassNameList);
 
         metadata.setUsesClassNameList(usesClassNameList);
@@ -790,6 +897,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
             metadata.setMapperName(autoMapperGem.mapperName().getValue());
         }
         metadata.setMapperNameSuffix(autoMapperGem.mapperNameSuffix().getValue());
+        metadata.setDependencies(dependencies);
 
         addMapper(metadata, true);
 

@@ -8,6 +8,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import io.github.linpeilie.processor.AbstractAdapterMapperGenerator;
 import io.github.linpeilie.processor.metadata.AbstractAdapterMethodMetadata;
+import io.github.linpeilie.utils.CollectionUtils;
 import java.util.List;
 import javax.lang.model.element.Modifier;
 
@@ -27,7 +28,9 @@ public abstract class IocAdapterMapperGenerator extends AbstractAdapterMapperGen
 
         adapterBuilder.addField(buildConverterField());
 
-        adapterBuilder.addMethods(methods);
+        if (CollectionUtils.isNotEmpty(methods)) {
+            adapterBuilder.addMethods(methods);
+        }
 
         if (superClass != null) {
             adapterBuilder.superclass(superClass);
