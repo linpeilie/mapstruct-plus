@@ -62,17 +62,23 @@ footer:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.4.2</version>
+    <version>1.4.3</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.2'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.3'
 ```
 
 ## 更新日志
+
+### 1.4.3
+
+- feat: `ComponentModel` 增加 `spring-lazy` 可选项，懒加载 Spring Bean，解决互相依赖的问题，并将默认配置改为该选项；
+- fix: 解决 `unmappedTargetPolicy` 默认配置不生效的问题；
+- enhance: 优化 IDEA 本地开发构建效率，一定程度上缩短构建时间、减小元空间占用；[Issue #89](https://github.com/linpeilie/mapstruct-plus/issues/89)
 
 ### 1.4.2
 
@@ -100,13 +106,6 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 > 在多模块下，由于类加载机制只会加载一个的原因，可能会导致 [`NoSuchMethodError`](/guide/faq.html) 的异常，
 > 当然，这个问题在之前也会有，几率可能低一些，所以多模块下，务必配置 `adapterPackage` 来避免该问题。
 > - Map 与对象的转换，还是依赖 hutool 中的类转换实现，如果需要该功能，需要额外引入 `hutool-core` 依赖包。
-
-### 1.3.6
-
-- 兼容内部类转换
-- feature : AutoMapping 注解中的 targetClass 支持配置父类
-- [issue#I8QPRO](https://gitee.com/easii/mapstruct-plus/issues/I8QPRO) : 框架自动生成的 AutoMapperConfig 和 AutoMapMapper 包和类名支持配置
-- [issue#I8T7EF](https://gitee.com/easii/mapstruct-plus/issues/I8T7EF) : 支持在父类中配置的 AutoMapping 注解
 
 ……
 
