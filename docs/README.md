@@ -46,12 +46,11 @@ footer:
   startYear: 2023
 ---
 
-## 国内站点
+## 友情链接
 
-- https://easii.gitee.io/mapstruct-plus/
+<links />
 
 ## 其他开源项目
-
 - **EasyRelation**：[GitHub](https://github.com/linpeilie/easy-relation) | [Gitee](https://gitee.com/easii/easy-relation) | [Document](https://easy-relation.easii.cn)
 
 ## 最新版本
@@ -126,12 +125,6 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 ## 介绍视频
 
 - [mapstruct-plus-深度拷贝一集精通](https://www.bilibili.com/video/BV1KM4y1E7GJ/)
-
-## 友情链接
-
-- [RuoYi-Vue-Plus](https://gitee.com/JavaLionLi/RuoYi-Vue-Plus/wikis/pages)
-- [RuoYi-Cloud-Plus](https://gitee.com/JavaLionLi/RuoYi-Cloud-Plus/wikis/pages)
-- [Stream-Query](http://stream-query.dromara.org/)：允许完全摆脱Mapper的mybatis-plus🌽体验！可以使用类似“工具类”🔧这样的静态函数进行数据库操作
 
 ## 联系我
 
