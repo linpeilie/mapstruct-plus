@@ -6,6 +6,10 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.4.4
+
+- fix: fixed a problem with missing classes in some Spring release version.
+
 ### 1.4.3
 
 - **feat**: Added `spring-lazy` option to `ComponentModel` for lazy loading Spring Beans, resolving mutual dependency issues, and set this option as the default configuration.
