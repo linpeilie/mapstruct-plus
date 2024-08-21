@@ -56,10 +56,10 @@ public class AutoMapperProperties {
     static {
         // load increment mark
         Integer mark = IncrementMarkUtils.incrementAndGet();
-        adapterClassName = adapterClassName + "$" + mark;
-        mapAdapterClassName = mapAdapterClassName + "$" + mark;
-        autoMapperConfigClassName = autoMapperConfigClassName + "$" + mark;
-        autoMapMapperConfigClassName = autoMapMapperConfigClassName + "$" + mark;
+        adapterClassName = adapterClassName + "__" + mark;
+        mapAdapterClassName = mapAdapterClassName + "__" + mark;
+        autoMapperConfigClassName = autoMapperConfigClassName + "__" + mark;
+        autoMapMapperConfigClassName = autoMapMapperConfigClassName + "__" + mark;
     }
 
     public static String getConfigClassName() {
