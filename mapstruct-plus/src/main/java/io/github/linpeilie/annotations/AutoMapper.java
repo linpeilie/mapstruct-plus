@@ -45,11 +45,15 @@ public @interface AutoMapper {
 
     /**
      * 生成的 Mapper 接口名称
+     *
+     * @return 生成的 Mapper 接口名称
      */
     String mapperName() default "";
 
     /**
      * 生成的 Mapper 接口名称后缀，生成的反向转换接口同时生效
+     *
+     * @return 生成的 Mapper 接口名称后缀
      */
     String mapperNameSuffix() default "";
 
