@@ -919,7 +919,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
             }
             ReverseAutoMappingsGem reverseAutoMappingsGem = ReverseAutoMappingsGem.instanceOn(field);
             if (reverseAutoMappingsGem != null && reverseAutoMappingsGem.isValid()) {
-                reverseAutoMappingsGem.value().get().forEach(a -> buildAutoMappingMetadata(a, field));
+                reverseAutoMappingsGem.value().get().forEach(a -> list.add(buildAutoMappingMetadata(a, field)));
             }
         }
 

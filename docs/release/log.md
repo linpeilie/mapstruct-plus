@@ -6,6 +6,10 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.4.5
+
+- fix: 修复 `ReverseAutoMappings` 配置不生效的问题
+
 ### 1.4.4
 
 - fix: 修复部分Spring版本下找不到类的问题
