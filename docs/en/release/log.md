@@ -6,6 +6,10 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.4.5
+
+- fix: fiexed an issue where the `ReverseAutoMapping` configuration did not take effect.
+
 ### 1.4.4
 
 - fix: fixed a problem with missing classes in some Spring release version.

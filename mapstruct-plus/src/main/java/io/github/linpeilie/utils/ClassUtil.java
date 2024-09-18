@@ -4,8 +4,8 @@ public class ClassUtil {
 
     /**
      * 简化类全限定名
-     * @param qualifiedName
-     * @return
+     * @param qualifiedName 类全限定名
+     * @return  类全限定名简化后的名称
      */
     public static String simplifyQualifiedName(String qualifiedName) {
         String[] arr = qualifiedName.split("\\.");
