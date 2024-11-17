@@ -61,17 +61,23 @@ footer:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.4.5</version>
+    <version>1.4.6</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.5'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.6'
 ```
 
 ## 更新日志
+
+### 1.4.6
+
+- 修改 `SpringContextUtils` 类名，防止与其他项目类名冲突；
+- fix [#108](https://github.com/linpeilie/mapstruct-plus/issues/108) :  SpringContextUtils#getBeanFactory 方法改为静态；
+- [pr](https://github.com/linpeilie/mapstruct-plus/pull/114) : 增加注解批量增加 `AutoMapping`、`AutoMappings`、`ReverseAutoMapping`、`ReverseAutoMappings` 特性；
 
 ### 1.4.5
 

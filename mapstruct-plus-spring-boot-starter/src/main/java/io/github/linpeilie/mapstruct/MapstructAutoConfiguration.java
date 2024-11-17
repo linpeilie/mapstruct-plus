@@ -25,8 +25,8 @@ public class MapstructAutoConfiguration {
     }
 
     @Bean
-    public static SpringContextUtils springContextUtils() {
-        return new SpringContextUtils();
+    public static SpringContextUtils4Msp springContextUtils() {
+        return new SpringContextUtils4Msp();
     }
 
 }
