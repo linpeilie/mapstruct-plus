@@ -77,7 +77,7 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 
 - 修改 `SpringContextUtils` 类名，防止与其他项目类名冲突；
 - fix [#108](https://github.com/linpeilie/mapstruct-plus/issues/108) :  SpringContextUtils#getBeanFactory 方法改为静态；
-- [pr](https://github.com/linpeilie/mapstruct-plus/pull/114) : 增加注解批量增加 AutoMapping 特性；
+- [pr](https://github.com/linpeilie/mapstruct-plus/pull/114) : 增加注解批量增加 `AutoMapping`、`AutoMappings`、`ReverseAutoMapping`、`ReverseAutoMappings` 特性；
 
 ### 1.4.5
 

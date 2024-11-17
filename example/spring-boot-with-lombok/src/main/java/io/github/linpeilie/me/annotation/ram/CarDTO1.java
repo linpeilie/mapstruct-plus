@@ -1,9 +1,9 @@
-package io.github.linpeilie.me.annotation;
+package io.github.linpeilie.me.annotation.ram;
 
 import lombok.Data;
 
 @Data
-public class CarDTO {
+public class CarDTO1 {
 
     private String name;
 

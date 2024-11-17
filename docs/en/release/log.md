@@ -10,7 +10,7 @@ description: MapStructPlus release log
 
 - Modify the `SpringContextUtils` class name to prevent conflicts with other project class names;
 - fix [#108](https://github.com/linpeilie/mapstruct-plus/issues/108) :  SpringContextUtils#getBeanFactory method changes to static;
-- [PR](https://github.com/linpeilie/mapstruct-plus/pull/114) : increase annotation batch `AutoMapping` features.
+- [PR](https://github.com/linpeilie/mapstruct-plus/pull/114) : increase annotation batch `AutoMapping`、`AutoMappings`、`ReverseAutoMapping`、`ReverseAutoMappings` features.
 
 ### 1.4.5
 

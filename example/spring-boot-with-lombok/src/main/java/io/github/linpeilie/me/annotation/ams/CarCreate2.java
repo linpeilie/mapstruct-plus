@@ -1,12 +1,12 @@
-package io.github.linpeilie.me.annotation;
+package io.github.linpeilie.me.annotation.ams;
 
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 
 @Data
-@UpdateMapper
-@AutoMapper(target = CarDTO.class)
-public class CarUpdate {
+@CreateMapper
+@AutoMapper(target = CarDTO2.class)
+public class CarCreate2 {
 
     private String name;
 

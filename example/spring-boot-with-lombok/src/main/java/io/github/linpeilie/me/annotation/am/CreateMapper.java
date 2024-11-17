@@ -1,4 +1,4 @@
-package io.github.linpeilie.me.annotation;
+package io.github.linpeilie.me.annotation.am;
 
 import io.github.linpeilie.annotations.AutoMapping;
 
