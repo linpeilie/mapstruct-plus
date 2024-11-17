@@ -43,6 +43,6 @@ public class SpringComponentProcessor extends AnnotationBasedComponentModelProce
         InjectionStrategyGem injectionStrategy) {
         return new SpringDelayInjectMapperReference(originalReference.getType(), originalReference.getVariableName(),
             originalReference.isUsed(),
-            getTypeFactory().getType("io.github.linpeilie.mapstruct.SpringContextUtils"));
+            getTypeFactory().getType("io.github.linpeilie.mapstruct.SpringContextUtils4Msp"));
     }
 }

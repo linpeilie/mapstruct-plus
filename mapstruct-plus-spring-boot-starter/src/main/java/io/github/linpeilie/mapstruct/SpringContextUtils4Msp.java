@@ -9,20 +9,20 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 
-public class SpringContextUtils implements BeanFactoryPostProcessor, ApplicationContextAware {
+public class SpringContextUtils4Msp implements BeanFactoryPostProcessor, ApplicationContextAware {
 
     private static ConfigurableListableBeanFactory beanFactory;
     private static ApplicationContext applicationContext;
 
-    public SpringContextUtils() {
+    public SpringContextUtils4Msp() {
     }
 
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        SpringContextUtils.beanFactory = beanFactory;
+        SpringContextUtils4Msp.beanFactory = beanFactory;
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) {
-        SpringContextUtils.applicationContext = applicationContext;
+        SpringContextUtils4Msp.applicationContext = applicationContext;
     }
 
     public static ApplicationContext getApplicationContext() {

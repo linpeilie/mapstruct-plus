@@ -188,7 +188,7 @@ public class User {
 
 ```xml
 <properties>
-    <mapstruct-plus.version>1.4.5</mapstruct-plus.version>
+    <mapstruct-plus.version>1.4.6</mapstruct-plus.version>
 </properties>
 <dependencies>
     <dependency>

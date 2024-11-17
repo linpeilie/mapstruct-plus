@@ -58,17 +58,24 @@ fotter:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.4.5</version>
+    <version>1.4.6</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.5'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.6'
 ```
 
 ## Change Log
+
+### 1.4.6
+
+- Modify the `SpringContextUtils` class name to prevent conflicts with other project class names;
+- fix [#108](https://github.com/linpeilie/mapstruct-plus/issues/108) :  SpringContextUtils#getBeanFactory method changes to static;
+- [PR](https://github.com/linpeilie/mapstruct-plus/pull/114) : increase annotation batch `AutoMapping`、`AutoMappings`、`ReverseAutoMapping`、`ReverseAutoMappings` features.
+
 
 ### 1.4.5
 

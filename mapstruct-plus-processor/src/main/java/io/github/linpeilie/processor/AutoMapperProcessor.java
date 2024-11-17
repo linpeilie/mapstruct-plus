@@ -4,10 +4,10 @@ import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import io.github.linpeilie.ComponentModelConstant;
 import io.github.linpeilie.annotations.AutoEnumMapper;
 import io.github.linpeilie.annotations.AutoMapMapper;
 import io.github.linpeilie.annotations.ComponentModelConfig;
+import io.github.linpeilie.annotations.ReverseAutoMapping;
 import io.github.linpeilie.processor.gem.AutoMapperGem;
 import io.github.linpeilie.processor.gem.AutoMappersGem;
 import io.github.linpeilie.processor.gem.AutoMappingGem;
@@ -18,10 +18,7 @@ import io.github.linpeilie.processor.gem.ReverseAutoMappingGem;
 import io.github.linpeilie.processor.gem.ReverseAutoMappingsGem;
 import io.github.linpeilie.processor.generator.AutoEnumMapperGenerator;
 import io.github.linpeilie.processor.generator.AutoMapperGenerator;
-import io.github.linpeilie.processor.generator.DefaultAdapterMapperGenerator;
 import io.github.linpeilie.processor.generator.MapperConfigGenerator;
-import io.github.linpeilie.processor.generator.SolonAdapterMapperGenerator;
-import io.github.linpeilie.processor.generator.SpringAdapterMapperGenerator;
 import io.github.linpeilie.processor.metadata.AbstractAdapterMethodMetadata;
 import io.github.linpeilie.processor.metadata.AdapterEnumMethodMetadata;
 import io.github.linpeilie.processor.metadata.AdapterMapMethodMetadata;
@@ -57,15 +54,12 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.*;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
-import org.mapstruct.MappingConstants;
 
 import static io.github.linpeilie.processor.ProcessorOptions.ADAPTER_CLASS_NAME;
 import static io.github.linpeilie.processor.ProcessorOptions.ADAPTER_PACKAGE;
@@ -909,6 +903,9 @@ public class AutoMapperProcessor extends AbstractProcessor {
         if (!ele.getKind().isClass() && !ele.getKind().isInterface()) {
             return list;
         }
+
+        list.addAll(buildMirrorAnno4ReverseAutoMapping(ele));
+
         for (Element field : ele.getEnclosedElements()) {
             if (field.getKind() != ElementKind.FIELD && field.getKind() != ElementKind.METHOD) {
                 continue;
@@ -990,6 +987,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
             return list;
         }
 
+        list.addAll(buildMirrorAnno4AutoMapping(autoMapperEle));
+
         for (Element ele : autoMapperEle.getEnclosedElements()) {
             if (ele.getKind() != ElementKind.FIELD && ele.getKind() != ElementKind.METHOD) {
                 continue;
@@ -1010,6 +1009,55 @@ public class AutoMapperProcessor extends AbstractProcessor {
         list.removeIf(Objects::isNull);
         return list;
     }
+    /**
+     * 处理注解上存在@AutoMapping的情况
+     *
+     * @param element element
+     */
+    private List<AutoMappingMetadata> buildMirrorAnno4AutoMapping(final TypeElement element) {
+        List<AutoMappingMetadata> list = new ArrayList<>();
+        List<? extends AnnotationMirror> allAnnotationMirrors = processingEnv.getElementUtils().getAllAnnotationMirrors(element);
+        for (AnnotationMirror annotationMirror : allAnnotationMirrors) {
+            DeclaredType annotationType = annotationMirror.getAnnotationType();
+            TypeElement annotationElement = (TypeElement) annotationType.asElement();
+            if (annotationElement == null) {
+                continue;
+            }
+            AutoMappingGem autoMappingGem = AutoMappingGem.instanceOn(annotationElement);
+            if (autoMappingGem != null && autoMappingGem.isValid()) {
+                list.add(buildAutoMappingMetadata(autoMappingGem, element));
+            }
+            AutoMappingsGem autoMappingsGem = AutoMappingsGem.instanceOn(annotationElement);
+            if (autoMappingsGem != null && autoMappingsGem.isValid()) {
+                autoMappingsGem.value().get().forEach(a -> list.add(buildAutoMappingMetadata(a, element)));
+            }
+
+        }
+        return list;
+    }
+
+    private List<AutoMappingMetadata> buildMirrorAnno4ReverseAutoMapping(final TypeElement element) {
+        List<AutoMappingMetadata> list = new ArrayList<>();
+        List<? extends AnnotationMirror> allAnnotationMirrors = processingEnv.getElementUtils().getAllAnnotationMirrors(element);
+        for (AnnotationMirror annotationMirror : allAnnotationMirrors) {
+            DeclaredType annotationType = annotationMirror.getAnnotationType();
+            TypeElement annotationElement = (TypeElement) annotationType.asElement();
+            if (annotationElement == null) {
+                continue;
+            }
+            ReverseAutoMappingGem reverseAutoMapping = ReverseAutoMappingGem.instanceOn(annotationElement);
+            if (reverseAutoMapping != null && reverseAutoMapping.isValid()) {
+                list.add(buildAutoMappingMetadata(reverseAutoMapping, element));
+            }
+            ReverseAutoMappingsGem reverseAutoMappings = ReverseAutoMappingsGem.instanceOn(annotationElement);
+            if (reverseAutoMappings != null && reverseAutoMappings.isValid()) {
+                reverseAutoMappings.value().get().forEach(a -> list.add(buildAutoMappingMetadata(a, element)));
+            }
+
+        }
+        return list;
+    }
+
 
     private AutoMappingMetadata buildAutoMappingMetadata(AutoMappingGem autoMappingGem, Element ele) {
         ClassName targetClass = transToClassName(autoMappingGem.targetClass().get());
