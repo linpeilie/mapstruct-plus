@@ -57,10 +57,8 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.*;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.MirroredTypesException;
 import javax.lang.model.type.TypeMirror;
@@ -990,6 +988,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
             return list;
         }
 
+        list.addAll(buildMirrorAnno(autoMapperEle));
+
         for (Element ele : autoMapperEle.getEnclosedElements()) {
             if (ele.getKind() != ElementKind.FIELD && ele.getKind() != ElementKind.METHOD) {
                 continue;
@@ -1010,6 +1010,32 @@ public class AutoMapperProcessor extends AbstractProcessor {
         list.removeIf(Objects::isNull);
         return list;
     }
+    /**
+     * 处理注解上存在@AutoMapping的情况
+     *
+     * @param element element
+     */
+    private List<AutoMappingMetadata> buildMirrorAnno(final TypeElement element) {
+        List<AutoMappingMetadata> list = new ArrayList<>();
+        List<? extends AnnotationMirror> allAnnotationMirrors = processingEnv.getElementUtils().getAllAnnotationMirrors(element);
+        for (AnnotationMirror annotationMirror : allAnnotationMirrors) {
+            DeclaredType annotationType = annotationMirror.getAnnotationType();
+            TypeElement annotationElement = (TypeElement) annotationType.asElement();
+            if (annotationElement == null) {
+                continue;
+            }
+            AutoMappingGem autoMappingGem = AutoMappingGem.instanceOn(annotationElement);
+            if (autoMappingGem != null && autoMappingGem.isValid()) {
+                list.add(buildAutoMappingMetadata(autoMappingGem, element));
+            }
+            AutoMappingsGem autoMappingsGem = AutoMappingsGem.instanceOn(element);
+            if (autoMappingsGem != null && autoMappingsGem.isValid()) {
+                autoMappingsGem.value().get().forEach(a -> list.add(buildAutoMappingMetadata(a, element)));
+            }
+        }
+        return list;
+    }
+
 
     private AutoMappingMetadata buildAutoMappingMetadata(AutoMappingGem autoMappingGem, Element ele) {
         ClassName targetClass = transToClassName(autoMappingGem.targetClass().get());
