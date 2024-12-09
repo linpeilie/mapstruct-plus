@@ -8,7 +8,7 @@ package io.github.linpeilie.me.collection.iterabletononiterable;
 import io.github.linpeilie.annotations.AutoMapper;
 import java.util.List;
 
-@AutoMapper(target = Target.class, uses = StringListMapper.class)
+@AutoMapper(target = Target.class)
 public class Source {
 
     //CHECKSTYLE:OFF

@@ -12,7 +12,7 @@ import io.github.linpeilie.annotations.AutoMappings;
 /**
  * @author Sjaak Derksen
  */
-@AutoMapper(target = Target.class, uses = StringList1Mapper.class)
+@AutoMapper(target = Target.class)
 public class Source {
 
     @AutoMappings({

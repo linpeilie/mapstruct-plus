@@ -3,14 +3,17 @@ package io.github.linpeilie;
 import io.github.linpeilie.model.GoodsStateEnum;
 import java.util.Arrays;
 import java.util.List;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
 
-public class StringToListStringConverter {
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+public interface StringToListStringConverter {
 
-    public static List<String> stringToListString(String str) {
+    default List<String> stringToListString(String str) {
         return Arrays.asList(str.split(","));
     }
 
-    public static String listStringToString(List<String> list) {
+    default String listStringToString(List<String> list) {
         return String.join(",", list);
     }
 

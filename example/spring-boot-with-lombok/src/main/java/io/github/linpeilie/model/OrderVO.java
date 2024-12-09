@@ -1,6 +1,5 @@
 package io.github.linpeilie.model;
 
-import io.github.linpeilie.StringToListStringConverter;
 import io.github.linpeilie.annotations.AutoMapMapper;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMapping;
@@ -10,7 +9,7 @@ import java.time.LocalDate;
 import lombok.Data;
 
 @Data
-@AutoMapper(target = Order.class, uses = StringToListStringConverter.class, convertGenerate = false)
+@AutoMapper(target = Order.class, convertGenerate = false)
 public class OrderVO {
 
     private String orderId;

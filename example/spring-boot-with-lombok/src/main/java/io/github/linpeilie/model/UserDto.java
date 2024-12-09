@@ -1,12 +1,11 @@
 package io.github.linpeilie.model;
 
-import io.github.linpeilie.StringToListStringConverter;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMapping;
 import lombok.Data;
 
 @Data
-@AutoMapper(target = User.class, uses = StringToListStringConverter.class)
+@AutoMapper(target = User.class)
 public class UserDto {
 
     private String username;

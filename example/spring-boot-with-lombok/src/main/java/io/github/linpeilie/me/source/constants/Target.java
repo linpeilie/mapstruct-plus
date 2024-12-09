@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author Sjaak Derksen
  */
-@AutoMapper(target = Source.class, uses = StringList1Mapper.class)
+@AutoMapper(target = Source.class)
 public class Target {
 
     private String propertyThatShouldBeMapped;

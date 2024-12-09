@@ -7,7 +7,7 @@ package io.github.linpeilie.me.collection.iterabletononiterable;
 
 import io.github.linpeilie.annotations.AutoMapper;
 
-@AutoMapper(target = Source.class, uses = StringListMapper.class)
+@AutoMapper(target = Source.class)
 public class Target {
 
     //CHECKSTYLE:OFF
