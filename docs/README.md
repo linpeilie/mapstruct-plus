@@ -139,19 +139,3 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 ## 介绍视频
 
 - [mapstruct-plus-深度拷贝一集精通](https://www.bilibili.com/video/BV1KM4y1E7GJ/)
-
-## 联系我
-
-> 个人网站：[代码笔耕](https://easii.gitee.io)
-
-> 微信交流群
-
-![微信交流群](http://cos.easii.cn/wechat_20240315192612.jpg)
-
-> vx : Clue8a796d01
-
-![Clue8a796d01](http://cos.easii.cn/20230609091707.webp)
-
-> 公众号：**代码笔耕**
-
-![代码笔耕](http://cos.easii.cn/qrcode_for_gh_c207b35e04b8_344.webp)
