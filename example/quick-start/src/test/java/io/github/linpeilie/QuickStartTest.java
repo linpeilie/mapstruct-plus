@@ -1,20 +1,12 @@
 package io.github.linpeilie;
 
 import cn.hutool.core.date.DateUtil;
-import io.github.linpeilie.model.Goods;
-import io.github.linpeilie.model.GoodsDto;
-import io.github.linpeilie.model.GoodsStateEnum;
-import io.github.linpeilie.model.MapModelA;
-import io.github.linpeilie.model.User;
-import io.github.linpeilie.model.UserDto;
-import io.github.linpeilie.model.UserVO;
+import io.github.linpeilie.model.*;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.junit.jupiter.api.Test;
 
 public class QuickStartTest {
@@ -144,6 +136,20 @@ public class QuickStartTest {
         goodsDto1.setState(1);
         final Goods goods1 = converter.convert(goodsDto1, Goods.class);
         System.out.println(goods1);
+    }
+
+    /**
+     * 测试一个类上使用@AutoMapper多次，不使用@AutoMappers声明
+     */
+    @Test
+    public void testMultiMapper() {
+        Domain domain = new Domain("abc");
+
+        DomainDTO dto = converter.convert(domain, DomainDTO.class);
+        DomainVO vo = converter.convert(domain, DomainVO.class);
+
+        assert Objects.equals(domain.getValue(), dto.getDtoValue());
+        assert Objects.equals(vo.getVoValue(), dto.getDtoValue());
     }
 
 }

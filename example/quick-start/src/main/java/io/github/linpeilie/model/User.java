@@ -22,6 +22,7 @@ public class User {
 
     @AutoMapping(targetClass = UserDto.class, target = "birthday", dateFormat = "yyyy-MM-dd HH:mm:ss")
     @AutoMapping(targetClass = UserVO.class, target = "birthday", ignore = true)
+    @AutoMapping(targetClass = UserVO.class, target = "birthday2")
     private Date birthday;
 
     @AutoMapping(targetClass = UserDto.class, target = "assets", numberFormat = "$0.00")
