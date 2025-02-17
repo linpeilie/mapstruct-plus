@@ -144,6 +144,10 @@ MapStruct Plus 是对 MapStruct 框架的一个增强，只做增强，不做修
 - [Github](https://github.com/linpeilie/mapstruct-plus)
 - [彻底干掉 BeanUtils，最优雅的 Mapstruct 增强工具全新出炉](https://juejin.cn/post/7204307381688909882)
 
+## 推广链接
+
+- [雨云](https://www.rainyun.com/NDc3MjA5_)
+
 ## 个人主页
 
 - [代码笔耕](https://easii.gitee.io/)
