@@ -1,11 +1,9 @@
 package io.github.linpeilie.annotations;
 
 import io.github.linpeilie.DefaultMapping;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+
+import java.lang.annotation.*;
+
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Condition;
 import org.mapstruct.Mapper;
@@ -20,6 +18,7 @@ import static org.mapstruct.NullValueCheckStrategy.ON_IMPLICIT_CONVERSION;
 
 @Target({ElementType.FIELD, ElementType.METHOD,ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.CLASS)
+@Repeatable(AutoMappings.class)
 public @interface AutoMapping {
 
     Class<?> targetClass() default DefaultMapping.class;

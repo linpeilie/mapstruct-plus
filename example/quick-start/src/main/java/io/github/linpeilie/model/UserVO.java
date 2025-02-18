@@ -14,6 +14,8 @@ public class UserVO {
 
     private Date birthday;
 
+    private Date birthday2;
+
     private double assets;
 
     private String voField;
