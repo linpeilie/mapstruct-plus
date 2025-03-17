@@ -24,8 +24,8 @@
             <artifactId>mapstruct-plus</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.baidu.lbsyun</groupId>
-            <artifactId>javapoet</artifactId>
+            <groupId>cn.easii</groupId>
+            <artifactId>tutelary-repackage-javapoet</artifactId>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>

@@ -1,6 +1,6 @@
 package io.github.linpeilie.processor.metadata;
 
-import com.squareup.javapoet.TypeName;
+import cn.easii.tutelary.deps.com.squareup.javapoet.TypeName;
 import io.github.linpeilie.processor.utils.MapperUtils;
 
 public class AutoEnumMapperMetadata extends AbstractMapperMetadata {

@@ -1,9 +1,9 @@
 package io.github.linpeilie.processor;
 
-import com.squareup.javapoet.ArrayTypeName;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
+import cn.easii.tutelary.deps.com.squareup.javapoet.ArrayTypeName;
+import cn.easii.tutelary.deps.com.squareup.javapoet.ClassName;
+import cn.easii.tutelary.deps.com.squareup.javapoet.ParameterizedTypeName;
+import cn.easii.tutelary.deps.com.squareup.javapoet.TypeName;
 import io.github.linpeilie.annotations.AutoEnumMapper;
 import io.github.linpeilie.annotations.AutoMapMapper;
 import io.github.linpeilie.annotations.ComponentModelConfig;

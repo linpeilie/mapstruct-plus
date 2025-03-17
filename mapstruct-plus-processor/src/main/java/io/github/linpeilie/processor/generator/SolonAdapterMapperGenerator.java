@@ -1,7 +1,7 @@
 package io.github.linpeilie.processor.generator;
 
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.ClassName;
+import cn.easii.tutelary.deps.com.squareup.javapoet.AnnotationSpec;
+import cn.easii.tutelary.deps.com.squareup.javapoet.ClassName;
 import io.github.linpeilie.utils.CollectionUtils;
 import java.util.Collection;
 import java.util.List;
