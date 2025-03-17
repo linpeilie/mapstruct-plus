@@ -58,17 +58,22 @@ fotter:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.4.6</version>
+    <version>1.4.7</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.6'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.7'
 ```
 
 ## Change Log
+
+### 1.4.7
+
+- Fixed the issue where the generated conversion implementation class conflicted when using the default `Eclipse jdt.core` environment in Vscode;
+- Repackaged `javapoet` to prevent conflicts with other projects.
 
 ### 1.4.6
 
@@ -90,42 +95,6 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 - **feat**: Added `spring-lazy` option to `ComponentModel` for lazy loading Spring Beans, resolving mutual dependency issues, and set this option as the default configuration.
 - **fix**: Fixed the issue where the default configuration for `unmappedTargetPolicy` was not effective.
 - **enhance**: Optimized IDEA local development build efficiency, reducing build time and metaspace usage to some extent.[Issue #89](https://github.com/linpeilie/mapstruct-plus/issues/89)
-
-### 1.4.2
-
-- **feat**: Added the `mapperNameSuffix` attribute to the `AutoMapper` annotation. This supports adding a suffix to the generated conversion interface name, and the reverse conversion interface will be effective under the default rules.
-- **feat**: Adapted the `Mapper` annotation to support the following attributes: `unmappedSourcePolicy`, `unmappedTargetPolicy`, `typeConversionPolicy`, `collectionMappingStrategy`, `nullValueMappingStrategy`, `nullValueIterableMappingStrategy`, `nullValuePropertyMappingStrategy`, `nullValueCheckStrategy`, and `mappingControl`.
-- **feat**: Adapted the `Mapping` annotation to support the following attributes: `constant`, `qualifiedBy`, `nullValueCheckStrategy`, `nullValuePropertyMappingStrategy`, and `mappingControl`.
-- **feat**: Adapted MapStruct configuration to support the following attributes: `typeConversionPolicy`, `collectionMappingStrategy`, `nullValueIterableMappingStrategy`, `nullValueMapMappingStrategy`, `nullValueCheckStrategy`, `mappingControl`, `unexpectedValueMappingException`, and `suppressTimestampInGenerated`.
-- **fix**: Resolved the issue of class name conflicts generated in different packages within the same module.
-- **feat**: Added the `reverseConvertGenerate` attribute to the `AutoMapping` annotation to control whether to generate reverse conversion logic, adapting to more complex application scenarios.
-- **fix**: Fixed the issue of conversion rule conflicts when both parent and child classes are configured in `targetClass`.
-- **fix**: Resolved class name conflicts of configuration classes and proxy classes in different modules.
-- **feat**: Added the `useEnums` attribute to `AutoMapper`, supporting manual configuration of required enums for conversion, solving the issue of automatic conversion of enums across modules.
-- Optimized the logic for generating conversion interfaces.
-
-### 1.4.0
-
-- **Optimize complex object conversion logic, take up less meta-space! and faster!**
-- Get rid of dependencies such as hutool, which currently only rely on MapStruct in the project.
-- The adaptation object loop nesting scenario
-- [feature#63](https://github.com/linpeilie/mapstruct-plus/pull/63) `AutoMapping`、`ReverseAutoMapping` supports `qualifiedByName`,`conditionQualifiedByName`,and `dependsOn` properties.
-- [issue#I93Z2Z](https://gitee.com/easii/mapstruct-plus/issues/I93Z2Z) `AutoMappings` supports configuration on methods.
-
-> Points to note for upgrading 1.4.0
-> - 1.4.0 and later versions, complex object comparisons reply on `ConvertMapperAdapter` generated in the project,
-    which may cause [`NoSuchMethodError`](/guide/faq.html) exceptions under multiple modules because the Class Loading mechanism 
-    will load only one, of course, this problem has been around before, and the odds are probably lower,
-    so be sure to configure the `adapterPackage` to avoid this problem with multiple modules.
-> - Map to object conversions still rely on class conversions in hutool, and additional `hutool-core` dependencies need to be introduced if this 
-    functionality is required.
-
-### 1.3.6
-
-- Compatible with internal class conversion.
-- The targetClass in the AutoMapping annotation supports configuring the parent class.
-- AutoMapperConfig and AutoMapMapperConfig package and class name generated automatically by the framework support configuration.
-- Supports AutoMapping annotations configured in the parent class.
 
 ……
 
