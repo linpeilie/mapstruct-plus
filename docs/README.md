@@ -77,6 +77,7 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 
 - 修复在 Vscode 软件中，默认使用 Eclipse jdt.core 环境下，生成的转换实现类冲突的问题；
 - 重新打包 javapoet，防止与其他项目冲突；
+- 升级 `spring-boot-autoconfigure` 版本号 `2.7.9` ---> `2.7.18`
 
 ### 1.4.6
 

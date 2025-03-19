@@ -10,6 +10,7 @@ description: MapStructPlus release log
 
 - Fixed the issue where the generated conversion implementation class conflicted when using the default `Eclipse jdt.core` environment in Vscode;
 - Repackaged `javapoet` to prevent conflicts with other projects.
+- Upgraded spring-boot-autoconfigure version from 2.7.9 to 2.7.18.
 
 ### 1.4.6
 
