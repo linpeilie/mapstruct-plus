@@ -61,19 +61,19 @@ footer:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.4.7</version>
+    <version>1.4.8</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.7'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.8'
 ```
 
 ## 更新日志
 
-### 1.4.7
+### 1.4.8
 
 - 修复在 Vscode 软件中，默认使用 Eclipse jdt.core 环境下，生成的转换实现类冲突的问题；
 - 重新打包 javapoet，防止与其他项目冲突；

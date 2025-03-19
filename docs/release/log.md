@@ -6,7 +6,7 @@ category:
 description: MapStructPlus release log
 ---
 
-### 1.4.7
+### 1.4.8
 
 - 修复在 Vscode 软件中，默认使用 Eclipse jdt.core 环境下，生成的转换实现类冲突的问题；
 - 重新打包 javapoet，防止与其他项目冲突；

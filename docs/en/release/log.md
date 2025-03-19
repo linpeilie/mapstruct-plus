@@ -6,7 +6,7 @@ category:
 description: MapStructPlus release log
 ---
 
-### 1.4.7
+### 1.4.8
 
 - Fixed the issue where the generated conversion implementation class conflicted when using the default `Eclipse jdt.core` environment in Vscode;
 - Repackaged `javapoet` to prevent conflicts with other projects.
