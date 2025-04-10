@@ -144,6 +144,10 @@ MapStruct Plus 是对 MapStruct 框架的一个增强，只做增强，不做修
 - [Github](https://github.com/linpeilie/mapstruct-plus)
 - [彻底干掉 BeanUtils，最优雅的 Mapstruct 增强工具全新出炉](https://juejin.cn/post/7204307381688909882)
 
+## 推广链接
+
+- [雨云](https://www.rainyun.com/NDc3MjA5_)
+
 ## 个人主页
 
 - [代码笔耕](https://easii.gitee.io/)
@@ -273,19 +277,3 @@ public class QuickStartTest {
 
 1. 给需要转换的类添加 `AutoMapper` 注解
 2. 获取 `Converter` 实例，调用 `convert` 方法即可
-
-## 联系我
-
-> 个人网站：[代码笔耕](https://easii.gitee.io)
-
-> 微信交流群
-
-![微信交流群](http://cos.easii.cn/wechat_20240315192612.jpg)
-
-> vx : Clue8a796d01
-
-![Clue8a796d01](http://cos.easii.cn/20230609091707.webp)
-
-> 公众号：**代码笔耕**
-
-![代码笔耕](http://cos.easii.cn/qrcode_for_gh_c207b35e04b8_344.webp)
