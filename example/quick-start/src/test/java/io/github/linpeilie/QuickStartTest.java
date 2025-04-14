@@ -1,13 +1,8 @@
 package io.github.linpeilie;
 
 import cn.hutool.core.date.DateUtil;
-import io.github.linpeilie.model.Goods;
-import io.github.linpeilie.model.GoodsDto;
-import io.github.linpeilie.model.GoodsStateEnum;
-import io.github.linpeilie.model.MapModelA;
-import io.github.linpeilie.model.User;
-import io.github.linpeilie.model.UserDto;
-import io.github.linpeilie.model.UserVO;
+import io.github.linpeilie.model.*;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,6 +10,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class QuickStartTest {
@@ -144,6 +141,25 @@ public class QuickStartTest {
         goodsDto1.setState(1);
         final Goods goods1 = converter.convert(goodsDto1, Goods.class);
         System.out.println(goods1);
+    }
+
+    @Test
+    public void multiMapperDeclareTest() {
+        User user = new User();
+        user.setUsername("testName");
+        user.setAge(12);
+
+        UserQuery userQuery1 = converter.convert(user, UserQuery.class);
+        Assertions.assertEquals("testName", userQuery1.getName());
+        Assertions.assertEquals(12, userQuery1.getAge());
+
+        UserDto userDto = new UserDto();
+        userDto.setUsername("testName2");
+        userDto.setAge(18);
+
+        UserQuery userQuery2 = converter.convert(userDto, UserQuery.class);
+        Assertions.assertEquals("testName2", userQuery2.getName());
+        Assertions.assertEquals(18, userQuery2.getAge());
     }
 
 }
