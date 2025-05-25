@@ -32,6 +32,11 @@ import static org.mapstruct.NullValueCheckStrategy.ON_IMPLICIT_CONVERSION;
 public @interface MapperConfig {
 
     /**
+     * 设置公共的转换器或其它 Mapper 类，在这里主要用途是设置全局共享的自定义转换类，不用再单个注解上重复设置 {@link org.mapstruct.MapperConfig#uses()}
+     */
+    Class<?>[] uses() default {};
+
+    /**
      * 所生成的 Mapper 接口的包
      * @return Mapper 接口自动生成后的包名，如果为空，则默认生成在要转换的类同包下
      */

@@ -1,13 +1,14 @@
 package io.github.linpeilie.processor;
 
 import com.squareup.javapoet.ClassName;
-import io.github.linpeilie.processor.utils.FileUtils;
 import io.github.linpeilie.processor.utils.IncrementMarkUtils;
-import org.mapstruct.NullValueMappingStrategy;
-import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.ReportingPolicy;
+
+import javax.lang.model.type.TypeMirror;
+import java.util.List;
 
 public class AutoMapperProperties {
+
+    private static List<TypeMirror> uses;
 
     private static String mapperPackage;
 
@@ -83,6 +84,14 @@ public class AutoMapperProperties {
     }
 
     /* ******************** getter/setter ******************** */
+
+    public static List<TypeMirror> getUses() {
+        return uses;
+    }
+
+    public static void setUses(List<TypeMirror> uses) {
+        AutoMapperProperties.uses = uses;
+    }
 
     public static String getMapperPackage() {
         return mapperPackage;
