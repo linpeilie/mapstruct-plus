@@ -1,10 +1,10 @@
 package io.github.linpeilie.processor.generator;
 
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.TypeSpec;
+import cn.easii.tutelary.deps.com.squareup.javapoet.AnnotationSpec;
+import cn.easii.tutelary.deps.com.squareup.javapoet.ClassName;
+import cn.easii.tutelary.deps.com.squareup.javapoet.CodeBlock;
+import cn.easii.tutelary.deps.com.squareup.javapoet.JavaFile;
+import cn.easii.tutelary.deps.com.squareup.javapoet.TypeSpec;
 import io.github.linpeilie.processor.AutoMapperProperties;
 import io.github.linpeilie.utils.CollectionUtils;
 import java.io.IOException;

@@ -1,6 +1,7 @@
 package io.github.linpeilie.processor;
 
-import com.squareup.javapoet.ClassName;
+import cn.easii.tutelary.deps.com.squareup.javapoet.ClassName;
+import io.github.linpeilie.processor.utils.FileUtils;
 import io.github.linpeilie.processor.utils.IncrementMarkUtils;
 
 import javax.lang.model.type.TypeMirror;

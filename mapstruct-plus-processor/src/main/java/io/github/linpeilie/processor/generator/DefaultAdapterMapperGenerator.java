@@ -1,10 +1,10 @@
 package io.github.linpeilie.processor.generator;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.TypeSpec;
+import cn.easii.tutelary.deps.com.squareup.javapoet.ClassName;
+import cn.easii.tutelary.deps.com.squareup.javapoet.CodeBlock;
+import cn.easii.tutelary.deps.com.squareup.javapoet.MethodSpec;
+import cn.easii.tutelary.deps.com.squareup.javapoet.ParameterSpec;
+import cn.easii.tutelary.deps.com.squareup.javapoet.TypeSpec;
 import io.github.linpeilie.processor.AbstractAdapterMapperGenerator;
 import io.github.linpeilie.processor.metadata.AbstractAdapterMethodMetadata;
 import java.util.Collection;

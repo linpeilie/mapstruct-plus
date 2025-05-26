@@ -61,17 +61,23 @@ footer:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.4.6</version>
+    <version>1.4.8</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.6'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.8'
 ```
 
 ## 更新日志
+
+### 1.4.8
+
+- 修复在 Vscode 软件中，默认使用 Eclipse jdt.core 环境下，生成的转换实现类冲突的问题；
+- 重新打包 javapoet，防止与其他项目冲突；
+- 升级 `spring-boot-autoconfigure` 版本号 `2.7.9` ---> `2.7.18`
 
 ### 1.4.6
 
@@ -86,39 +92,6 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 ### 1.4.4
 
 - fix: 修复部分Spring版本下找不到类的问题
-
-### 1.4.3
-
-- feat: `ComponentModel` 增加 `spring-lazy` 可选项，懒加载 Spring Bean，解决互相依赖的问题，并将默认配置改为该选项；
-- fix: 解决 `unmappedTargetPolicy` 默认配置不生效的问题；
-- enhance: 优化 IDEA 本地开发构建效率，一定程度上缩短构建时间、减小元空间占用；[Issue #89](https://github.com/linpeilie/mapstruct-plus/issues/89)
-
-### 1.4.2
-
-- feat: `AutoMapper` 注解增加 `mapperNameSuffix` 属性，支持配置生成的转换接口名称增加后缀，默认规则下生成的反向转换接口同时生效；
-- feat : 适配 `Mapper` 注解的 `unmappedSourcePolicy`、`unmappedTargetPolicy`、`typeConversionPolicy`、`collectionMappingStrategy`、`nullValueMappingStrategy`、`nullValueIterableMappingStrategy`、`nullValuePropertyMappingStrategy`、`nullValueCheckStrategy`、`mappingControl` 属性；
-- feat : 适配 `Mapping` 注解的 `constant`、`qualifiedBy`、`nullValueCheckStrategy`、`nullValuePropertyMappingStrategy`、`mappingControl`；
-- feat : 适配 MapStruct 配置的 `typeConversionPolicy`、`collectionMappingStrategy`、`nullValueIterableMappingStrategy`、`nullValueMapMappingStrategy`、`nullValueCheckStrategy`、`mappingControl`、`unexpectedValueMappingException`、`suppressTimestampInGenerated` 属性；
-- fix : 适配同一个模块中同类不同包生成类名冲突的问题；
-- feat : `AutoMapping` 注解增加 `reverseConvertGenerate`，控制是否生成反向转换逻辑，适配更加复杂的应用场景；
-- fix : 修复 `targetClass` 同时配置父类和子类时，转换规则冲突的问题；
-- fix : 修复不同模块配置类、代理类类名冲突的问题；
-- feat : `AutoMapper` 增加 `useEnums` 属性，支持手动配置转换时需要的枚举，解决跨模块枚举无法自动转换的问题；
-- 优化转换接口生成逻辑；
-
-### 1.4.0
-
-- **优化复杂对象转换逻辑，占用元空间更小！性能更快！**
-- 去除 hutool 等依赖，目前项目中只依赖了 MapStruct
-- 适配对象循环嵌套场景
-- [feature#63](https://github.com/linpeilie/mapstruct-plus/pull/63)`AutoMapping`、`ReverseAutoMapping` 支持 `qualifiedByName`、`conditionQualifiedByName` 和 `dependsOn` 属性
-- [issue#I93Z2Z](https://gitee.com/easii/mapstruct-plus/issues/I93Z2Z)`AutoMappings` 支持配置在方法上面
-
-> 升级 1.4.0 注意事项：    
-> - 1.4.0 及以后的版本，复杂对象比较依赖项目中生成的 `ConvertMapperAdapter`，
-> 在多模块下，由于类加载机制只会加载一个的原因，可能会导致 [`NoSuchMethodError`](/guide/faq.html) 的异常，
-> 当然，这个问题在之前也会有，几率可能低一些，所以多模块下，务必配置 `adapterPackage` 来避免该问题。
-> - Map 与对象的转换，还是依赖 hutool 中的类转换实现，如果需要该功能，需要额外引入 `hutool-core` 依赖包。
 
 ……
 

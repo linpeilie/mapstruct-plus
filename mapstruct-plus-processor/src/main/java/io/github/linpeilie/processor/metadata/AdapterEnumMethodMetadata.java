@@ -1,7 +1,7 @@
 package io.github.linpeilie.processor.metadata;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.TypeName;
+import cn.easii.tutelary.deps.com.squareup.javapoet.ClassName;
+import cn.easii.tutelary.deps.com.squareup.javapoet.TypeName;
 
 public class AdapterEnumMethodMetadata extends AbstractAdapterMethodMetadata {
 
