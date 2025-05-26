@@ -48,6 +48,11 @@ public class MapperConfigGenerator {
                 usesCodeBuilder.add(", $T.class", use);
             });
         }
+        if (CollectionUtils.isNotEmpty(AutoMapperProperties.getUses())) {
+            AutoMapperProperties.getUses().forEach(use -> {
+                usesCodeBuilder.add(", $T.class", use);
+            });
+        }
         CodeBlock usesCodeBlock = usesCodeBuilder.add("}").build();
         final AnnotationSpec.Builder builder = AnnotationSpec.builder(ClassName.get("org.mapstruct", "MapperConfig"))
             .addMember("componentModel",

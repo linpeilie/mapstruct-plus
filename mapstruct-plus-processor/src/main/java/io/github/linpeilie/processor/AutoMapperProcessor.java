@@ -367,6 +367,9 @@ public class AutoMapperProcessor extends AbstractProcessor {
         if (mapperConfigGem == null || !mapperConfigGem.isValid()) {
             return;
         }
+        if (mapperConfigGem.uses().hasValue()) {
+            AutoMapperProperties.setUses(mapperConfigGem.uses().get());
+        }
         if (mapperConfigGem.mapperPackage().hasValue()) {
             AutoMapperProperties.setMapperPackage(mapperConfigGem.mapperPackage().get());
         }
