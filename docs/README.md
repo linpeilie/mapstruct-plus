@@ -61,17 +61,27 @@ footer:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.4.8</version>
+    <version>1.5.0</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.8'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.5.0'
 ```
 
 ## 更新日志
+
+### 1.5.0
+
+- 升级 MapStruct 版本为 1.6.3
+  - 升级注意事项：MapStruct 1.6 增加了一个 Breaking Changes，升级后可能会导致有不兼容，详情可见 MapStruct [升级日志](https://github.com/mapstruct/mapstruct/releases)
+    > 在 MapStruct 1.6 中，增加了对源参数（source parameters）进行存在性检查的支持。
+    这意味着，即使你只想直接将一个源参数映射到某个目标属性，也需要使用新的注解 `@SourceParameterCondition` 或 `@Condition(appliesTo = ConditionStrategy.SOURCE_PARAMETERS)` 来定义存在性检查方法。
+- Converter 支持 Consumer 函数接口
+- [pr133](https://github.com/linpeilie/mapstruct-plus/pull/133) : AutoMapper、AutoMapping、ReverseAutoMapping 支持重复配置
+- [pr141](https://github.com/linpeilie/mapstruct-plus/pull/141) : MapperConfig 添加 uses 属性以配置全局共享的自定义转换类 
 
 ### 1.4.8
 
@@ -85,13 +95,6 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 - fix [#108](https://github.com/linpeilie/mapstruct-plus/issues/108) :  SpringContextUtils#getBeanFactory 方法改为静态；
 - [pr](https://github.com/linpeilie/mapstruct-plus/pull/114) : 增加注解批量增加 `AutoMapping`、`AutoMappings`、`ReverseAutoMapping`、`ReverseAutoMappings` 特性；
 
-### 1.4.5
-
-- fix: 修复 `ReverseAutoMappings` 配置不生效的问题
-
-### 1.4.4
-
-- fix: 修复部分Spring版本下找不到类的问题
 
 ……
 

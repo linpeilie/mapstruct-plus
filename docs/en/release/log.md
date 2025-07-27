@@ -6,6 +6,13 @@ category:
 description: MapStructPlus release log
 ---
 
+- Upgrade MapStruct version to 1.6.3
+    - Upgrade Notice: MapStruct 1.6 introduced breaking changes. Upgrading may cause compatibility issues. Refer to the MapStruct [Release Notes for details.] (https://github.com/mapstruct/mapstruct/releases)
+      > In MapStruct 1.6, support for presence checks on source parameters was added. This means that even if you want to map a source parameter directly to a target property, you must now define the presence check method using the new `@SourceParameterCondition` annotation or `@Condition(appliesTo = ConditionStrategy.SOURCE_PARAMETERS)`.
+- Converter now supports the Consumer functional interface
+- [pr133](https://github.com/linpeilie/mapstruct-plus/pull/133) : AutoMapper, AutoMapping, and ReverseAutoMapping now support repeated configurations.
+- [pr141](https://github.com/linpeilie/mapstruct-plus/pull/141) : Added the uses property to MapperConfig for configuring globally shared custom converter classes.
+
 ### 1.4.8
 
 - Fixed the issue where the generated conversion implementation class conflicted when using the default `Eclipse jdt.core` environment in Vscode;

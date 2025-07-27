@@ -10,6 +10,7 @@ import org.mapstruct.Condition;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.mapstruct.SourceParameterCondition;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
@@ -19,13 +20,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConditionalMethodWithSourceToTargetMapper {
 
-    @Condition
+    @SourceParameterCondition
     @Named("mapCustomerFromOrder")
     public boolean mapCustomerFromOrder(OrderDTO orderDTO) {
         return orderDTO != null && (orderDTO.getCustomerName() != null || mapAddressFromOrder(orderDTO));
     }
 
-    @Condition
+    @SourceParameterCondition
     @Named("mapAddressFromOrder")
     public boolean mapAddressFromOrder(OrderDTO orderDTO) {
         return orderDTO != null && (orderDTO.getLine1() != null || orderDTO.getLine2() != null);

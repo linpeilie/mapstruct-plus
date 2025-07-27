@@ -70,7 +70,7 @@ public class Converter {
         if (ObjectUtils.isNull(targetType)) {
             throw new ConvertException("targetType cannot be null");
         }
-        Class<?> sourceType = sourceList.getFirst().getClass();
+        Class<?> sourceType = sourceList.get(0).getClass();
         BaseMapper<S, T> mapper = (BaseMapper<S, T>) converterFactory.getMapper(sourceType, targetType);
         if (ObjectUtils.isNull(mapper)) {
             throw new ConvertException("cannot find converter from " + sourceType.getSimpleName() + " to " + targetType.getSimpleName());
@@ -116,7 +116,7 @@ public class Converter {
         if (ObjectUtils.isNull(targetType)) {
             throw new ConvertException("targetType cannot be null");
         }
-        Class<?> sourceType = sourceList.getFirst().getClass();
+        Class<?> sourceType = sourceList.get(0).getClass();
         BaseCycleAvoidingMapper<S, T> mapper = (BaseCycleAvoidingMapper<S, T>) converterFactory.getCycleAvoidingMapper(sourceType, targetType);
         if (ObjectUtils.isNull(mapper)) {
             throw new ConvertException("cannot find converter from " + sourceType.getSimpleName() + " to " + targetType.getSimpleName());
