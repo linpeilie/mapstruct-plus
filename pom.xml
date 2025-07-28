@@ -81,6 +81,13 @@
     <profiles>
         <profile>
             <id>deploy</id>
+            <dependencies>
+                <dependency>
+                    <groupId>pro.teamlead</groupId>
+                    <artifactId>java-maven-sonatype-starter</artifactId>
+                    <version>1.0.0</version>
+                </dependency>
+            </dependencies>
             <build>
                 <plugins>
                     <plugin>

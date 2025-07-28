@@ -5,22 +5,33 @@ on:
   workflow_dispatch:
 
 jobs:
-  release:
+  publish:
+
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: Install Java and Maven
-        uses: actions/setup-java@v1
+      - name: Set up JDK 8 for deploy to Sonatype
+        uses: actions/setup-java@v3
         with:
+          distribution: 'adopt'
           java-version: 8
+          server-id: central
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_CENTRAL_TOKEN
+          gpg-private-key: ${{ secrets.GPG_SECRET }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
-      - name: Release Maven package
-        uses: samuelmeuli/action-maven-publish@v1
-        with:
-          java-version: 8
-          nexus_username: ${{ secrets.OSSRH_USER }}
-          nexus_password: ${{ secrets.OSSRH_PASSWORD }}
-          gpg_private_key: ${{ secrets.GPG_SECRET }}
-          gpg_passphrase: ${{ secrets.GPG_PASSWORD }}
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+
+      - name: Prepare Maven environnement with Java 17 for deployment to Sonatype
+        run: export MAVEN_OPTS="--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED"
+
+      - name: Publish to Apache Maven Central
+        run: mvn deploy -Pdeploy
+        env:
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.NEXUS_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSWORD }}

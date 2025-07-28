@@ -9,6 +9,7 @@
         <version>${mapstruct-plus.version}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
+    <name>MapStruct Plus Object Convert</name>
 
     <artifactId>mapstruct-plus-object-convert</artifactId>
 

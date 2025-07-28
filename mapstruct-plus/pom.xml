@@ -9,6 +9,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <name>MapStruct Plus</name>
 
     <artifactId>mapstruct-plus</artifactId>
 
