@@ -58,17 +58,24 @@ fotter:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.4.8</version>
+    <version>1.5.0</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.4.8'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.5.0'
 ```
 
 ## Change Log
+
+- Upgrade MapStruct version to 1.6.3
+    - Upgrade Notice: MapStruct 1.6 introduced breaking changes. Upgrading may cause compatibility issues. Refer to the MapStruct [Release Notes for details.] (https://github.com/mapstruct/mapstruct/releases)
+      > In MapStruct 1.6, support for presence checks on source parameters was added. This means that even if you want to map a source parameter directly to a target property, you must now define the presence check method using the new `@SourceParameterCondition` annotation or `@Condition(appliesTo = ConditionStrategy.SOURCE_PARAMETERS)`.
+- Converter now supports the Consumer functional interface
+- [pr133](https://github.com/linpeilie/mapstruct-plus/pull/133) : AutoMapper, AutoMapping, and ReverseAutoMapping now support repeated configurations.
+- [pr141](https://github.com/linpeilie/mapstruct-plus/pull/141) : Added the uses property to MapperConfig for configuring globally shared custom converter classes.
 
 ### 1.4.8
 
@@ -81,21 +88,6 @@ implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-s
 - Modify the `SpringContextUtils` class name to prevent conflicts with other project class names;
 - fix [#108](https://github.com/linpeilie/mapstruct-plus/issues/108) :  SpringContextUtils#getBeanFactory method changes to static;
 - [PR](https://github.com/linpeilie/mapstruct-plus/pull/114) : increase annotation batch `AutoMapping`、`AutoMappings`、`ReverseAutoMapping`、`ReverseAutoMappings` features.
-
-
-### 1.4.5
-
-- fix: fiexed an issue where the `ReverseAutoMapping` configuration did not take effect.
-
-### 1.4.4
-
-- fix: fixed a problem with missing classes in some Spring release version.
-
-### 1.4.3
-
-- **feat**: Added `spring-lazy` option to `ComponentModel` for lazy loading Spring Beans, resolving mutual dependency issues, and set this option as the default configuration.
-- **fix**: Fixed the issue where the default configuration for `unmappedTargetPolicy` was not effective.
-- **enhance**: Optimized IDEA local development build efficiency, reducing build time and metaspace usage to some extent.[Issue #89](https://github.com/linpeilie/mapstruct-plus/issues/89)
 
 ……
 

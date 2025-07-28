@@ -18,11 +18,11 @@
     </modules>
 
     <properties>
-        <mapstruct-plus.version>1.4.8</mapstruct-plus.version>
+        <mapstruct-plus.version>1.5.0</mapstruct-plus.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
         <gem.version>1.0.0.Alpha3</gem.version>
         <hutool.version>5.8.26</hutool.version>
         <projectUrl>https://github.com/linpeilie/mapstruct-plus.git</projectUrl>
@@ -177,14 +177,23 @@
                 <version>2.8.2</version>
             </plugin>
             <plugin>
-                <groupId>org.sonatype.central</groupId>
-                <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.8.0</version>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.13</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <publishingServerId>central</publishingServerId>
-                    <autoPublish>true</autoPublish>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                    <stagingProgressTimeoutMinutes>300</stagingProgressTimeoutMinutes>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.thoughtworks.xstream</groupId>
+                        <artifactId>xstream</artifactId>
+                        <version>1.4.20</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
@@ -211,4 +220,12 @@
         <developerConnection>${projectUrl}</developerConnection>
         <url>${projectUrl}</url>
     </scm>
+    <distributionManagement>
+        <!-- Central Repository -->
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+  </distributionManagement>
+
 </project>
