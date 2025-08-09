@@ -33,12 +33,12 @@
             <dependency>
                 <groupId>io.github.linpeilie</groupId>
                 <artifactId>mapstruct-plus-object-convert</artifactId>
-                <version>${mapstruct-plus.version}</version>
+                <version>1.4.8</version>
             </dependency>
             <dependency>
                 <groupId>io.github.linpeilie</groupId>
                 <artifactId>mapstruct-plus</artifactId>
-                <version>${mapstruct-plus.version}</version>
+                <version>1.4.8</version>
             </dependency>
             <dependency>
                 <groupId>io.github.linpeilie</groupId>
@@ -53,12 +53,12 @@
             <dependency>
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
-                <version>${mapstruct.version}</version>
+                <version>1.5.5.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct-processor</artifactId>
-                <version>${mapstruct.version}</version>
+                <version>1.5.5.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -68,12 +68,12 @@
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-core</artifactId>
-                <version>${hutool.version}</version>
+                <version>5.8.26</version>
             </dependency>
             <dependency>
                 <groupId>org.mapstruct.tools.gem</groupId>
                 <artifactId>gem-api</artifactId>
-                <version>${gem.version}</version>
+                <version>1.0.0.Alpha3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
