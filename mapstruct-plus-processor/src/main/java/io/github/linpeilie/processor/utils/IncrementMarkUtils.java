@@ -27,8 +27,22 @@ public class IncrementMarkUtils {
 
             String line = randomAccessFile.readLine();
             if (line != null && !line.isEmpty()) {
-                mark = Integer.parseInt(line);
-                mark ++;
+                try {
+                    mark = Integer.parseInt(line);
+                    mark ++;
+                } catch (Exception e) {
+                    if (!file.delete() && file.exists()) {
+                        throw new UncheckedIOException(new IOException("Failed to delete invalid increment mark file."));
+                    }
+                    FileUtils.touch(file);
+                    randomAccessFile.close();
+                    randomAccessFile = new RandomAccessFile(file, "rw");
+                    channel.close();
+                    channel = randomAccessFile.getChannel();
+                    lock.release();
+                    lock = channel.lock();
+                    mark = 0;
+                }
             }
 
             randomAccessFile.setLength(0);
