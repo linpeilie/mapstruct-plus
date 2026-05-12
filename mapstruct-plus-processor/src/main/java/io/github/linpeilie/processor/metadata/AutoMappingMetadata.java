@@ -4,6 +4,7 @@ import cn.easii.tutelary.deps.com.squareup.javapoet.ClassName;
 import io.github.linpeilie.processor.ContextConstants;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class AutoMappingMetadata {
 
@@ -196,5 +197,35 @@ public class AutoMappingMetadata {
 
     public void setMappingControl(ClassName mappingControl) {
         this.mappingControl = mappingControl;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AutoMappingMetadata that = (AutoMappingMetadata) o;
+        return reverseConvertGenerate == that.reverseConvertGenerate &&
+               Objects.equals(targetClass, that.targetClass) && Objects.equals(target, that.target) &&
+               Objects.equals(source, that.source) && Objects.equals(dateFormat, that.dateFormat) &&
+               Objects.equals(numberFormat, that.numberFormat) &&
+               Objects.equals(expression, that.expression) &&
+               Objects.equals(defaultExpression, that.defaultExpression) &&
+               Objects.equals(conditionExpression, that.conditionExpression) &&
+               Objects.equals(ignore, that.ignore) && Objects.equals(defaultValue, that.defaultValue) &&
+               Objects.equals(qualifiedByName, that.qualifiedByName) &&
+               Objects.equals(conditionQualifiedByName, that.conditionQualifiedByName) &&
+               Objects.equals(dependsOn, that.dependsOn) && Objects.equals(constant, that.constant) &&
+               Objects.equals(qualifiedBy, that.qualifiedBy) &&
+               Objects.equals(nullValueCheckStrategy, that.nullValueCheckStrategy) &&
+               Objects.equals(nullValuePropertyMappingStrategy, that.nullValuePropertyMappingStrategy) &&
+               Objects.equals(mappingControl, that.mappingControl);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(targetClass, reverseConvertGenerate, target, source, dateFormat, numberFormat, expression,
+            defaultExpression, conditionExpression, ignore, defaultValue, qualifiedByName, conditionQualifiedByName,
+            dependsOn, constant, qualifiedBy, nullValueCheckStrategy, nullValuePropertyMappingStrategy, mappingControl);
     }
 }
