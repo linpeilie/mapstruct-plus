@@ -927,7 +927,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
         getSuperClass(ele).ifPresent(superClass -> list.addAll(buildFieldReverseMappingMetadata(superClass)));
 
         list.removeIf(Objects::isNull);
-        return list;
+        return deduplicateRecordFieldMappingMetadata(ele, list);
     }
 
     private AutoMappingMetadata buildAutoMappingMetadata(ReverseAutoMappingGem reverseAutoMappingGem, Element ele) {
@@ -1010,19 +1010,26 @@ public class AutoMapperProcessor extends AbstractProcessor {
         getSuperClass(autoMapperEle).ifPresent(superClass -> list.addAll(buildFieldMappingMetadata(superClass)));
 
         list.removeIf(Objects::isNull);
-        if ("RECORD".equals(autoMapperEle.getKind().name())) {
-            List<AutoMappingMetadata> deduplicated = list.stream().distinct().collect(Collectors.toList());
-            int duplicateCount = list.size() - deduplicated.size();
-            if (duplicateCount > 0) {
-                messager.printMessage(Diagnostic.Kind.WARNING,
-                    String.format("Detected %d duplicate auto mapping configuration(s) on %s; duplicates will be ignored.",
-                        duplicateCount, autoMapperEle.getQualifiedName()),
-                    autoMapperEle);
-            }
-            return deduplicated;
-        }
-        return list;
+        return deduplicateRecordFieldMappingMetadata(autoMapperEle, list);
     }
+
+    private List<AutoMappingMetadata> deduplicateRecordFieldMappingMetadata(final TypeElement autoMapperEle,
+        final List<AutoMappingMetadata> list) {
+        if (!"RECORD".equals(autoMapperEle.getKind().name())) {
+            return list;
+        }
+
+        List<AutoMappingMetadata> deduplicated = list.stream().distinct().collect(Collectors.toList());
+        int duplicateCount = list.size() - deduplicated.size();
+        if (duplicateCount > 0) {
+            messager.printMessage(Diagnostic.Kind.WARNING,
+                String.format("Detected %d duplicate auto mapping configuration(s) on %s; duplicates will be ignored.",
+                    duplicateCount, autoMapperEle.getQualifiedName()),
+                autoMapperEle);
+        }
+        return deduplicated;
+    }
+
     /**
      * 处理注解上存在@AutoMapping的情况
      *
