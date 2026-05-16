@@ -1010,6 +1010,17 @@ public class AutoMapperProcessor extends AbstractProcessor {
         getSuperClass(autoMapperEle).ifPresent(superClass -> list.addAll(buildFieldMappingMetadata(superClass)));
 
         list.removeIf(Objects::isNull);
+        if ("RECORD".equals(autoMapperEle.getKind().name())) {
+            List<AutoMappingMetadata> deduplicated = list.stream().distinct().collect(Collectors.toList());
+            int duplicateCount = list.size() - deduplicated.size();
+            if (duplicateCount > 0) {
+                messager.printMessage(Diagnostic.Kind.WARNING,
+                    String.format("Detected %d duplicate auto mapping configuration(s) on %s; duplicates will be ignored.",
+                        duplicateCount, autoMapperEle.getQualifiedName()),
+                    autoMapperEle);
+            }
+            return deduplicated;
+        }
         return list;
     }
     /**
