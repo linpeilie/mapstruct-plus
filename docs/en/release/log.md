@@ -6,6 +6,12 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.5.1
+
+- fix [#172](https://github.com/linpeilie/mapstruct-plus/issues/172) : Fixed MapStruct compilation failures caused by duplicate target-property mappings when `@AutoMapping` or `@ReverseAutoMapping` is configured on records.
+
+### 1.5.0
+
 - Upgrade MapStruct version to 1.6.3
     - Upgrade Notice: MapStruct 1.6 introduced breaking changes. Upgrading may cause compatibility issues. Refer to the MapStruct [Release Notes for details.] (https://github.com/mapstruct/mapstruct/releases)
       > In MapStruct 1.6, support for presence checks on source parameters was added. This means that even if you want to map a source parameter directly to a target property, you must now define the presence check method using the new `@SourceParameterCondition` annotation or `@Condition(appliesTo = ConditionStrategy.SOURCE_PARAMETERS)`.

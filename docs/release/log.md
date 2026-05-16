@@ -7,6 +7,10 @@ description: MapStructPlus release log
 ---
 
 
+### 1.5.1
+
+- fix [#172](https://github.com/linpeilie/mapstruct-plus/issues/172) : 修复 record 中配置 `@AutoMapping`、`@ReverseAutoMapping` 时，重复生成相同目标属性映射导致 MapStruct 编译失败的问题；
+
 ### 1.5.0
 
 - 升级 MapStruct 版本为 1.6.3

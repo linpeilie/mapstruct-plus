@@ -61,17 +61,21 @@ footer:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.5.0</version>
+    <version>1.5.1</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.5.0'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.5.1'
 ```
 
 ## 更新日志
+
+### 1.5.1
+
+- fix [#172](https://github.com/linpeilie/mapstruct-plus/issues/172) : 修复 record 中配置 `@AutoMapping`、`@ReverseAutoMapping` 时，重复生成相同目标属性映射导致 MapStruct 编译失败的问题；
 
 ### 1.5.0
 
