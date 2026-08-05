@@ -276,3 +276,12 @@ public class MapStructPlusConfiguration {
 - **类型**：`boolean`
 - **默认值**：`false`
 - **对应编译参数**：`-Amapstruct.plus.suppressTimestampInGenerated`
+
+### mapObjectConverter
+
+> since `1.5.2`
+
+- **说明**：全局默认的 Map 转对象转换器实现类。当 `@AutoMapMapper(use = ...)` 未显式指定时，使用此实现。默认哨兵值表示未配置，将回退到内置默认 `HutoolMapObjectConverter`
+- **类型**：`Class<? extends MapObjectConverter>`
+- **默认值**：`MapObjectConverter.class`（哨兵值，表示未配置）
+- **对应编译参数**：`-Amapstruct.plus.mapObjectConverter`

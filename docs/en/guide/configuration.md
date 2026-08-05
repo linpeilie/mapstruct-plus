@@ -279,3 +279,12 @@ eg:
 - **Type**：`boolean`
 - **Default**：`false`
 - **Compile Parameter**：`-Amapstruct.plus.suppressTimestampInGenerated`
+
+### mapObjectConverter
+
+> since `1.5.2`
+
+- **Description**：Global default Map-to-object converter implementation class. Used when `@AutoMapMapper(use = ...)` is not explicitly specified. The default sentinel value means unconfigured, and will fall back to the built-in `HutoolMapObjectConverter`.
+- **Type**：`Class<? extends MapObjectConverter>`
+- **Default**：`MapObjectConverter.class` (sentinel value, meaning unconfigured)
+- **Compile Parameter**：`-Amapstruct.plus.mapObjectConverter`

@@ -9,6 +9,7 @@ import io.github.linpeilie.annotations.AutoMapMapper;
 import io.github.linpeilie.annotations.ComponentModelConfig;
 import io.github.linpeilie.annotations.ReverseAutoMapping;
 import io.github.linpeilie.processor.gem.AutoMapperGem;
+import io.github.linpeilie.processor.gem.AutoMapMapperGem;
 import io.github.linpeilie.processor.gem.AutoMappersGem;
 import io.github.linpeilie.processor.gem.AutoMappingGem;
 import io.github.linpeilie.processor.gem.AutoMappingsGem;
@@ -337,13 +338,16 @@ public class AutoMapperProcessor extends AbstractProcessor {
     }
 
     private AutoMapperMetadata buildAutoMapMapperMetadata(TypeElement element) {
-        if (element.getAnnotation(AutoMapMapper.class) == null) {
+        AutoMapMapperGem autoMapMapperGem = AutoMapMapperGem.instanceOn(element);
+        if (autoMapMapperGem == null || !autoMapMapperGem.isValid()) {
             return null;
         }
         ClassName source = ClassName.get(ContextConstants.Map.packageName, ContextConstants.Map.className);
         ClassName target = ClassName.get(element);
-        List<ClassName> uses = Collections.singletonList(
-            ClassName.get(ContextConstants.MapObjectConvert.packageName, ContextConstants.MapObjectConvert.className));
+
+        // 三级优先级解析转换器实现类
+        ClassName converterClass = resolveMapObjectConverter(autoMapMapperGem);
+        List<ClassName> uses = Collections.singletonList(converterClass);
 
         final AutoMapperMetadata autoMapperMetadata = new AutoMapMapperMetadata(source, target);
         autoMapperMetadata.setUsesClassNameList(uses);
@@ -353,6 +357,38 @@ public class AutoMapperProcessor extends AbstractProcessor {
         autoMapperMetadata.setMapstructConfigClass(
             ClassName.get(AutoMapperProperties.getConfigPackage(), AutoMapperProperties.getMapConfigClassName()));
         return autoMapperMetadata;
+    }
+
+    /**
+     * 三级优先级解析 MapObjectConverter 实现类：
+     * <ol>
+     *   <li>优先级 1：{@code @AutoMapMapper.use}（类级覆盖）</li>
+     *   <li>优先级 2：{@code @MapperConfig.mapObjectConverter}（全局默认，存于 AutoMapperProperties）</li>
+     *   <li>优先级 3：内置默认 {@code HutoolMapObjectConverter}</li>
+     * </ol>
+     */
+    private ClassName resolveMapObjectConverter(AutoMapMapperGem gem) {
+        // 优先级 1：@AutoMapMapper.use —— 用户显式指定的具体实现类
+        if (gem.use().hasValue()) {
+            ClassName useClass = transToClassName(gem.use().get());
+            if (useClass != null && !isMapObjectConverterInterface(useClass)) {
+                return useClass;
+            }
+        }
+        // 优先级 2：@MapperConfig.mapObjectConverter —— 全局配置
+        ClassName globalConverter = AutoMapperProperties.getMapObjectConverter();
+        if (globalConverter != null && !isMapObjectConverterInterface(globalConverter)) {
+            return globalConverter;
+        }
+        // 优先级 3：内置默认 HutoolMapObjectConverter
+        return ClassName.get(ContextConstants.MapObjectConverter.packageName,
+                             ContextConstants.MapObjectConverter.defaultImplClassName);
+    }
+
+    /** 判断是否为哨兵值（MapObjectConverter 接口本身） */
+    private boolean isMapObjectConverterInterface(ClassName className) {
+        return ContextConstants.MapObjectConverter.packageName.equals(className.packageName())
+            && ContextConstants.MapObjectConverter.className.equals(className.simpleName());
     }
 
     private void addAdapterMapMethod(AutoMapperMetadata metadata) {
@@ -415,6 +451,10 @@ public class AutoMapperProcessor extends AbstractProcessor {
         }
         if (mapperConfigGem.autoMapMapperConfigClassName().hasValue()) {
             AutoMapperProperties.setAutoMapMapperConfigClassName(mapperConfigGem.autoMapMapperConfigClassName().get());
+        }
+        if (mapperConfigGem.mapObjectConverter().hasValue()) {
+            AutoMapperProperties.setMapObjectConverter(
+                transToClassName(mapperConfigGem.mapObjectConverter().get()));
         }
     }
 

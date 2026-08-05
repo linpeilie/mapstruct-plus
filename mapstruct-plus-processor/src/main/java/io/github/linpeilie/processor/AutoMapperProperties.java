@@ -1,7 +1,6 @@
 package io.github.linpeilie.processor;
 
 import cn.easii.tutelary.deps.com.squareup.javapoet.ClassName;
-import io.github.linpeilie.processor.utils.FileUtils;
 import io.github.linpeilie.processor.utils.IncrementMarkUtils;
 
 import javax.lang.model.type.TypeMirror;
@@ -54,6 +53,8 @@ public class AutoMapperProperties {
     private static String autoMapperConfigClassName = ContextConstants.AutoConfig.autoMapperConfigClassName;
 
     private static String autoMapMapperConfigClassName = ContextConstants.AutoConfig.autoMapMapperConfigClassName;
+
+    private static ClassName mapObjectConverter;
 
     static {
         // load increment mark
@@ -268,5 +269,13 @@ public class AutoMapperProperties {
 
     public static void setAutoMapMapperConfigClassName(String autoMapMapperConfigClassName) {
         AutoMapperProperties.autoMapMapperConfigClassName = autoMapMapperConfigClassName;
+    }
+
+    public static ClassName getMapObjectConverter() {
+        return mapObjectConverter;
+    }
+
+    public static void setMapObjectConverter(ClassName mapObjectConverter) {
+        AutoMapperProperties.mapObjectConverter = mapObjectConverter;
     }
 }

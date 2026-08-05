@@ -97,3 +97,51 @@ public class QuickStartTest {
     }
 }
 ```
+
+## Custom Converter
+
+Since 1.5.2, the type converter of `@AutoMapMapper` can be fully customized to decouple from hutool.
+Three-level priority is supported, from highest to lowest:
+
+### 1. Class-level Override — `@AutoMapMapper(use = ...)`
+
+Specify a custom converter for a single class:
+
+```java
+public class MyConverter implements MapObjectConverter {
+    @Override
+    public String objToString(Object obj) {
+        // custom implementation
+    }
+    // ... implement remaining methods
+}
+
+@AutoMapMapper(use = MyConverter.class)
+public class MyModel {
+    // ...
+}
+```
+
+### 2. Global Default — `@MapperConfig(mapObjectConverter = ...)`
+
+Configure once, all `@AutoMapMapper` classes inherit it (also configurable via compiler argument `-Amapstruct.plus.mapObjectConverter=com.example.MyConverter`):
+
+```java
+@MapperConfig(mapObjectConverter = MyConverter.class)
+public class MapStructPlusConfiguration {
+}
+```
+
+### 3. Built-in Default
+
+When no converter is specified, falls back to `HutoolMapObjectConverter` (requires hutool-core), identical to previous versions.
+
+::: tip
+Custom converters must implement the `MapObjectConverter` interface and provide a public no-arg constructor.
+When using a custom converter, the hutool-core dependency is not required.
+:::
+
+::: warning
+When using the Spring/Spring Boot component model (default), custom converters must be registered as Spring Beans (e.g., add `@Component` annotation).
+The built-in `HutoolMapObjectConverter` is auto-registered by the framework.
+:::

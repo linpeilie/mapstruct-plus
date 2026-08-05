@@ -2,6 +2,7 @@ package io.github.linpeilie.processor.gem;
 
 import io.github.linpeilie.annotations.AutoMapper;
 import io.github.linpeilie.annotations.AutoMappers;
+import io.github.linpeilie.annotations.AutoMapMapper;
 import io.github.linpeilie.annotations.AutoMapping;
 import io.github.linpeilie.annotations.AutoMappings;
 import io.github.linpeilie.annotations.MapperConfig;
@@ -14,6 +15,7 @@ import org.mapstruct.tools.gem.GemDefinition;
 @GemDefinition(AutoMappers.class)
 @GemDefinition(AutoMapping.class)
 @GemDefinition(AutoMappings.class)
+@GemDefinition(AutoMapMapper.class)
 @GemDefinition(MapperConfig.class)
 @GemDefinition(ReverseAutoMapping.class)
 @GemDefinition(ReverseAutoMappings.class)

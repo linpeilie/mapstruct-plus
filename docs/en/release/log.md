@@ -6,6 +6,14 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.5.2
+
+- Refactored `MapObjectConvert` static utility class into `MapObjectConverter` interface + `HutoolMapObjectConverter` default implementation, making the type converter customizable;
+- Added `use` property to `@AutoMapMapper` for class-level converter override;
+- Added `mapObjectConverter` property to `@MapperConfig` for global converter configuration;
+- Added compiler argument `-Amapstruct.plus.mapObjectConverter` as an equivalent option;
+- **Breaking Change**: Removed `MapObjectConvert` class. Migration: `MapObjectConverter.getInstance(HutoolMapObjectConverter.class).objToString(value)`.
+
 ### 1.5.1
 
 - fix [#172](https://github.com/linpeilie/mapstruct-plus/issues/172) : Fixed MapStruct compilation failures caused by duplicate target-property mappings when `@AutoMapping` or `@ReverseAutoMapping` is configured on records.
