@@ -1,6 +1,7 @@
 package io.github.linpeilie;
 
 import io.github.linpeilie.annotations.MapperConfig;
+import io.github.linpeilie.converter.CustomConverter;
 import org.mapstruct.Builder;
 
 @MapperConfig(adapterClassName = "DemoConvertMapperAdapter",
@@ -9,6 +10,7 @@ import org.mapstruct.Builder;
     autoConfigPackage = "cn.easii",
     autoMapperConfigClassName = "EasiiAutoMapperConfig",
     autoMapMapperConfigClassName = "EasiiAutoMapMapperConfig",
+    mapObjectConverter = CustomConverter.class,
     builder = @Builder(disableBuilder = false))
 public class MapStructPlusConfiguration {
 }

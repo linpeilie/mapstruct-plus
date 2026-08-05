@@ -1,5 +1,6 @@
 package io.github.linpeilie.processor;
 
+import cn.easii.tutelary.deps.com.squareup.javapoet.ClassName;
 import io.github.linpeilie.utils.StrUtil;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +50,8 @@ public class ProcessorOptions {
 
     public static final String AUTO_MAP_MAPPER_CONFIG_CLASS_NAME = "mapstruct.plus.autoMapMapperConfigClassName";
 
+    public static final String MAP_OBJECT_CONVERTER = "mapstruct.plus.mapObjectConverter";
+
     public static Map<String, Consumer<String>> optionConsumers() {
         final Map<String, Consumer<String>> consumerMap = new HashMap<>();
 
@@ -78,6 +81,11 @@ public class ProcessorOptions {
         consumerMap.put(AUTO_CONFIG_PACKAGE, AutoMapperProperties::setAutoConfigPackage);
         consumerMap.put(AUTO_MAPPER_CONFIG_CLASS_NAME, AutoMapperProperties::setAutoMapperConfigClassName);
         consumerMap.put(AUTO_MAP_MAPPER_CONFIG_CLASS_NAME, AutoMapperProperties::setAutoMapMapperConfigClassName);
+        consumerMap.put(MAP_OBJECT_CONVERTER, value -> {
+            if (StrUtil.isNotEmpty(value)) {
+                AutoMapperProperties.setMapObjectConverter(ClassName.bestGuess(value));
+            }
+        });
         return consumerMap;
     }
 

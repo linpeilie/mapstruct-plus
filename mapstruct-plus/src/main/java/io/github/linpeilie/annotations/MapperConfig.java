@@ -18,6 +18,8 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.control.MappingControl;
 
+import io.github.linpeilie.map.MapObjectConverter;
+
 import static org.mapstruct.NullValueCheckStrategy.ON_IMPLICIT_CONVERSION;
 
 /**
@@ -214,5 +216,18 @@ public @interface MapperConfig {
      * @return  AutoMapMapperConfig 类名
      */
     String autoMapMapperConfigClassName() default "";
+
+    /**
+     * 全局默认的 Map 转对象转换器实现类。
+     * <p>
+     * 当 {@link AutoMapMapper#use()} 未显式指定时，使用此实现。
+     * 默认为哨兵值 {@code MapObjectConverter.class}（接口自身），表示未配置，
+     * processor 将回退到内置默认 {@code HutoolMapObjectConverter}。
+     *
+     * @since 1.5.2
+     *
+     * @return 转换器实现类，默认哨兵值表示未配置
+     */
+    Class<? extends MapObjectConverter> mapObjectConverter() default MapObjectConverter.class;
 
 }

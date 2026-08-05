@@ -1,6 +1,5 @@
 package io.github.linpeilie.processor.enhance.model;
 
-import io.github.linpeilie.processor.enhance.processor.SpringComponentProcessor;
 import java.util.HashSet;
 import java.util.Set;
 import org.mapstruct.ap.internal.model.MapperReference;

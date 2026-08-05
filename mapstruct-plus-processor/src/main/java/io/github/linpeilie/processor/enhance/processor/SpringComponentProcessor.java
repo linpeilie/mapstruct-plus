@@ -1,6 +1,7 @@
 package io.github.linpeilie.processor.enhance.processor;
 
 import io.github.linpeilie.processor.ContextConstants;
+import io.github.linpeilie.processor.enhance.model.MapObjectConverterMapperReference;
 import io.github.linpeilie.processor.enhance.model.SpringDelayInjectMapperReference;
 import io.github.linpeilie.utils.CollectionUtils;
 import java.util.Collections;
@@ -9,6 +10,7 @@ import org.mapstruct.ap.internal.gem.InjectionStrategyGem;
 import org.mapstruct.ap.internal.model.Annotation;
 import org.mapstruct.ap.internal.model.Field;
 import org.mapstruct.ap.internal.model.Mapper;
+import org.mapstruct.ap.internal.model.common.Type;
 import org.mapstruct.ap.internal.processor.AnnotationBasedComponentModelProcessor;
 
 public class SpringComponentProcessor extends AnnotationBasedComponentModelProcessor {
@@ -41,7 +43,15 @@ public class SpringComponentProcessor extends AnnotationBasedComponentModelProce
     protected Field replacementMapperReference(Field originalReference,
         List<Annotation> annotations,
         InjectionStrategyGem injectionStrategy) {
-        return new SpringDelayInjectMapperReference(originalReference.getType(), originalReference.getVariableName(),
+        Type refType = originalReference.getType();
+        // MapObjectConverter 实现类通过 getInstance() 获取单例，不走 Spring Bean 注入
+        Type converterInterface = getTypeFactory().getType(
+            ContextConstants.MapObjectConverter.packageName + "." + ContextConstants.MapObjectConverter.className);
+        if (refType.isAssignableTo(converterInterface)) {
+            return new MapObjectConverterMapperReference(refType, originalReference.getVariableName(),
+                originalReference.isUsed(), converterInterface);
+        }
+        return new SpringDelayInjectMapperReference(refType, originalReference.getVariableName(),
             originalReference.isUsed(),
             getTypeFactory().getType("io.github.linpeilie.mapstruct.SpringContextUtils4Msp"));
     }

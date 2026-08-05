@@ -111,9 +111,11 @@ public interface ContextConstants {
         String className = "Map";
     }
 
-    interface MapObjectConvert {
+    interface MapObjectConverter {
         String packageName = "io.github.linpeilie.map";
-        String className = "MapObjectConvert";
+        String className = "MapObjectConverter";
+        /** 内置默认实现类名 */
+        String defaultImplClassName = "HutoolMapObjectConverter";
     }
 
     interface DoIgnore {
