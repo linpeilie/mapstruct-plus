@@ -58,17 +58,25 @@ fotter:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.5.1</version>
+    <version>1.5.2</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.5.1'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.5.2'
 ```
 
 ## Change Log
+
+### 1.5.2
+
+- Refactored `MapObjectConvert` static utility class into `MapObjectConverter` interface + `HutoolMapObjectConverter` default implementation, making the type converter customizable;
+- Added `use` property to `@AutoMapMapper` for class-level converter override;
+- Added `mapObjectConverter` property to `@MapperConfig` for global converter configuration;
+- Added compiler argument `-Amapstruct.plus.mapObjectConverter` as an equivalent option;
+- **Breaking Change**: Removed `MapObjectConvert` class. Migration: `MapObjectConverter.getInstance(HutoolMapObjectConverter.class).objToString(value)`.
 
 ### 1.5.1
 

@@ -61,17 +61,25 @@ footer:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.5.1</version>
+    <version>1.5.2</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.5.1'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.5.2'
 ```
 
 ## 更新日志
+
+### 1.5.2
+
+- 将 `MapObjectConvert` 静态工具类重构为 `MapObjectConverter` 接口 + `HutoolMapObjectConverter` 默认实现，使类型转换器可自定义；
+- `@AutoMapMapper` 新增 `use` 属性，支持类级指定转换器实现；
+- `@MapperConfig` 新增 `mapObjectConverter` 属性，支持全局配置转换器实现；
+- 新增编译参数 `-Amapstruct.plus.mapObjectConverter` 等价入口；
+- **Breaking Change**：删除 `MapObjectConvert` 类，迁移方式 `MapObjectConverter.getInstance(HutoolMapObjectConverter.class).objToString(value)`。
 
 ### 1.5.1
 
