@@ -8,6 +8,7 @@ import io.github.linpeilie.annotations.AutoEnumMapper;
 import io.github.linpeilie.annotations.AutoMapMapper;
 import io.github.linpeilie.annotations.ComponentModelConfig;
 import io.github.linpeilie.annotations.ReverseAutoMapping;
+import io.github.linpeilie.module.MapperKind;
 import io.github.linpeilie.processor.gem.AutoMapperGem;
 import io.github.linpeilie.processor.gem.AutoMapMapperGem;
 import io.github.linpeilie.processor.gem.AutoMappersGem;
@@ -40,6 +41,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -110,6 +112,8 @@ public class AutoMapperProcessor extends AbstractProcessor {
 
     private final List<AutoMapperMetadata> mapperList = new ArrayList<>();
 
+    private final List<ClassName> mapMapperClasses = new ArrayList<>();
+
     private final List<TypeMirror> customMapperList = new ArrayList<>();
 
     private final Set<String> mapperSet = new HashSet<>();
@@ -145,6 +149,10 @@ public class AutoMapperProcessor extends AbstractProcessor {
         return ContextConstants.Annotations.mapperConfig.contentEquals(annotation.getQualifiedName());
     }
 
+    private boolean isCustomMapperAnnotation(TypeElement annotation) {
+        return ContextConstants.Annotations.mapper.contentEquals(annotation.getQualifiedName());
+    }
+
     private boolean isComponentModelConfigAnnotation(TypeElement annotation) {
         return ContextConstants.Annotations.componentModel.contentEquals(annotation.getQualifiedName());
     }
@@ -173,6 +181,9 @@ public class AutoMapperProcessor extends AbstractProcessor {
         final boolean hasAutoMapMappers = annotations.stream().anyMatch(this::isAutoMappersAnnotation);
         final boolean hasMapperConfig = annotations.stream().anyMatch(this::isMapperConfigAnnotation);
         if (!hasAutoMapper && !hasAutoMapMapper && !hasAutoEnumMapper && !hasAutoMapMappers && !hasMapperConfig) {
+            // 仅含自定义 @Mapper（spring-lazy 下产物无 @Component）的编译单元同样依赖清单注册，
+            // 走轻量路径只写清单（幂等，不参与生成流程，生成轮次重入亦无害）
+            writeCustomMappersManifest(annotations, roundEnv);
             return;
         }
         // 刷新配置
@@ -226,6 +237,36 @@ public class AutoMapperProcessor extends AbstractProcessor {
             new BuildCollator(processingEnv, ContextConstants.MetaInf.mappers));
 
         elements.forEach(element -> customMapperList.add(element.asType()));
+    }
+
+    /**
+     * 仅含自定义 @Mapper 接口（无任何 msp 注解）的编译单元的清单写入路径：
+     * 经 BuildCollator 增量合并收集 @Mapper 接口并追加写入清单，不参与 mapper 生成流程。
+     * 仅在主生成流程从未执行的编译单元生效——含 msp 生成物的模块（及其生成轮次，
+     * 生成的 mapper 接口同样带 @Mapper 注解）不进入本路径，其清单由
+     * {@link #writeModuleMappers} 统一负责
+     */
+    private void writeCustomMappersManifest(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
+        if (this.adapterMapperGenerator != null) {
+            // 主生成流程已执行过，自定义 mapper 已由 writeModuleMappers 写入
+            return;
+        }
+        if (annotations.stream().noneMatch(this::isCustomMapperAnnotation)) {
+            return;
+        }
+        final TypeElement mapperAnnotation =
+            processingEnv.getElementUtils().getTypeElement(ContextConstants.Mapper.qualifiedClassName);
+        if (mapperAnnotation == null) {
+            return;
+        }
+        final List<TypeElement> elements = getElementAndMergeHistory(roundEnv, mapperAnnotation,
+            new BuildCollator(processingEnv, ContextConstants.MetaInf.mappers));
+
+        Set<String> entries = new LinkedHashSet<>();
+        elements.forEach(element -> entries.add(
+            MapperKind.BEAN.manifestValue() + "=" + ClassName.get(element).reflectionName() + "Impl"));
+
+        new ModuleMappersCollator(processingEnv).appendEntries(entries);
     }
 
     private void processAutoEnumMapperAnnotation(final RoundEnvironment roundEnv, final TypeElement annotation) {
@@ -321,6 +362,7 @@ public class AutoMapperProcessor extends AbstractProcessor {
             .filter(Objects::nonNull)
             .forEach(metadata -> {
                 this.writeAutoMapperClassFile(metadata);
+                this.mapMapperClasses.add(metadata.mapperClass());
                 addAdapterMapMethod(metadata);
             });
 
@@ -620,6 +662,50 @@ public class AutoMapperProcessor extends AbstractProcessor {
                 AutoMapperProperties.getCycleAvoidingAdapterClassName(),
                 customMapperList);
         }
+
+        writeModuleMappers(needCycleAvoiding);
+    }
+
+    /**
+     * 将本模块全部生成产物写入 META-INF/mapstruct-plus/module-mappers 清单，
+     * 每行一条 {@code <kind>=<Impl 完整类名>}；增量编译按 读旧 → 合并 → 写回 处理。
+     * 枚举 Mapper 为静态方法接口，无需注册，不入清单。
+     */
+    private void writeModuleMappers(boolean needCycleAvoiding) {
+        Set<String> entries = new LinkedHashSet<>();
+
+        // mapper Impl：bean / cycle
+        mapperList.forEach(metadata -> entries.add(
+            (metadata.isCycleAvoiding() ? MapperKind.CYCLE : MapperKind.BEAN).manifestValue()
+                + "=" + metadata.mapperClass().reflectionName() + "Impl"));
+
+        // 自定义 mapper（@Mapper 注解的接口）：spring-lazy 下其 Impl 不带 @Component，同样入清单；
+        // 经 reflectionName 拼接以保证嵌套接口（Outer$Inner）的类名与 MapStruct 生成物二进制名一致
+        customMapperList.forEach(typeMirror -> entries.add(
+            MapperKind.BEAN.manifestValue() + "=" + ((ClassName) ClassName.get(typeMirror)).reflectionName() + "Impl"));
+
+        // map mapper Impl
+        mapMapperClasses.forEach(className -> entries.add(
+            MapperKind.MAP.manifestValue() + "=" + className.reflectionName() + "Impl"));
+
+        // 适配器：与本轮实际生成的适配器一一对应
+        entries.add(adapterEntry(AutoMapperProperties.getAdapterClassName()));
+        if (!mapMethodMap.isEmpty()) {
+            entries.add(adapterEntry(AutoMapperProperties.getMapAdapterClassName()));
+        }
+        if (needCycleAvoiding) {
+            entries.add(adapterEntry(AutoMapperProperties.getCycleAvoidingAdapterClassName()));
+        }
+
+        new ModuleMappersCollator(processingEnv).mergeAndWrite(entries);
+    }
+
+    /**
+     * 适配器清单条目（适配器位于统一配置的适配器包下，非 mapper 同包）
+     */
+    private String adapterEntry(String adapterClassName) {
+        return MapperKind.ADAPTER.manifestValue() + "="
+               + AutoMapperProperties.getAdapterPackage() + "." + adapterClassName;
     }
 
     private void mapperNameAddSuffix(AutoMapperMetadata metadata) {

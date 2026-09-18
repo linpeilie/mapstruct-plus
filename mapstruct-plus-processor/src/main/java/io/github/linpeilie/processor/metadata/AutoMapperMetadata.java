@@ -15,7 +15,9 @@ public class AutoMapperMetadata extends AbstractMapperMetadata {
     public AutoMapperMetadata(ClassName sourceClassName, ClassName targetClassName) {
         this.sourceClassName = sourceClassName;
         this.targetClassName = targetClassName;
-        this.mapperName = MapperUtils.getMapperClassName(sourceClassName.reflectionName(), targetClassName.reflectionName());
+        // 用 simpleName 而非反射名切割，避免嵌套类（Outer$Inner）污染生成的 mapper 类名；
+        // 对顶级类两者取值一致，行为不变
+        this.mapperName = MapperUtils.getMapperClassName(sourceClassName.simpleName(), targetClassName.simpleName());
     }
 
     private String mapperName;

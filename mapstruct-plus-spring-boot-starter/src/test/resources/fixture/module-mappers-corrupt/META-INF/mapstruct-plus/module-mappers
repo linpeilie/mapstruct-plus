@@ -1,0 +1,6 @@
+# 容错红线验证：以下脏条目必须被逐条 WARN 跳过，不得阻断注册，也不得影响唯一的有效条目
+bean=io.github.linpeilie.mapstruct.NotCompiledAnywhereImpl
+malformed-line-without-separator
+unknown=io.github.linpeilie.mapstruct.LibBToLibBDtoMapperImpl
+bean=Illegal Class Name
+bean=io.github.linpeilie.mapstruct.LibBToLibBDtoMapperImpl

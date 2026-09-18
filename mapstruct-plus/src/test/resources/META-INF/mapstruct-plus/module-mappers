@@ -1,0 +1,6 @@
+# 核心模块测试清单：含脏条目验证解析容忍性
+bean=io.github.linpeilie.teststub.Stubs$StubUserMapperImpl
+map=io.github.linpeilie.teststub.Stubs$StubMapModelMapperImpl
+adapter=io.github.linpeilie.teststub.NotExistAdapter
+bad-line-without-separator
+unknown=io.github.linpeilie.teststub.Stubs$StubUserMapperImpl

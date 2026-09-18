@@ -3,7 +3,6 @@ package io.github.linpeilie.processor.enhance.processor;
 import io.github.linpeilie.processor.ContextConstants;
 import io.github.linpeilie.processor.enhance.model.MapObjectConverterMapperReference;
 import io.github.linpeilie.processor.enhance.model.SpringDelayInjectMapperReference;
-import io.github.linpeilie.utils.CollectionUtils;
 import java.util.Collections;
 import java.util.List;
 import org.mapstruct.ap.internal.gem.InjectionStrategyGem;
@@ -15,18 +14,18 @@ import org.mapstruct.ap.internal.processor.AnnotationBasedComponentModelProcesso
 
 public class SpringComponentProcessor extends AnnotationBasedComponentModelProcessor {
 
-    private Annotation component() {
-        return new Annotation(getTypeFactory().getType("org.springframework.stereotype.Component"));
-    }
-
     @Override
     protected String getComponentModelIdentifier() {
         return ContextConstants.ComponentModelConfig.springLazy;
     }
 
+    /**
+     * spring 线注册通道整体替换：生成物不再携带 {@code @Component}，
+     * 注册统一由 ModuleMapperRegistrar 依据编译期清单完成；字段装配仍保留 spring-lazy 延迟注入
+     */
     @Override
     protected List<Annotation> getTypeAnnotations(Mapper mapper) {
-        return CollectionUtils.newArrayList(component());
+        return Collections.emptyList();
     }
 
     @Override

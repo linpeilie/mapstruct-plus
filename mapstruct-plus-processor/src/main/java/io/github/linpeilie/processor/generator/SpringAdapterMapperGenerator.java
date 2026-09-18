@@ -7,21 +7,19 @@ import java.util.List;
 
 public class SpringAdapterMapperGenerator extends IocAdapterMapperGenerator {
 
-    private AnnotationSpec component() {
-        return AnnotationSpec
-            .builder(ClassName.get("org.springframework.stereotype", "Component"))
-            .build();
-    }
-
     private AnnotationSpec autowired() {
         return AnnotationSpec
             .builder(ClassName.get("org.springframework.beans.factory.annotation", "Autowired"))
             .build();
     }
 
+    /**
+     * spring 线注册通道整体替换：适配器不再携带 {@code @Component}，
+     * 注册统一由 ModuleMapperRegistrar 依据编译期清单完成；{@code @Autowired} 字段装配语义不变
+     */
     @Override
     protected AnnotationSpec componentAnnotation() {
-        return component();
+        return null;
     }
 
     @Override
