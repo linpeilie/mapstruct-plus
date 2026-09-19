@@ -1,0 +1,2 @@
+# 模拟“类库”编译单元的清单：只记录 A 的产物，同包存在但未列入的 B（应用侧同包对象同理）不注册
+bean=io.github.linpeilie.mapstruct.LibAToLibADtoMapperImpl

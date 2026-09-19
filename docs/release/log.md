@@ -9,6 +9,20 @@ description: MapStructPlus release log
 
 ### 1.5.2
 
+- **Breaking Change**：spring 线注册机制整体替换——生成的 mapper 实现类与适配器不再携带 `@Component`，
+  注册统一由编译期清单 `META-INF/mapstruct-plus/module-mappers` 经 `ModuleMapperRegistrar`
+  （`ImportBeanDefinitionRegistrar`，starter 自动配置激活）完成，Bean 命名与实例化语义与扫描注册一致；
+  starter 不再提供 `@ComponentScan` 兜底，**classpath 上没有清单的产物不处理**；
+  所有含 mapstruct-plus 产物的模块必须统一升级到同版本 core / processor / starter 并重新构建；
+  配置类中 `@ConditionalOnBean(XxxMapper.class)` 因求值时机早于 Registrar 注册不再命中，
+  需改用 `@ConditionalOnClass` 等条件，详见 [类库 / Starter 集成指南](/guide/library-integration.md)；
+- 类库 / starter 自治：mapper 注册不再依赖消费方应用的 `@ComponentScan` 扫描范围，
+  按编译单元隔离的清单精确界定注册边界，消灭扫描盲区导致的静默失效；
+- 支持嵌套类型作为映射对象（生成的 mapper 名改用 simpleName 拼接，顶级类型行为不变）；
+- 自定义 `@Mapper` 接口的实现类同样入清单（spring-lazy 组件模型下其产物不再带 `@Component`）；
+- 纯 Java 线 `DefaultConverterFactory` 同样只按清单识别加载（不再全量扫描 classpath，
+  修复 Boot 嵌套式 fat jar 漏注册），没有清单内容的产物不处理；
+- 容错红线：清单中读取失败 / 行格式非法 / 类缺失的条目一律 WARN 跳过，不阻断容器启动；
 - 将 `MapObjectConvert` 静态工具类重构为 `MapObjectConverter` 接口 + `HutoolMapObjectConverter` 默认实现，使类型转换器可自定义；
 - `@AutoMapMapper` 新增 `use` 属性，支持类级指定转换器实现；
 - `@MapperConfig` 新增 `mapObjectConverter` 属性，支持全局配置转换器实现；

@@ -1,0 +1,2 @@
+# 与 module-mappers-only-lib-a 清单重复列出 A 的条目，验证跨清单查重
+bean=io.github.linpeilie.mapstruct.LibAToLibADtoMapperImpl

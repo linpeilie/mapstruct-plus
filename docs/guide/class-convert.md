@@ -487,6 +487,13 @@ public interface TyreMapper {
  
 生成的 `Car` 与 `CarDto` 转换接口的实现类如下：
 
+::: tip
+自 1.5.2 起，生成的实现类不再携带 `@Component`，注册由编译期清单
+`META-INF/mapstruct-plus/module-mappers` 经 `ModuleMapperRegistrar` 完成；
+依赖字段的延迟获取装配（`SpringContextUtils4Msp`）保持不变。
+详见 [类库 / Starter 集成指南](/guide/library-integration.md)。
+:::
+
 :::: code-group
 ::: CarToCarDtoMapperImpl
 ```java
@@ -495,11 +502,9 @@ public interface TyreMapper {
     date = "2023-04-24T15:38:48+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 1.8.0_202 (Oracle Corporation)"
 )
-@Component
 public class CarToCarDtoMapperImpl implements CarToCarDtoMapper {
 
-    @Autowired
-    private TyreMapper tyreMapper;
+    private TyreMapper tyreMapper = SpringContextUtils4Msp.getBean("tyreMapper", TyreMapper.class);
 
     @Override
     public CarDto convert(Car source) {
@@ -534,11 +539,9 @@ public class CarToCarDtoMapperImpl implements CarToCarDtoMapper {
     date = "2023-04-24T15:38:49+0800",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 1.8.0_202 (Oracle Corporation)"
 )
-@Component
 public class CarDtoToCarMapperImpl implements CarDtoToCarMapper {
 
-    @Autowired
-    private TyreMapper tyreMapper;
+    private TyreMapper tyreMapper = SpringContextUtils4Msp.getBean("tyreMapper", TyreMapper.class);
 
     @Override
     public Car convert(CarDto source) {

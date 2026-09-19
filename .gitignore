@@ -50,3 +50,5 @@ node_modules/
 docs/.vuepress/.cache/
 docs/.vuepress/.temp/
 docs/.vuepress/dist/
+### Maven flatten plugin ###
+.flattened-pom.xml

@@ -23,8 +23,12 @@ public abstract class IocAdapterMapperGenerator extends AbstractAdapterMapperGen
     @Override
     protected TypeSpec createTypeSpec(List<MethodSpec> methods, String adapterClassName, ClassName superClass) {
         TypeSpec.Builder adapterBuilder = TypeSpec.classBuilder(ClassName.get(adapterPackage(), adapterClassName))
-            .addModifiers(Modifier.PUBLIC)
-            .addAnnotation(componentAnnotation());
+            .addModifiers(Modifier.PUBLIC);
+
+        AnnotationSpec componentAnnotation = componentAnnotation();
+        if (componentAnnotation != null) {
+            adapterBuilder.addAnnotation(componentAnnotation);
+        }
 
         adapterBuilder.addField(buildConverterField());
 
