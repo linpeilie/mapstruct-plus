@@ -6,6 +6,17 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.5.3
+
+- [pr178](https://github.com/linpeilie/mapstruct-plus/pull/178) : **Breaking Change**: Reworked how converters are registered in Spring environments — registration no longer relies on the application's component scanning (`@ComponentScan`); converters are recorded automatically at compile time and registered by the framework at startup, so whether mapper packages are covered by component scanning no longer matters;
+  - Upgrade notes: **all modules using mapstruct-plus must be upgraded to 1.5.3 and rebuilt together** — converters compiled with older versions will no longer be registered;
+  - Using `@ConditionalOnBean(XxxMapper.class)` in configuration classes to check for a converter no longer works; use `@ConditionalOnClass` or similar conditions instead;
+  - Shade-style merged packaging and plain Spring applications without Spring Boot require a small amount of extra configuration — see the [Library / Starter Integration Guide](/guide/library-integration.md);
+- Libraries / starters built on mapstruct-plus now work out of the box: their built-in converters register correctly in any consuming application, completely eliminating the runtime "cannot find converter" failures caused by scan coverage;
+- Nested (inner) classes are now supported as mapping targets;
+- Faster startup when used in plain Java mode (non-Spring), and fixed an issue where some converters could not be found after the application was packaged as a Spring Boot fat jar;
+- Improved robustness: abnormal registration entries of individual converters are skipped with a warning instead of breaking application startup;
+
 ### 1.5.2
 
 - Refactored `MapObjectConvert` static utility class into `MapObjectConverter` interface + `HutoolMapObjectConverter` default implementation, making the type converter customizable;

@@ -61,17 +61,28 @@ footer:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.5.2</version>
+    <version>1.5.3</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.5.2'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.5.3'
 ```
 
 ## 更新日志
+
+### 1.5.3
+
+- [pr178](https://github.com/linpeilie/mapstruct-plus/pull/178) : **Breaking Change**：重做 Spring 环境下转换器的注册方式——不再依赖应用的包扫描（`@ComponentScan`），改由框架在编译期自动记录、启动时自动注册，mapper 所在包是否被扫描覆盖不再有影响；
+  - 升级注意：**所有使用 mapstruct-plus 的模块必须统一升级到 1.5.3 并重新构建**，旧版本编译产出的转换器将无法被注册；
+  - 配置类中通过 `@ConditionalOnBean(XxxMapper.class)` 判断转换器是否存在的写法不再生效，需改用 `@ConditionalOnClass` 等条件；
+  - 使用 shade 等方式合并打包、或非 Spring Boot 的纯 Spring 应用，需要少量额外配置，详见 [类库 / Starter 集成指南](/guide/library-integration.md)；
+- 基于 mapstruct-plus 开发的类库 / starter 现在开箱即用：其内置转换器在任何消费应用中都能正确注册，彻底解决因包扫描范围未覆盖、运行期才报"找不到转换器"的问题；
+- 支持嵌套类（内部类）作为映射对象；
+- 纯 Java 方式（非 Spring）使用时启动更快，并修复了应用打成 Spring Boot fat jar 后部分转换器找不到的问题；
+- 健壮性增强：个别转换器注册信息异常时仅告警跳过，不影响应用正常启动；
 
 ### 1.5.2
 

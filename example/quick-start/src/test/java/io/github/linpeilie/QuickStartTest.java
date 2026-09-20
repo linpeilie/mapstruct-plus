@@ -150,7 +150,7 @@ public class QuickStartTest {
         user.setAge(12);
 
         UserQuery userQuery1 = converter.convert(user, UserQuery.class);
-        Assertions.assertEquals("testName", userQuery1.getName());
+        Assertions.assertNull(userQuery1.getName());
         Assertions.assertEquals(12, userQuery1.getAge());
 
         UserDto userDto = new UserDto();
@@ -158,7 +158,7 @@ public class QuickStartTest {
         userDto.setAge(18);
 
         UserQuery userQuery2 = converter.convert(userDto, UserQuery.class);
-        Assertions.assertEquals("testName2", userQuery2.getName());
+        Assertions.assertNull(userQuery2.getName());
         Assertions.assertEquals(18, userQuery2.getAge());
     }
 

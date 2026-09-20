@@ -7,22 +7,19 @@ description: MapStructPlus release log
 ---
 
 
+### 1.5.3
+
+- [pr178](https://github.com/linpeilie/mapstruct-plus/pull/178) : **Breaking Change**：重做 Spring 环境下转换器的注册方式——不再依赖应用的包扫描（`@ComponentScan`），改由框架在编译期自动记录、启动时自动注册，mapper 所在包是否被扫描覆盖不再有影响；
+  - 升级注意：**所有使用 mapstruct-plus 的模块必须统一升级到 1.5.3 并重新构建**，旧版本编译产出的转换器将无法被注册；
+  - 配置类中通过 `@ConditionalOnBean(XxxMapper.class)` 判断转换器是否存在的写法不再生效，需改用 `@ConditionalOnClass` 等条件；
+  - 使用 shade 等方式合并打包、或非 Spring Boot 的纯 Spring 应用，需要少量额外配置，详见 [类库 / Starter 集成指南](/guide/library-integration.md)；
+- 基于 mapstruct-plus 开发的类库 / starter 现在开箱即用：其内置转换器在任何消费应用中都能正确注册，彻底解决因包扫描范围未覆盖、运行期才报"找不到转换器"的问题；
+- 支持嵌套类（内部类）作为映射对象；
+- 纯 Java 方式（非 Spring）使用时启动更快，并修复了应用打成 Spring Boot fat jar 后部分转换器找不到的问题；
+- 健壮性增强：个别转换器注册信息异常时仅告警跳过，不影响应用正常启动；
+
 ### 1.5.2
 
-- **Breaking Change**：spring 线注册机制整体替换——生成的 mapper 实现类与适配器不再携带 `@Component`，
-  注册统一由编译期清单 `META-INF/mapstruct-plus/module-mappers` 经 `ModuleMapperRegistrar`
-  （`ImportBeanDefinitionRegistrar`，starter 自动配置激活）完成，Bean 命名与实例化语义与扫描注册一致；
-  starter 不再提供 `@ComponentScan` 兜底，**classpath 上没有清单的产物不处理**；
-  所有含 mapstruct-plus 产物的模块必须统一升级到同版本 core / processor / starter 并重新构建；
-  配置类中 `@ConditionalOnBean(XxxMapper.class)` 因求值时机早于 Registrar 注册不再命中，
-  需改用 `@ConditionalOnClass` 等条件，详见 [类库 / Starter 集成指南](/guide/library-integration.md)；
-- 类库 / starter 自治：mapper 注册不再依赖消费方应用的 `@ComponentScan` 扫描范围，
-  按编译单元隔离的清单精确界定注册边界，消灭扫描盲区导致的静默失效；
-- 支持嵌套类型作为映射对象（生成的 mapper 名改用 simpleName 拼接，顶级类型行为不变）；
-- 自定义 `@Mapper` 接口的实现类同样入清单（spring-lazy 组件模型下其产物不再带 `@Component`）；
-- 纯 Java 线 `DefaultConverterFactory` 同样只按清单识别加载（不再全量扫描 classpath，
-  修复 Boot 嵌套式 fat jar 漏注册），没有清单内容的产物不处理；
-- 容错红线：清单中读取失败 / 行格式非法 / 类缺失的条目一律 WARN 跳过，不阻断容器启动；
 - 将 `MapObjectConvert` 静态工具类重构为 `MapObjectConverter` 接口 + `HutoolMapObjectConverter` 默认实现，使类型转换器可自定义；
 - `@AutoMapMapper` 新增 `use` 属性，支持类级指定转换器实现；
 - `@MapperConfig` 新增 `mapObjectConverter` 属性，支持全局配置转换器实现；
