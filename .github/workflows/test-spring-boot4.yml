@@ -1,0 +1,45 @@
+name: Spring Boot 4 compatibility
+
+on:
+  pull_request:
+    paths:
+      - 'pom.xml'
+      - 'mapstruct-plus*/**'
+      - '.github/workflows/test-spring-boot4.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'pom.xml'
+      - 'mapstruct-plus*/**'
+      - '.github/workflows/test-spring-boot4.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - java: '17'
+            boot: '4.0.3'
+            modules: 'mapstruct-plus-spring-boot-starter,mapstruct-plus-spring-boot-starter-4'
+          - java: '25'
+            boot: '4.1.2'
+            modules: 'mapstruct-plus-spring-boot-starter-4'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+      - name: Test starter registration and conversion
+        run: >-
+          mvn -B -ntp -pl ${{ matrix.modules }} -am
+          -Dspring-boot4.version=${{ matrix.boot }}
+          -Dtest=MapstructAutoConfigurationTest,ModuleMapperRegistrarTest
+          -Dsurefire.failIfNoSpecifiedTests=false test

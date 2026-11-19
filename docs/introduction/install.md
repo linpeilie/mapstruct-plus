@@ -61,6 +61,10 @@ dependencies {
 
 ## SpringBoot 环境
 
+Spring Boot 4 使用独立的 `mapstruct-plus-spring-boot-starter-4`，要求 JDK 17 或以上。
+请使用包含该模块的 MapStruct Plus 发布版本；它不能与旧 starter 同时引入。
+下面的通用示例继续使用原有 starter；Boot 4 的完整配置见本节末尾。
+
 ### Maven
 
 ```xml
@@ -105,3 +109,20 @@ dependencies {
     annotationProcessor 'io.github.linpeilie:mapstruct-plus-processor:最新版本'
 }
 ```
+
+### Spring Boot 4
+
+在现有 Boot 4 parent / BOM 下，替换 starter 依赖，保留相同版本的注解处理器：
+
+```xml
+<dependency>
+    <groupId>io.github.linpeilie</groupId>
+    <artifactId>mapstruct-plus-spring-boot-starter-4</artifactId>
+    <version>${mapstruct-plus.version}</version>
+</dependency>
+```
+
+编译器使用 `release` 17 或项目自己的更高 Java 基线，并显式声明 `annotationProcessorPaths`。
+JDK 23 起不能依赖类路径上的处理器被自动发现。运行时无需额外的 `@Import` 或组件扫描。
+完整 Maven / Gradle 配置、自动配置覆盖方式与兼容检查见
+[Boot 4 starter 手册](https://github.com/linpeilie/mapstruct-plus/tree/main/mapstruct-plus-spring-boot-starter-4)。

@@ -12,11 +12,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up JDK 8 for deploy to Sonatype
+      # Boot 4 requires JDK 17; legacy modules retain their Java 8 source/target settings.
+      - name: Set up JDK 17 for deploy to Sonatype
         uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
-          java-version: 8
+          java-version: 17
           server-id: central
           server-username: MAVEN_USERNAME
           server-password: MAVEN_CENTRAL_TOKEN

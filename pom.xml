@@ -12,7 +12,9 @@
     <description>mapstruct增强工具包</description>
     <modules>
         <module>mapstruct-plus</module>
+        <module>mapstruct-plus-spring</module>
         <module>mapstruct-plus-spring-boot-starter</module>
+        <module>mapstruct-plus-spring-boot-starter-4</module>
         <module>mapstruct-plus-processor</module>
         <module>mapstruct-plus-object-convert</module>
     </modules>
@@ -42,7 +44,17 @@
             </dependency>
             <dependency>
                 <groupId>io.github.linpeilie</groupId>
+                <artifactId>mapstruct-plus-spring</artifactId>
+                <version>${mapstruct-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.linpeilie</groupId>
                 <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
+                <version>${mapstruct-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.linpeilie</groupId>
+                <artifactId>mapstruct-plus-spring-boot-starter-4</artifactId>
                 <version>${mapstruct-plus.version}</version>
             </dependency>
             <dependency>
@@ -59,11 +71,6 @@
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct-processor</artifactId>
                 <version>${mapstruct.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-                <version>5.3.23</version>
             </dependency>
             <dependency>
                 <groupId>cn.hutool</groupId>

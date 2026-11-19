@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.github.linpeilie</groupId>
+        <artifactId>mapstruct-plus-pom</artifactId>
+        <version>${mapstruct-plus.version}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>mapstruct-plus-spring</artifactId>
+    <name>MapStruct Plus Spring Integration</name>
+    <description>Shared mapper registration and converter support for Spring Boot starters</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.linpeilie</groupId>
+            <artifactId>mapstruct-plus</artifactId>
+        </dependency>
+        <!-- Compile against the existing Java 8 API; each starter supplies its own Spring runtime. -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.3.23</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
