@@ -41,7 +41,8 @@ public class BuildCollator {
         try {
             FileObject fileObject = filer.getResource(StandardLocation.CLASS_OUTPUT, "",
                  ContextConstants.MetaInf.folder + fileName);
-            this.collatorFile = new File(fileObject.getName());
+            // JDT exposes a project-relative name; the URI identifies the actual output file.
+            this.collatorFile = new File(fileObject.toUri());
             if (collatorFile.exists()) {
                 records = FileUtils.readUtf8Lines(collatorFile)
                     .stream()
