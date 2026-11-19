@@ -61,7 +61,7 @@ dependencies {
 
 ## SpringBoot environment
 
-Spring Boot 4 uses the separate `mapstruct-plus-spring-boot-starter-4` and requires JDK 17 or newer.
+Spring Boot 4 uses the separate `mapstruct-plus-spring-boot4-starter` and requires JDK 17 or newer.
 Use a MapStruct Plus release containing that module and do not combine it with the existing starter.
 The examples below keep the existing starter; the Boot 4 setup is described at the end of this section.
 
@@ -118,7 +118,7 @@ at the same MapStruct Plus version:
 ```xml
 <dependency>
     <groupId>io.github.linpeilie</groupId>
-    <artifactId>mapstruct-plus-spring-boot-starter-4</artifactId>
+    <artifactId>mapstruct-plus-spring-boot4-starter</artifactId>
     <version>${mapstruct-plus.version}</version>
 </dependency>
 ```
@@ -126,6 +126,6 @@ at the same MapStruct Plus version:
 Use compiler `release` 17 or the application's higher Java baseline and configure `annotationProcessorPaths`
 explicitly. JDK 23 and newer do not discover processors implicitly from the classpath. No additional `@Import`
 or component scan is needed at runtime. See the
-[Boot 4 starter guide](https://github.com/linpeilie/mapstruct-plus/tree/main/mapstruct-plus-spring-boot-starter-4)
+[Boot 4 starter guide](https://github.com/linpeilie/mapstruct-plus/tree/main/mapstruct-plus-spring-boot4-starter)
 for complete Maven / Gradle setup, bean overrides, and compatibility checks.
 

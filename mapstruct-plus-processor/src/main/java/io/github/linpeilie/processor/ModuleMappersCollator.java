@@ -45,7 +45,8 @@ public class ModuleMappersCollator {
         try {
             FileObject fileObject = filer.getResource(StandardLocation.CLASS_OUTPUT, "",
                 ModuleMappers.LOCATION);
-            this.manifestFile = new File(fileObject.getName());
+            // JDT exposes a project-relative name; the URI identifies the actual output file.
+            this.manifestFile = new File(fileObject.toUri());
             if (manifestFile.exists()) {
                 FileUtils.readUtf8Lines(manifestFile).stream()
                     .filter(line -> ModuleMappers.parseLine(line).isPresent())

@@ -1,6 +1,6 @@
 # MapStruct Plus Spring Boot 4 Starter
 
-Use `mapstruct-plus-spring-boot-starter-4` with Spring Boot 4 and JDK 17 or newer.
+Use `mapstruct-plus-spring-boot4-starter` with Spring Boot 4 and JDK 17 or newer.
 Its version follows the MapStruct Plus release containing this module. Do not use it together with
 `mapstruct-plus-spring-boot-starter`; applications on older Boot versions keep the existing starter.
 
@@ -9,6 +9,10 @@ bytecode and the existing class names for mapper registration, converter lookup,
 context bridge. Each starter supplies its own Spring runtime. The Boot 4 starter is built against Boot 4.0.3;
 the compatibility workflow also exercises Boot 4.1.2 on JDK 25.
 
+The root reactor adds this module automatically through the `spring-boot4` profile when Maven runs
+on JDK 17 or newer. JDK 8 continues to build the existing modules. The independent compatibility
+application also checks the existing starter on Boot 2 / JDK 8 and Boot 3 / JDK 17.
+
 ## Maven
 
 In a Spring Boot 4 application, use its normal Boot parent or BOM and add the starter:
@@ -16,7 +20,7 @@ In a Spring Boot 4 application, use its normal Boot parent or BOM and add the st
 ```xml
 <dependency>
     <groupId>io.github.linpeilie</groupId>
-    <artifactId>mapstruct-plus-spring-boot-starter-4</artifactId>
+    <artifactId>mapstruct-plus-spring-boot4-starter</artifactId>
     <version>${mapstruct-plus.version}</version>
 </dependency>
 ```
@@ -49,7 +53,7 @@ processor and `lombok-mapstruct-binding` entries as described in the existing in
 
 ```groovy
 dependencies {
-    implementation "io.github.linpeilie:mapstruct-plus-spring-boot-starter-4:${mapstructPlusVersion}"
+    implementation "io.github.linpeilie:mapstruct-plus-spring-boot4-starter:${mapstructPlusVersion}"
     annotationProcessor "io.github.linpeilie:mapstruct-plus-processor:${mapstructPlusVersion}"
 }
 ```
@@ -71,7 +75,7 @@ Build the complete reactor with JDK 17 or newer. Legacy modules retain their Jav
 Run the starter contract tests with JDK 17:
 
 ```sh
-mvn -B -ntp -pl mapstruct-plus-spring-boot-starter,mapstruct-plus-spring-boot-starter-4 -am \
+mvn -B -ntp -pl mapstruct-plus-spring-boot-starter,mapstruct-plus-spring-boot4-starter -am \
   -Dtest=MapstructAutoConfigurationTest,ModuleMapperRegistrarTest \
   -Dsurefire.failIfNoSpecifiedTests=false test
 ```
@@ -79,7 +83,7 @@ mvn -B -ntp -pl mapstruct-plus-spring-boot-starter,mapstruct-plus-spring-boot-st
 For the Boot 4.1 compatibility case, use JDK 25:
 
 ```sh
-mvn -B -ntp -pl mapstruct-plus-spring-boot-starter-4 -am \
+mvn -B -ntp -pl mapstruct-plus-spring-boot4-starter -am \
   -Dspring-boot4.version=4.1.2 -Dtest=MapstructAutoConfigurationTest \
   -Dsurefire.failIfNoSpecifiedTests=false test
 ```

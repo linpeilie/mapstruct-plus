@@ -9,7 +9,7 @@
         <version>${mapstruct-plus.version}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>mapstruct-plus-spring-boot-starter-4</artifactId>
+    <artifactId>mapstruct-plus-spring-boot4-starter</artifactId>
     <name>MapStruct Plus Spring Boot 4 Starter</name>
 
     <properties>

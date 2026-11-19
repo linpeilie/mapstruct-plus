@@ -14,7 +14,6 @@
         <module>mapstruct-plus</module>
         <module>mapstruct-plus-spring</module>
         <module>mapstruct-plus-spring-boot-starter</module>
-        <module>mapstruct-plus-spring-boot-starter-4</module>
         <module>mapstruct-plus-processor</module>
         <module>mapstruct-plus-object-convert</module>
     </modules>
@@ -54,7 +53,7 @@
             </dependency>
             <dependency>
                 <groupId>io.github.linpeilie</groupId>
-                <artifactId>mapstruct-plus-spring-boot-starter-4</artifactId>
+                <artifactId>mapstruct-plus-spring-boot4-starter</artifactId>
                 <version>${mapstruct-plus.version}</version>
             </dependency>
             <dependency>
@@ -86,6 +85,16 @@
     </dependencyManagement>
 
     <profiles>
+        <!-- Keep the Java 8 reactor compatible while adding Boot 4 automatically on Java 17+. -->
+        <profile>
+            <id>spring-boot4</id>
+            <activation>
+                <jdk>[17,)</jdk>
+            </activation>
+            <modules>
+                <module>mapstruct-plus-spring-boot4-starter</module>
+            </modules>
+        </profile>
         <profile>
             <id>deploy</id>
             <dependencies>

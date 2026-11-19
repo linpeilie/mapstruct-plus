@@ -1,0 +1,80 @@
+name: Spring Boot starter compatibility
+
+on:
+  pull_request:
+    paths:
+      - 'pom.xml'
+      - 'mapstruct-plus*/**'
+      - '.github/tests/starter-compatibility/**'
+      - '.github/workflows/test-spring-boot.yml'
+  push:
+    paths:
+      - 'pom.xml'
+      - 'mapstruct-plus*/**'
+      - '.github/tests/starter-compatibility/**'
+      - '.github/workflows/test-spring-boot.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Boot ${{ matrix.boot }} / JDK ${{ matrix.java }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - java: '8'
+            boot: '2.7.18'
+            spring: '5'
+            starter: mapstruct-plus-spring-boot-starter
+          - java: '17'
+            boot: '3.5.8'
+            spring: '6'
+            starter: mapstruct-plus-spring-boot-starter
+          - java: '17'
+            boot: '4.0.3'
+            spring: '7'
+            starter: mapstruct-plus-spring-boot4-starter
+          - java: '25'
+            boot: '4.1.2'
+            spring: '7'
+            starter: mapstruct-plus-spring-boot4-starter
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+      - name: Set a validation-only version in the test checkout
+        run: |
+          python3 - <<'PYTHON'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+
+          path = Path("pom.xml")
+          text = path.read_text()
+          root = ET.fromstring(text)
+          ns = {"m": "http://maven.apache.org/POM/4.0.0"}
+          current = root.findtext("m:properties/m:mapstruct-plus.version", namespaces=ns)
+          old = "<mapstruct-plus.version>" + current + "</mapstruct-plus.version>"
+          new = "<mapstruct-plus.version>0.0.0-compatibility-SNAPSHOT</mapstruct-plus.version>"
+          assert text.count(old) == 1
+          path.write_text(text.replace(old, new))
+          PYTHON
+      - name: Build the default reactor for this JDK
+        run: >-
+          mvn -B -ntp
+          -Dmapstruct-plus.version=0.0.0-compatibility-SNAPSHOT
+          -Dmaven.test.skip=true install
+      - name: Test an independent application using its own Boot BOM
+        run: >-
+          mvn -B -ntp -f .github/tests/starter-compatibility/pom.xml
+          -Dmapstruct-plus.version=0.0.0-compatibility-SNAPSHOT
+          -Dmapstruct-plus.starter=${{ matrix.starter }}
+          -Dspring-boot.version=${{ matrix.boot }}
+          -Dspring.major=${{ matrix.spring }}
+          -Djava.version=${{ matrix.java }} test
