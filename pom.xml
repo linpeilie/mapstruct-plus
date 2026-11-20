@@ -12,6 +12,7 @@
     <description>mapstruct增强工具包</description>
     <modules>
         <module>mapstruct-plus</module>
+        <module>mapstruct-plus-spring</module>
         <module>mapstruct-plus-spring-boot-starter</module>
         <module>mapstruct-plus-processor</module>
         <module>mapstruct-plus-object-convert</module>
@@ -42,7 +43,17 @@
             </dependency>
             <dependency>
                 <groupId>io.github.linpeilie</groupId>
+                <artifactId>mapstruct-plus-spring</artifactId>
+                <version>${mapstruct-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.linpeilie</groupId>
                 <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
+                <version>${mapstruct-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.linpeilie</groupId>
+                <artifactId>mapstruct-plus-spring-boot4-starter</artifactId>
                 <version>${mapstruct-plus.version}</version>
             </dependency>
             <dependency>
@@ -61,11 +72,6 @@
                 <version>${mapstruct.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-                <version>5.3.23</version>
-            </dependency>
-            <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-core</artifactId>
                 <version>${hutool.version}</version>
@@ -79,6 +85,16 @@
     </dependencyManagement>
 
     <profiles>
+        <!-- Keep the Java 8 reactor compatible while adding Boot 4 automatically on Java 17+. -->
+        <profile>
+            <id>spring-boot4</id>
+            <activation>
+                <jdk>[17,)</jdk>
+            </activation>
+            <modules>
+                <module>mapstruct-plus-spring-boot4-starter</module>
+            </modules>
+        </profile>
         <profile>
             <id>deploy</id>
             <dependencies>
