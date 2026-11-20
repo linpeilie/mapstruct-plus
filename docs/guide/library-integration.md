@@ -40,7 +40,7 @@ description: MapStructPlus 类库与 starter 的自治注册机制（module-mapp
 
 作为类库或 starter 作者，**无需任何额外配置**：
 
-1. 依赖与消费应用**同版本**的 `mapstruct-plus` / `mapstruct-plus-processor` / `mapstruct-plus-spring-boot-starter`；
+1. 依赖与消费应用**同版本**的 `mapstruct-plus` / `mapstruct-plus-processor`，以及与消费应用 Spring Boot 版本对应的 starter（Boot 2 / 3 用 `mapstruct-plus-spring-boot-starter`，Boot 4 用 `mapstruct-plus-spring-boot4-starter`）；
 2. 在类库的对象上正常使用 `@AutoMapper` 等注解；
 3. 构建发布即可——jar 中自带的清单保证了无论消费应用的扫描根是什么，你的 mapper 都会被注册。
 
@@ -94,8 +94,8 @@ Spring Boot 的嵌套式 fat jar（launcher 加载全部嵌套 jar）不受此�
 ### 非 Boot 的纯 Spring 应用
 
 spring 线（含标准 `spring` 组件模型——其适配器同样无 `@Component`）注册依赖
-`ModuleMapperRegistrar`，该类位于 `mapstruct-plus-spring-boot-starter` 产物中。
-不启用自动装配的纯 Spring 应用需引入 starter 并手动注册：
+`ModuleMapperRegistrar`，该类位于共享模块 `mapstruct-plus-spring`，由 Boot 2 / 3 与 Boot 4 的 starter 传递引入。
+不启用自动装配的纯 Spring 应用需引入对应 starter 并手动注册：
 
 ```java
 @Configuration

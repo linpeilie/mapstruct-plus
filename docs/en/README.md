@@ -33,7 +33,7 @@ features:
 
   - title: Compatibility
     icon: any
-    details: Support JDK8~17、SpringBoot2~3
+    details: Support JDK8~17、SpringBoot2~4
 
   - title: Multi-class conversion
     icon: structure
@@ -58,17 +58,24 @@ fotter:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.5.3</version>
+    <version>1.5.4</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.5.3'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.5.4'
 ```
 
+Spring Boot 4 (JDK 17 or newer) uses `mapstruct-plus-spring-boot4-starter` at the same version. Do not combine it with the starter above. See [Install](/en/introduction/install.html).
+
 ## Change Log
+
+### 1.5.4
+
+- [pr181](https://github.com/linpeilie/mapstruct-plus/pull/181) : Added `mapstruct-plus-spring-boot4-starter` for Spring Boot 4 on JDK 17 or newer. The existing `mapstruct-plus-spring-boot-starter` remains for Boot 2 and Boot 3; do not use both starters together. Shared Spring integration now lives in `mapstruct-plus-spring`;
+- [pr179](https://github.com/linpeilie/mapstruct-plus/pull/179) : Fixed collator output being resolved from a project-relative name under Eclipse JDT (VS Code, Eclipse, and similar compilers). The processor now locates the real output file from its URI, so the `module-mappers` manifest is written to the actual class output and converters can be registered at startup;
 
 ### 1.5.3
 

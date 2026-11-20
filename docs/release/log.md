@@ -7,6 +7,11 @@ description: MapStructPlus release log
 ---
 
 
+### 1.5.4
+
+- [pr181](https://github.com/linpeilie/mapstruct-plus/pull/181) : 新增 `mapstruct-plus-spring-boot4-starter`，支持 Spring Boot 4（JDK 17 及以上）。原有 `mapstruct-plus-spring-boot-starter` 继续用于 Boot 2 / Boot 3，两者不要同时引入；Spring 集成实现抽到共享模块 `mapstruct-plus-spring`；
+- [pr179](https://github.com/linpeilie/mapstruct-plus/pull/179) : 修复 Eclipse JDT（VS Code、Eclipse 等）下编译期清单写到错误路径的问题。注解处理器改为按输出文件 URI 定位实际文件，避免 `module-mappers` 清单落在工程相对路径上，导致启动时找不到转换器；
+
 ### 1.5.3
 
 - [pr178](https://github.com/linpeilie/mapstruct-plus/pull/178) : **Breaking Change**：重做 Spring 环境下转换器的注册方式——不再依赖应用的包扫描（`@ComponentScan`），改由框架在编译期自动记录、启动时自动注册，mapper 所在包是否被扫描覆盖不再有影响；

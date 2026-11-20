@@ -6,6 +6,11 @@ category:
 description: MapStructPlus release log
 ---
 
+### 1.5.4
+
+- [pr181](https://github.com/linpeilie/mapstruct-plus/pull/181) : Added `mapstruct-plus-spring-boot4-starter` for Spring Boot 4 on JDK 17 or newer. The existing `mapstruct-plus-spring-boot-starter` remains for Boot 2 and Boot 3; do not use both starters together. Shared Spring integration now lives in `mapstruct-plus-spring`;
+- [pr179](https://github.com/linpeilie/mapstruct-plus/pull/179) : Fixed collator output being resolved from a project-relative name under Eclipse JDT (VS Code, Eclipse, and similar compilers). The processor now locates the real output file from its URI, so the `module-mappers` manifest is written to the actual class output and converters can be registered at startup;
+
 ### 1.5.3
 
 - [pr178](https://github.com/linpeilie/mapstruct-plus/pull/178) : **Breaking Change**: Reworked how converters are registered in Spring environments — registration no longer relies on the application's component scanning (`@ComponentScan`); converters are recorded automatically at compile time and registered by the framework at startup, so whether mapper packages are covered by component scanning no longer matters;

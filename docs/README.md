@@ -33,7 +33,7 @@ features:
 
   - title: 兼容
     icon: any
-    details: 支持JDK8~17、SpringBoot2~3
+    details: 支持JDK8~17、SpringBoot2~4
 
   - title: 多类转换
     icon: structure
@@ -61,17 +61,24 @@ footer:
 <dependency>
     <groupId>io.github.linpeilie</groupId>
     <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
-    <version>1.5.3</version>
+    <version>1.5.4</version>
 </dependency>
 ```
 
 - gradle
 
 ```groovy
-implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.5.3'
+implementation group: 'io.github.linpeilie', name: 'mapstruct-plus-spring-boot-starter', version: '1.5.4'
 ```
 
+Spring Boot 4（JDK 17 及以上）请改用同版本的 `mapstruct-plus-spring-boot4-starter`，不要与上面的 starter 同时引入。详见 [安装](/introduction/install.md)。
+
 ## 更新日志
+
+### 1.5.4
+
+- [pr181](https://github.com/linpeilie/mapstruct-plus/pull/181) : 新增 `mapstruct-plus-spring-boot4-starter`，支持 Spring Boot 4（JDK 17 及以上）。原有 `mapstruct-plus-spring-boot-starter` 继续用于 Boot 2 / Boot 3，两者不要同时引入；Spring 集成实现抽到共享模块 `mapstruct-plus-spring`；
+- [pr179](https://github.com/linpeilie/mapstruct-plus/pull/179) : 修复 Eclipse JDT（VS Code、Eclipse 等）下编译期清单写到错误路径的问题。注解处理器改为按输出文件 URI 定位实际文件，避免 `module-mappers` 清单落在工程相对路径上，导致启动时找不到转换器；
 
 ### 1.5.3
 
